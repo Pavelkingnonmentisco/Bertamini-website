@@ -1,51 +1,150 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;800&display=swap');
+// Lista Admin autorizzati
+const authorizedAdmins = ["Daniel", "Michele", "Mav", "Arduino", "Strepitoso", "Archadian", "Djsamy", "Cobra", "Baj", "Mirko", "Maverick", "Pavel", "Diego"];
 
-:root {
-    --bg: #011627;
-    --accent: #00d4ff;
-    --primary: #007bff;
-    --danger: #ff4747;
+let globalData = JSON.parse(localStorage.getItem('ITDR_DATABASE_FINAL')) || {};
+let currentUser = null;
+let seconds = 0;
+let timer = null;
+let selectedStaffer = null;
+
+// Database iniziale se vuoto
+const initialStaff = [
+    {nome: "Daniel", grado: "Founder"}, {nome: "Michele", grado: "Founder"}, {nome: "Mav", grado: "Co-Founder"},
+    {nome: "Arduino", grado: "Owner"}, {nome: "Strepitoso", grado: "Co Owner"}, {nome: "Archadian", grado: "Co Owner"},
+    {nome: "Djsamy", grado: "Community Manager"}, {nome: "Cobra", grado: "Community Manager"}, {nome: "Baj", grado: "Server Supervisor"},
+    {nome: "Mirko", grado: "Staff Manager"}, {nome: "Maverick", grado: "Staff Manager"}, {nome: "Pavel", grado: "Supervisor"},
+    {nome: "Diego", grado: "Supervisor"}
+];
+
+if (Object.keys(globalData).length === 0) {
+    initialStaff.forEach((s, i) => {
+        globalData[s.nome] = { pass: s.nome + "-01", grado: s.grado, matricola: "ITD-" + (i + 1).toString().padStart(2, '0'), warns: 0, totalSeconds: 0, logs: [] };
+    });
+    save();
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-body { background-color: #000; color: white; }
+function checkLogin() {
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value.trim();
+    const staffName = Object.keys(globalData).find(n => n.toLowerCase() === user.toLowerCase());
 
-h1, h2, h3, .logo-text, #timer-display, .btn-submit, .btn-action, .val { font-weight: 800; }
+    if (staffName && pass === globalData[staffName].pass) {
+        currentUser = staffName;
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+        if (authorizedAdmins.includes(staffName)) {
+            document.getElementById('nav-admin').style.display = 'inline-block';
+            populateStaffSelector();
+        }
+        updateUI();
+    } else { alert("Credenziali errate!"); }
+}
 
-#login-overlay { min-height: 100vh; background: radial-gradient(circle at center, #012a4a 0%, #000 100%); display: flex; align-items: center; justify-content: center; }
-.main-login-container { display: flex; width: 100%; max-width: 1000px; gap: 50px; align-items: center; padding: 20px; }
-.info-side h1 { font-size: 45px; color: var(--accent); line-height: 1.1; }
-.glass-box { background: rgba(255,255,255,0.02); border: 1px solid rgba(0,212,255,0.1); border-radius: 24px; padding: 40px; text-align: center; width: 400px; }
-.box-logo { width: 60px; margin-bottom: 20px; }
-.input-container { text-align: left; margin-bottom: 15px; }
-.input-container label { font-size: 10px; color: #888; text-transform: uppercase; }
-.input-container input { width: 100%; background: #000; border: 1px solid #222; padding: 12px; color: white; border-radius: 8px; margin-top: 5px; }
-.btn-submit { width: 100%; padding: 14px; background: var(--primary); border: none; color: white; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
+function updateUI() {
+    const d = globalData[currentUser];
+    document.getElementById('staffer-grade').innerText = d.grado;
+    document.getElementById('staffer-warns').innerText = d.warns;
+    document.getElementById('staffer-id').innerText = d.matricola;
+    document.getElementById('staffer-total-hours').innerText = formatTime(d.totalSeconds || 0);
+    renderLogs();
+}
 
-.top-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: var(--bg); border-bottom: 1px solid #111; }
-.nav-center button { background: none; border: none; color: #888; margin: 0 10px; cursor: pointer; font-size: 12px; text-transform: uppercase; }
-.nav-center button:hover { color: var(--accent); }
-.btn-logout-new { background: #1a1a1a; color: var(--danger); border: 1px solid #333; padding: 8px 18px; border-radius: 20px; cursor: pointer; font-size: 11px; }
+function formatTime(totalSec) {
+    const h = Math.floor(totalSec/3600).toString().padStart(2,'0');
+    const m = Math.floor((totalSec%3600)/60).toString().padStart(2,'0');
+    const s = (totalSec%60).toString().padStart(2,'0');
+    return `${h}:${m}:${s}`;
+}
 
-.container { padding: 40px; max-width: 1100px; margin: auto; }
-.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-.stat-card { background: var(--bg); padding: 25px; border-radius: 15px; border: 1px solid #111; }
-.stat-card label { font-size: 10px; color: #888; text-transform: uppercase; }
-.stat-card .val { font-size: 24px; color: var(--accent); margin-top: 5px; }
-.warn-val { color: var(--danger) !important; }
+// Funzioni Admin (Aggiungi, Rimuovi, Modifica)
+function addNewStaff() {
+    const n = document.getElementById('new-name').value.trim();
+    const p = document.getElementById('new-pass').value.trim();
+    const g = document.getElementById('new-grade').value.trim();
+    const m = document.getElementById('new-mat').value.trim();
 
-.shift-wrapper { background: var(--bg); border-radius: 20px; padding: 40px; text-align: center; margin-bottom: 25px; border: 1px solid #111; }
-#timer-display { font-size: 80px; color: #fff; margin: 15px 0; }
-.btn-action { padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; color: white; background: #1e293b; margin: 5px; font-size: 12px; }
-.btn-pause { background: #f59e0b; color: #000; }
-.btn-danger { background: #7f1d1d; }
+    if (!n || !p || !g || !m) return alert("Compila tutto!");
+    if (globalData[n]) return alert("Esiste già!");
 
-.admin-container { background: var(--bg); padding: 30px; border-radius: 20px; border: 1px solid #111; }
-#staff-selector { width: 100%; padding: 12px; background: #000; color: white; border: 1px solid #333; border-radius: 8px; }
-.admin-card { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; margin-top: 15px; }
-.admin-input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.admin-input-grid input { background: #000; border: 1px solid #333; padding: 10px; color: white; border-radius: 5px; }
-.input-group { display: flex; gap: 10px; }
-.input-group input { flex: 1; background: #000; border: 1px solid #333; padding: 10px; color: white; border-radius: 5px; }
-.logs-wrapper { background: var(--bg); padding: 20px; border-radius: 15px; margin-top: 20px; }
-.log-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #111; font-size: 13px; }
+    globalData[n] = { pass: p, grado: g, matricola: m, warns: 0, totalSeconds: 0, logs: [] };
+    save();
+    alert("Aggiunto!");
+    populateStaffSelector();
+    document.getElementById('new-name').value = "";
+    document.getElementById('new-pass').value = "";
+}
+
+function removeStaff() {
+    if (!selectedStaffer || selectedStaffer === currentUser) return alert("Azione non permessa!");
+    if (confirm("Rimuovere " + selectedStaffer + "?")) {
+        delete globalData[selectedStaffer];
+        save();
+        populateStaffSelector();
+        document.getElementById('admin-controls').style.display = 'none';
+        alert("Rimosso!");
+    }
+}
+
+function loadStaffMember() {
+    selectedStaffer = document.getElementById('staff-selector').value;
+    if (selectedStaffer) {
+        document.getElementById('admin-controls').style.display = 'block';
+        document.getElementById('edit-grado').value = globalData[selectedStaffer].grado;
+        document.getElementById('edit-matricola').value = globalData[selectedStaffer].matricola;
+    }
+}
+
+function updateStaffGrado() { globalData[selectedStaffer].grado = document.getElementById('edit-grado').value; save(); updateUI(); alert("Fatto!"); }
+function updateStaffMatricola() { globalData[selectedStaffer].matricola = document.getElementById('edit-matricola').value; save(); updateUI(); alert("Fatto!"); }
+function modifyWarns(n) { globalData[selectedStaffer].warns = Math.max(0, globalData[selectedStaffer].warns + n); save(); updateUI(); }
+function resetHours() { if(confirm("Resettare?")) { globalData[selectedStaffer].totalSeconds = 0; globalData[selectedStaffer].logs = []; save(); updateUI(); } }
+
+function populateStaffSelector() {
+    const sel = document.getElementById('staff-selector');
+    sel.innerHTML = '<option value="">Seleziona uno staffer...</option>';
+    Object.keys(globalData).sort().forEach(n => { sel.innerHTML += `<option value="${n}">${n}</option>`; });
+}
+
+// Funzioni Timer
+function startService() {
+    document.getElementById('btn-start').style.display = 'none';
+    document.getElementById('btn-pause').style.display = 'inline-block';
+    document.getElementById('btn-stop').style.display = 'inline-block';
+    document.getElementById('status-text').innerText = "In Servizio";
+    timer = setInterval(() => { seconds++; document.getElementById('timer-display').innerText = formatTime(seconds); }, 1000);
+}
+
+function pauseService() {
+    clearInterval(timer);
+    document.getElementById('btn-start').innerText = "Riprendi";
+    document.getElementById('btn-start').style.display = 'inline-block';
+    document.getElementById('btn-pause').style.display = 'none';
+    document.getElementById('status-text').innerText = "In Pausa";
+}
+
+function stopService() {
+    clearInterval(timer);
+    globalData[currentUser].totalSeconds += seconds;
+    globalData[currentUser].logs.unshift({ time: formatTime(seconds), date: new Date().toLocaleString() });
+    seconds = 0;
+    save();
+    document.getElementById('timer-display').innerText = "00:00:00";
+    updateUI();
+    document.getElementById('btn-start').innerText = "Inizia Servizio";
+    document.getElementById('btn-start').style.display = 'inline-block';
+    document.getElementById('btn-pause').style.display = 'none';
+    document.getElementById('btn-stop').style.display = 'none';
+    document.getElementById('status-text').innerText = "Nessun servizio attivo";
+}
+
+function renderLogs() {
+    const list = document.getElementById('logs-list');
+    list.innerHTML = globalData[currentUser].logs.map(l => `<div class="log-item"><span>${l.time}</span><span style="color:gray">${l.date}</span></div>`).join('');
+}
+
+function showSection(id) {
+    document.querySelectorAll('.tab-content').forEach(s => s.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+}
+
+function save() { localStorage.setItem('ITDR_DATABASE_FINAL', JSON.stringify(globalData)); }
