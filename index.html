@@ -3,13 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff ITDR</title>
+    <title>Staff Portal - ITDR</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
     <div id="login-overlay">
+        <header class="login-header-top">
+            <div class="header-logo">
+                <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" alt="Logo">
+                <span>Staff ITDR · Area riservata</span>
+            </div>
+        </header>
+
         <div class="main-login-container">
             <div class="info-side">
                 <p class="label">sistema di gestione interna</p>
@@ -33,7 +40,12 @@
                         <label>password</label>
                         <input type="password" id="password" placeholder="••••••••">
                     </div>
+                    <div class="remember-row">
+                        <input type="checkbox" id="rem">
+                        <label for="rem">Ricordami su questo dispositivo</label>
+                    </div>
                     <button onclick="checkLogin()" class="btn-submit">accedi</button>
+                    <div class="pavel-credits">© Portale sviluppato da Pavel</div>
                 </div>
             </div>
         </div>
@@ -46,38 +58,53 @@
                 <div class="logo-text">Staff - ITDR</div>
             </div>
             <nav class="nav-center">
-                <button onclick="showSection('area-personale')">area personale</button>
-                <button onclick="showSection('gestione-turni')">gestione turni</button>
+                <button onclick="showSection('area-personale')"><i class="fas fa-user-circle"></i> area personale</button>
+                <button onclick="showSection('gestione-turni')"><i class="fas fa-clock"></i> gestione turni</button>
+                <button id="nav-admin" style="display:none;" onclick="showSection('admin-panel')"><i class="fas fa-user-shield"></i> pannello admin</button>
             </nav>
-            <div class="nav-right"><button onclick="location.reload()">esci</button></div>
+            <div class="nav-right"><button onclick="location.reload()" class="btn-logout">esci <i class="fas fa-sign-out-alt"></i></button></div>
         </header>
 
         <main class="container">
             <section id="area-personale" class="tab-content">
+                <div class="header-section">
+                    <h1>Benvenuto, <span id="user-display-name">---</span></h1>
+                </div>
                 <div class="stats-grid">
                     <div class="stat-card"><label>grado</label><div id="staffer-grade" class="val">---</div></div>
-                    <div class="stat-card"><label>richiami</label><div id="staffer-warns" class="val">0</div></div>
+                    <div class="stat-card"><label>richiami</label><div id="staffer-warns" class="val warn-val">0</div></div>
                     <div class="stat-card"><label>matricola</label><div id="staffer-id" class="val">ITD-00</div></div>
                 </div>
             </section>
 
             <section id="gestione-turni" class="tab-content" style="display:none;">
-                <div class="shift-box">
-                    <div class="timer-display" id="timer-display">00:00:00</div>
-                    <p id="status-text">nessun servizio attivo</p>
-                    <div class="controls">
-                        <button id="btn-start" onclick="startService()">inizia servizio</button>
-                        <button id="btn-pause" onclick="pauseService()" style="display:none;">pausa</button>
-                        <button id="btn-stop" onclick="stopService()" style="display:none;" class="btn-red">fine servizio</button>
+                <div class="shift-wrapper">
+                    <div class="shift-card-header">
+                        <span class="service-tag">servizio operativo</span>
+                        <h2>Gestione servizi</h2>
+                    </div>
+                    <div class="timer-box">
+                        <p id="status-text">nessun servizio attivo</p>
+                        <div id="timer-display">00:00:00</div>
+                        <div class="controls">
+                            <button id="btn-start" onclick="startService()" class="btn-action">inizia servizio</button>
+                            <button id="btn-pause" onclick="pauseService()" class="btn-action btn-pause" style="display:none;">pausa</button>
+                            <button id="btn-stop" onclick="stopService()" class="btn-action btn-danger" style="display:none;">fine servizio</button>
+                        </div>
                     </div>
                 </div>
-                <div class="logs-box">
-                    <h3>log turni</h3>
-                    <div id="logs-list"></div>
+                <div class="logs-wrapper">
+                    <div class="shift-card-header">
+                        <h2>Log turni recenti</h2>
+                    </div>
+                    <div class="logs-container" id="logs-list">
+                        <p class="empty-msg">Nessun turno registrato.</p>
+                    </div>
                 </div>
             </section>
         </main>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
