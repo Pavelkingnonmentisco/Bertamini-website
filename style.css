@@ -1,51 +1,118 @@
-:root {
-    --bg-gradient: linear-gradient(135deg, #1a0505 0%, #0a0e17 50%, #05070a 100%);
-    --primary: #3b82f6;
-    --accent: #00d4ff;
-    --glass: rgba(255, 255, 255, 0.03);
-    --text-dim: #94a3b8;
-}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff - ITDR Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
 
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-body { background: #05070a; color: white; overflow-x: hidden; }
+    <div id="login-overlay">
+        <header class="login-header-top">
+            <div class="header-logo">
+                <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" alt="Logo">
+                <span>Staff ITDR · Area riservata</span>
+            </div>
+        </header>
 
-#login-overlay { width: 100%; min-height: 100vh; background: var(--bg-gradient); display: flex; flex-direction: column; align-items: center; padding: 20px; }
-.login-header-top { width: 100%; max-width: 1200px; display: flex; align-items: center; padding: 20px 0; }
-.header-logo { display: flex; align-items: center; gap: 12px; }
-.header-logo img { width: 35px; }
-.header-logo span { font-size: 13px; font-weight: 700; color: var(--text-dim); }
+        <div class="main-login-container">
+            <div class="info-side">
+                <p class="label">Sistema di gestione interna</p>
+                <h1>Dashboard reattiva, workflow digitali e notifiche mirate.</h1>
+                <p class="desc">Dashboard reattiva, workflow digitali e notifiche mirate ti aiutano ad arrivare preparato su ogni intervento. Accedi con le tue credenziali per continuare.</p>
+                <ul class="check-list">
+                    <li><i class="fas fa-check"></i> Monitoraggio equipaggi in tempo reale</li>
+                    <li><i class="fas fa-check"></i> Richieste digitali con tracciamento automatico</li>
+                    <li><i class="fas fa-check"></i> Supporto IT dedicato h24</li>
+                </ul>
+            </div>
 
-.main-login-container { display: flex; width: 100%; max-width: 1100px; margin-top: 60px; gap: 60px; align-items: center; }
-.info-side { flex: 1.2; }
-.info-side h1 { font-size: 46px; font-weight: 800; line-height: 1.1; margin: 20px 0; }
-.info-side .desc { color: var(--text-dim); line-height: 1.6; margin-bottom: 30px; }
-.check-list li { margin-bottom: 12px; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #cbd5e1; list-style: none; }
-.check-list i { color: var(--primary); }
+            <div class="form-side">
+                <div class="glass-box">
+                    <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" class="box-logo">
+                    <h2>Riservato Staff ITDR</h2>
+                    <div class="input-container">
+                        <label>USERNAME</label>
+                        <input type="text" id="username" placeholder="Inserisci username">
+                    </div>
+                    <div class="input-container">
+                        <label>PASSWORD</label>
+                        <input type="password" id="password" placeholder="••••••••">
+                    </div>
+                    <div class="remember-row">
+                        <input type="checkbox" id="rem">
+                        <label for="rem">Ricordami su questo dispositivo</label>
+                    </div>
+                    <button onclick="checkLogin()" class="btn-submit">Accedi</button>
+                    <div class="pavel-credits">© Portale sviluppato da Pavel</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-.glass-box { flex: 1; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 50px; text-align: center; }
-.input-container { text-align: left; margin-bottom: 20px; }
-.input-container label { display: block; font-size: 10px; color: var(--text-dim); font-weight: bold; margin-bottom: 8px; }
-.input-container input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 10px; color: white; outline: none; }
-.btn-submit { width: 100%; padding: 15px; border-radius: 10px; border: none; background: #2d3748; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-.btn-submit:hover { background: var(--primary); }
+    <div id="main-content" style="display:none;">
+        <header class="top-nav">
+            <div class="nav-left">
+                <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" class="nav-logo">
+                <div class="logo-text">Staff - ITDR</div>
+            </div>
+            <nav class="nav-center">
+                <button onclick="showSection('area-personale')"><i class="fas fa-user"></i> Area personale</button>
+                <button onclick="showSection('gestione-turni')"><i class="fas fa-clock"></i> Gestione turni</button>
+                <button id="nav-admin" style="display:none;" onclick="showSection('admin-panel')"><i class="fas fa-shield-alt"></i> Pannello admin</button>
+            </nav>
+            <div class="nav-right">
+                <button onclick="location.reload()" class="btn-logout">Esci <i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </header>
 
-.top-nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; background: rgba(10, 14, 23, 0.95); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 100; }
-.nav-center button { background: transparent; border: none; color: var(--text-dim); margin: 0 15px; font-weight: 600; cursor: pointer; transition: 0.3s; }
-.nav-center button:hover { color: var(--accent); }
-.btn-logout { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 8px 15px; border-radius: 8px; cursor: pointer; }
+        <main class="container">
+            <section id="area-personale" class="tab-content">
+                <div class="header-section">
+                    <h1>Benvenuto, <span id="user-display-name">---</span></h1>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card"><label>Grado attuale</label><div id="staffer-grade" class="val">---</div></div>
+                    <div class="stat-card"><label>Richiami attivi</label><div id="staffer-warns" class="val warn-val">0</div></div>
+                    <div class="stat-card"><label>Matricola identificativa</label><div id="staffer-id" class="val">ITD-00</div></div>
+                </div>
+            </section>
 
-.container { padding: 50px; max-width: 1200px; margin: auto; }
-.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; }
-.stat-card { background: #0f131a; padding: 30px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); }
-.stat-card label { font-size: 11px; font-weight: bold; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
-.stat-card .val { font-size: 28px; font-weight: 800; margin-top: 10px; color: var(--accent); }
+            <section id="gestione-turni" class="tab-content" style="display:none;">
+                <div class="shift-grid">
+                    <div class="shift-wrapper">
+                        <div class="shift-card-header">
+                            <span class="service-tag">Servizio operativo</span>
+                            <h2>Gestione servizi</h2>
+                        </div>
+                        <div class="timer-box">
+                            <p id="status-text">Nessun servizio attivo</p>
+                            <div id="timer-display">00:00:00</div>
+                            <div class="controls">
+                                <button id="btn-start" onclick="startService()" class="btn-action">Inizia il servizio</button>
+                                <button id="btn-pause" onclick="pauseService()" class="btn-action btn-pause" style="display:none;">Pausa</button>
+                                <button id="btn-resume" onclick="startService()" class="btn-action" style="display:none;">Riprendi</button>
+                                <button id="btn-stop" onclick="stopService()" class="btn-action btn-danger" style="display:none;">Fine servizio</button>
+                            </div>
+                        </div>
+                    </div>
 
-.shift-wrapper { background: #0f131a; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
-.shift-card-header { padding: 30px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-.service-tag { background: rgba(0, 212, 255, 0.1); color: var(--accent); padding: 5px 12px; border-radius: 5px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
-.timer-box { padding: 80px 30px; text-align: center; }
-#timer-display { font-size: 120px; font-weight: 100; margin: 20px 0; letter-spacing: -5px; color: white; }
-#status-text { color: var(--text-dim); text-transform: uppercase; font-size: 12px; font-weight: bold; letter-spacing: 2px; }
-.btn-action { background: #1e293b; color: white; border: none; padding: 15px 40px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; }
-.btn-danger { background: #7f1d1d; }
-.main-footer { text-align: center; padding: 30px; font-size: 12px; color: var(--text-dim); opacity: 0.5; }
+                    <div class="logs-wrapper">
+                        <div class="shift-card-header">
+                            <h2>Log turni recenti</h2>
+                        </div>
+                        <div class="logs-container" id="logs-list">
+                            <p class="empty-msg">Nessun turno registrato in questa sessione.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer class="main-footer">© Tutti i diritti riservati a Pavel</footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
