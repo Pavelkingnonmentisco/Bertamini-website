@@ -13,19 +13,19 @@
         <header class="login-header-top">
             <div class="header-logo">
                 <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" alt="Logo">
-                <span>STAFF ITDR · ACCESSO!</span>
+                <span>STAFF ITDR · AREA RISERVATA</span>
             </div>
         </header>
 
         <div class="main-login-container">
             <div class="info-side">
-                <p class="label">DASHBOARD AMMINISTRATIVA</p>
-                <h1>Gestione Staff, turni e monitoraggio server.</h1>
-                <p class="desc">Benvenuto nel portale ufficiale ITDR. Qui potrai gestire il tuo stato di servizio, monitorare le ore effettuate e coordinarti con il resto del team operativo. Accedi per iniziare il tuo turno.</p>
+                <p class="label">SISTEMA DI GESTIONE INTERNA</p>
+                <h1>Dashboard reattiva, workflow digitali e notifiche mirate.</h1>
+                <p class="desc">Accedi al pannello operativo per gestire i tuoi turni, monitorare lo stato del server e coordinare le attività con il team. La piattaforma è ottimizzata per garantire la massima efficienza durante il servizio. Inserisci le tue credenziali per continuare.</p>
                 <ul class="check-list">
-                    <li><i class="fas fa-check"></i> Tracciamento ore di servizio e attività</li>
-                    <li><i class="fas fa-check"></i> Gestione richiami e anagrafica interna</li>
-                    <li><i class="fas fa-check"></i> Accesso rapido ai log e strumenti staff</li>
+                    <li><i class="fas fa-microchip"></i> Monitoraggio staff e attività in tempo reale</li>
+                    <li><i class="fas fa-file-invoice"></i> Gestione digitale dei turni con log automatici</li>
+                    <li><i class="fas fa-headset"></i> Supporto tecnico e amministrativo dedicato H24</li>
                 </ul>
             </div>
 
@@ -35,64 +35,21 @@
                     <h2>Riservato Staff ITDR</h2>
                     <div class="input-container">
                         <label>USERNAME</label>
-                        <input type="text" id="username" placeholder="">
+                        <input type="text" id="username" placeholder="Nome-Utente">
                     </div>
                     <div class="input-container">
                         <label>PASSWORD</label>
-                        <input type="password" id="password" placeholder="">
+                        <input type="password" id="password" placeholder="••••••••">
                     </div>
                     <div class="remember-row">
                         <input type="checkbox" id="rem">
                         <label for="rem">Ricordami su questo dispositivo</label>
                     </div>
                     <button onclick="checkLogin()" class="btn-submit">Accedi</button>
-                    <div class="pavel-credits">© Tutti i diritti riservati a Pavel</div>
+                    <div class="pavel-credits">© Portale sviluppato da Pavel</div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div id="main-content" style="display:none;">
-        <header class="top-nav">
-            <div class="nav-left">
-                <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" class="nav-logo">
-                <div class="logo-text">STAFF - ITDR</div>
-            </div>
-            <nav class="nav-center">
-                <button onclick="showSection('area-personale')">Area Personale</button>
-                <button onclick="showSection('gestione-turni')">Gestione Turni</button>
-                <button onclick="showSection('lista-staff')">Lista Staff</button>
-                <button id="nav-admin" style="display:none;" onclick="showSection('admin-panel')">Admin Panel</button>
-            </nav>
-            <div class="nav-right">
-                <button onclick="location.reload()" class="btn-logout">Esci</button>
-            </div>
-        </header>
-
-        <main class="container">
-            <section id="area-personale" class="tab-content">
-                <div class="header-section">
-                    <h1>Benvenuto, <span id="user-display-name">---</span></h1>
-                </div>
-                <div class="stats-grid">
-                    <div class="stat-card"><label>GRADO</label><div id="staffer-grade" class="val">---</div></div>
-                    <div class="stat-card"><label>RICHIAMI</label><div id="staffer-warns" class="val warn-val">0</div></div>
-                    <div class="stat-card"><label>MATRICOLA</label><div id="staffer-id" class="val">ITD-00</div></div>
-                </div>
-            </section>
-
-            <section id="gestione-turni" class="tab-content" style="display:none;">
-                <div class="card shift-card">
-                    <div class="card-header"><span class="tag">SERVIZIO OPERATIVO</span><h2>Gestione Servizi</h2></div>
-                    <div class="timer-box">
-                        <span id="status-text">NESSUN SERVIZIO ATTIVO</span>
-                        <div id="timer-display">00:00:00</div>
-                        <button id="btn-start" onclick="startService()" class="btn-action">Inizia il Servizio</button>
-                        <button id="btn-stop" onclick="stopService()" class="btn-action btn-danger" style="display:none;">Fine Servizio</button>
-                    </div>
-                </div>
-            </section>
-        </main>
     </div>
 
     <script src="script.js"></script>
