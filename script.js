@@ -1,15 +1,22 @@
-// DATABASE E PASSWORDS
 const staffDatabase = [
     {nome: "Daniel", grado: "Founder", psw: "D-101"},
     {nome: "Michele", grado: "Founder", psw: "M-202"},
     {nome: "Mav", grado: "Co-Founder", psw: "M-303"},
     {nome: "Arduino", grado: "Owner", psw: "A-404"},
+    {nome: "Strepitoso", grado: "Co Owner", psw: "S-505"},
+    {nome: "Archadian", grado: "Co Owner", psw: "A-606"},
+    {nome: "Baj", grado: "Server Supervisor", psw: "B-707"},
+    {nome: "Cobra", grado: "Community Manager", psw: "C-808"},
+    {nome: "Djsamy", grado: "Community Manager", psw: "D-909"},
+    {nome: "Mirko", grado: "Staff Manager", psw: "M-111"},
+    {nome: "Maverick", grado: "Staff Manager", psw: "M-222"},
+    {nome: "Pavel", grado: "Supervisor", psw: "P-333"},
+    {nome: "Diego", grado: "Supervisor", psw: "D-444"},
     {nome: "Hydro", grado: "Head Admin", psw: "H-555"},
     {nome: "Ash", grado: "Trial Helper", psw: "A-951"}
-    // Aggiungi gli altri qui seguendo lo schema
 ];
 
-let globalData = JSON.parse(localStorage.getItem('ITD_Data_V2')) || {}; 
+let globalData = JSON.parse(localStorage.getItem('ITD_Data_Final')) || {}; 
 let currentUser = null;
 let seconds = 0;
 let timerInterval = null;
@@ -21,10 +28,9 @@ function checkLogin() {
 
     if (found && found.psw === passIn) {
         currentUser = found;
-        if (!globalData[found.nome]) globalData[found.nome] = { warns: 0, totalSeconds: 0, logs: [] };
+        if (!globalData[found.nome]) globalData[found.nome] = { warns: 0, totalSeconds: 0 };
         
-        // Permessi Admin
-        const adminGradi = ["Founder", "Owner", "Co-Founder", "Co Owner", "Supervisor"];
+        const adminGradi = ["Founder", "Owner", "Co-Founder", "Co Owner", "Supervisor", "Community Manager", "Server Supervisor", "Staff Manager"];
         if (adminGradi.includes(found.grado)) {
             document.getElementById('nav-admin').style.display = 'inline-block';
         }
@@ -44,21 +50,21 @@ function updateUI() {
     document.getElementById('staffer-warns').innerText = globalData[n].warns;
     document.getElementById('staffer-id').innerText = `ITD-${(staffDatabase.findIndex(x => x.nome === n) + 1).toString().padStart(2, '0')}`;
 
-    // Lista Staff
     document.getElementById('staffTableBody').innerHTML = staffDatabase.map((s, i) => `
         <tr><td>ITD-${(i+1).toString().padStart(2,'0')}</td><td>${s.nome}</td><td>${s.grado}</td></tr>
     `).join("");
 
-    // Admin Panel
     document.getElementById('admin-hours-body').innerHTML = staffDatabase.map(s => `
         <tr><td>${s.nome}</td><td>${s.grado}</td><td>${globalData[s.nome]?.warns || 0}</td><td>${formatTime(globalData[s.nome]?.totalSeconds || 0)}</td></tr>
     `).join("");
+    
+    document.getElementById('select-staff-admin').innerHTML = staffDatabase.map(s => `<option value="${s.nome}">${s.nome}</option>`).join("");
 }
 
 function startService() {
     document.getElementById('btn-start').style.display = 'none';
     document.getElementById('btn-stop').style.display = 'inline-block';
-    document.getElementById('status-text').innerText = "SERVIZIO IN CORSO...";
+    document.getElementById('status-text').innerText = "SERVIZIO ATTIVO";
     timerInterval = setInterval(() => {
         seconds++;
         let h = Math.floor(seconds/3600).toString().padStart(2,'0');
@@ -76,7 +82,7 @@ function stopService() {
     document.getElementById('status-text').innerText = "NESSUN SERVIZIO ATTIVO";
     document.getElementById('btn-start').style.display = 'inline-block';
     document.getElementById('btn-stop').style.display = 'none';
-    localStorage.setItem('ITD_Data_V2', JSON.stringify(globalData));
+    localStorage.setItem('ITD_Data_Final', JSON.stringify(globalData));
     updateUI();
 }
 
@@ -89,4 +95,11 @@ function formatTime(sec) {
 function showSection(id) {
     document.querySelectorAll('.tab-content').forEach(s => s.style.display = 'none');
     document.getElementById(id).style.display = 'block';
+}
+
+function modifyWarn(v) {
+    const t = document.getElementById('select-staff-admin').value;
+    globalData[t].warns = Math.max(0, globalData[t].warns + v);
+    localStorage.setItem('ITD_Data_Final', JSON.stringify(globalData));
+    updateUI();
 }
