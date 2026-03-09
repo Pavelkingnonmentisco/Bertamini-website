@@ -1,28 +1,49 @@
-const staffData = ["Daniel", "Michele", "Mav", "Arduino", "Strepitoso", "Archadian", "Baj", "Cobra", "Djsamy", "Mirko", "Maverick", "Pavel", "Diego", "Hydro", "Fabbri", "Matz", "Nathalino", "Viper", "Xenoo", "Adamo", "Gabriel", "Chorno", "Joker", "Nenne", "Mattia", "Lollo", "Simo", "Vortex", "Void", "Sangue", "Ibra", "Noxen", "Ash"];
+// Database Nomi e Gradi (in ordine di matricola)
+const staffDatabase = [
+    {nome: "Daniel", grado: "Founder"}, {nome: "Michele", grado: "Founder"},
+    {nome: "Mav", grado: "Co-Founder"}, {nome: "Arduino", grado: "Owner"},
+    {nome: "Strepitoso", grado: "Co Owner"}, {nome: "Archadian", grado: "Co Owner"},
+    {nome: "Baj", grado: "Server Supervisor"}, {nome: "Cobra", grado: "Community Manager"},
+    {nome: "Djsamy", grado: "Community Manager"}, {nome: "Mirko", grado: "Staff Manager"},
+    {nome: "Maverick", grado: "Staff Manager"}, {nome: "Pavel", grado: "Supervisor"},
+    {nome: "Diego", grado: "Supervisor"}, {nome: "Hydro", grado: "Head Admin"},
+    {nome: "Fabbri", grado: "Senior Admin"}, {nome: "Matz", grado: "Senior Admin"},
+    {nome: "Nathalino", grado: "Senior Admin"}, {nome: "Viper", grado: "Admin"},
+    {nome: "Xenoo", grado: "Admin"}, {nome: "Adamo", grado: "Head Mod"},
+    {nome: "Gabriel", grado: "Moderator"}, {nome: "Chorno", grado: "Moderator"},
+    {nome: "Joker", grado: "Moderator"}, {nome: "Nenne", grado: "Trial Mod"},
+    {nome: "Mattia", grado: "Trial Mod"}, {nome: "Lollo", grado: "Senior Helper"},
+    {nome: "Simo", grado: "Helper"}, {nome: "Vortex", grado: "Helper"},
+    {nome: "Void", grado: "Helper"}, {nome: "Sangue", grado: "Trial Helper"},
+    {nome: "Ibra", grado: "Trial Helper"}, {nome: "Noxen", grado: "Trial Helper"},
+    {nome: "Ash", grado: "Trial Helper"}
+];
+
 const credentials = {};
-staffData.forEach((nome, index) => {
+staffDatabase.forEach((staff, index) => {
     const matricolaNum = (index + 1).toString().padStart(2, '0');
-    credentials[nome.toLowerCase()] = nome.charAt(0).toUpperCase() + "-" + matricolaNum;
+    credentials[staff.nome.toLowerCase()] = {
+        password: staff.nome.charAt(0).toUpperCase() + "-" + matricolaNum,
+        matricola: "ITD-" + matricolaNum,
+        grado: staff.grado
+    };
 });
 
-// --- DATABASE ESEMPIO DATI EXTRA (per Daniel, Hydro, Ash) ---
-const extraStaffData = {
-    "daniel": { matricola: "ITD-01", grado: "Capo Staff", richiami: 0, logs: "Vedi DB" },
-    "hydro": { matricola: "ITD-14", grado: "Supervisore", richiami: 1, logs: "12 Sessioni" },
-    "ash": { matricola: "ITD-33", grado: "Staffer Pro", richiami: 0, logs: "3 Gestite" }
-};
-
-let currentUser = "";
+let currentUser = null;
+let seconds = 0, timerInterval = null, startTime = null, sessionCount = 0;
 
 function checkLogin() {
     const userIn = document.getElementById('username').value.trim().toLowerCase();
     const passIn = document.getElementById('password').value.trim();
-    if (credentials[userIn] && credentials[userIn] === passIn) {
-        currentUser = userIn; // Memorizza chi è entrato
+    
+    if (credentials[userIn] && credentials[userIn].password === passIn) {
+        currentUser = { nome: userIn, ...credentials[userIn] };
         document.getElementById('login-overlay').style.display = 'none';
         document.getElementById('main-content').style.display = 'flex';
         initData();
-    } else { document.getElementById('login-error').style.display = 'block'; }
+    } else { 
+        document.getElementById('login-error').style.display = 'block'; 
+    }
 }
 
 function showSection(id) {
@@ -30,25 +51,28 @@ function showSection(id) {
     document.getElementById(id).style.display = 'block';
 }
 
-// Timer Logic (Invariata)
-let seconds = 0, timerInterval = null, startTime = null;
+// Timer
 function startService() {
     startTime = new Date().toLocaleString();
-    document.getElementById('timer-status').innerText = "SERVIZIO IN CORSO";
+    document.getElementById('timer-status').innerText = "IN SERVIZIO";
     document.getElementById('btn-start').style.display = 'none';
     document.getElementById('btn-pause').style.display = 'inline-block';
     document.getElementById('btn-stop').style.display = 'inline-block';
     timerInterval = setInterval(() => { seconds++; updateDisplay(); }, 1000);
 }
+
 function updateDisplay() {
     const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
     const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
     const s = (seconds % 60).toString().padStart(2, '0');
     document.getElementById('timer-display').innerText = `${h}:${m}:${s}`;
 }
+
 function stopService() {
     clearInterval(timerInterval);
-    const row = `<tr><td>${startTime}</td><td>${new Date().toLocaleTimeString()}</td><td>${document.getElementById('timer-display').innerText}</td><td>COMPLETATO</td></tr>`;
+    sessionCount++;
+    document.getElementById('staffer-logs').innerText = sessionCount;
+    const row = `<tr><td>${startTime}</td><td>${new Date().toLocaleTimeString()}</td><td>${document.getElementById('timer-display').innerText}</td><td>OK</td></tr>`;
     document.getElementById('history-body').innerHTML += row;
     seconds = 0; updateDisplay();
     document.getElementById('btn-start').style.display = 'inline-block';
@@ -56,61 +80,44 @@ function stopService() {
     document.getElementById('btn-stop').style.display = 'none';
 }
 
-// Export Sheets (Invariata)
-function exportTableToCSV(tableId, filename) {
-    let csv = [];
-    let table = document.getElementById(tableId);
-    let rows = table.querySelectorAll("tr");
-    for (let i = 0; i < rows.length; i++) {
-        let row = [], cols = rows[i].querySelectorAll("td, th");
-        for (let j = 0; j < cols.length; j++) row.push(cols[j].innerText.replace(/,/g, ";"));
-        csv.push(row.join(","));
-    }
-    let csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
-    let link = document.createElement("a");
-    link.download = filename;
-    link.href = window.URL.createObjectURL(csvFile);
-    link.click();
-}
-
 function initData() {
-    // 1. Popola Dati Extra Staffer Loggato
-    const nameInput = currentUser.toLowerCase();
-    let data;
+    // Info Profilo
+    document.getElementById('staffer-name').innerText = currentUser.nome.toUpperCase();
+    document.getElementById('staffer-id').innerText = currentUser.matricola;
+    document.getElementById('staffer-grade').innerText = currentUser.grado;
 
-    // Se l'utente è speciale, usa i suoi dati, altrimenti usa default
-    if (extraStaffData[nameInput]) {
-        data = extraStaffData[nameInput];
-    } else {
-        // Calcola matricola default
-        const index = staffData.map(v => v.toLowerCase()).indexOf(nameInput);
-        const matricolaNum = (index + 1).toString().padStart(2, '0');
-        data = { matricola: `ITD-${matricolaNum}`, grado: "Staffer", richiami: 0, logs: "Vedi DB" };
-    }
-
-    // Aggiorna l'interfaccia
-    document.getElementById('staffer-name').innerText = currentUser.charAt(0).toUpperCase() + currentUser.slice(1);
-    document.getElementById('staffer-id').innerText = data.matricola;
-    document.getElementById('staffer-grade').innerText = data.grado;
-    document.getElementById('staffer-warns').innerText = data.richiami;
-    document.getElementById('staffer-logs').innerText = data.logs;
-
-
-    // 2. Popola Tabelle (Invariato)
+    // Tabella Matricole
     const mBody = document.querySelector('#staffTable tbody');
     mBody.innerHTML = "";
-    staffData.forEach((nome, i) => {
-        mBody.innerHTML += `<tr><td>ITD-${(i+1).toString().padStart(2,'0')}</td><td>${nome}</td><td style="color:#44ff44">● Attivo</td></tr>`;
+    staffDatabase.forEach((staff, i) => {
+        mBody.innerHTML += `<tr><td>ITD-${(i+1).toString().padStart(2,'0')}</td><td>${staff.nome}</td><td>${staff.grado}</td><td style="color:#44ff44">●</td></tr>`;
     });
+
+    // Tabella Turni (Membri da Hydro ITD-14 in poi)
     const tBody = document.querySelector('#scheduleTable tbody');
     tBody.innerHTML = "";
     const giorni = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
-    const turniMembri = staffData.slice(13); 
-    let index = 0;
-    giorni.forEach((g, i) => {
-        let p = []; let s = [];
-        for (let j = 0; j < 3; j++) { p.push(turniMembri[index % turniMembri.length]); index++; }
-        for (let j = 0; j < 3; j++) { s.push(turniMembri[index % turniMembri.length]); index++; }
+    const turniStaff = staffDatabase.slice(13).map(s => s.nome);
+    let idx = 0;
+    giorni.forEach(g => {
+        let p = [], s = [];
+        for(let j=0; j<3; j++) { p.push(turniStaff[idx % turniStaff.length]); idx++; }
+        for(let j=0; j<3; j++) { s.push(turniStaff[idx % turniStaff.length]); idx++; }
         tBody.innerHTML += `<tr><td><strong>${g}</strong></td><td>${p.join(", ")}</td><td>${s.join(", ")}</td></tr>`;
     });
+}
+
+function exportTableToCSV(tableId, filename) {
+    let csv = [];
+    let rows = document.getElementById(tableId).closest('table').querySelectorAll("tr");
+    rows.forEach(r => {
+        let cols = r.querySelectorAll("td, th");
+        let row = [];
+        cols.forEach(c => row.push(c.innerText.replace(/,/g, ";")));
+        csv.push(row.join(","));
+    });
+    let link = document.createElement("a");
+    link.href = window.URL.createObjectURL(new Blob([csv.join("\n")], {type: "text/csv"}));
+    link.download = filename;
+    link.click();
 }
