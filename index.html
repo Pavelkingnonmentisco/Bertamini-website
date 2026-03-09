@@ -6,27 +6,58 @@
     <title>Staff - ITDR Portal</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <div id="login-overlay">
-        <div class="login-box">
-            <div class="brand">
-                <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" class="main-logo">
-                <span>STAFF - ITDR</span>
+        <div class="login-container">
+            
+            <div class="login-info">
+                <p class="subtitle">PORTALE OPERATIVO</p>
+                <h1>Missioni, turni e comunicazioni sempre con te.</h1>
+                <p class="description">
+                    Dashboard reattiva, workflow digitali e notifiche mirate ti aiutano ad arrivare preparato su ogni intervento. Accedi con le tue credenziali per continuare.
+                </p>
+                <ul class="features">
+                    <li><i class="fas fa-check-circle"></i> Monitoraggio equipaggi in tempo reale</li>
+                    <li><i class="fas fa-check-circle"></i> Richieste digitali con tracciamento automatico</li>
+                    <li><i class="fas fa-check-circle"></i> Supporto IT dedicato H24</li>
+                </ul>
             </div>
-            <h2>Riservato Staff ITDR</h2>
-            <div class="input-group">
-                <label>USERNAME</label>
-                <input type="text" id="username" placeholder="Inserisci username">
+
+            <div class="login-box">
+                <div class="login-header">
+                    <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" alt="Logo ITDR" class="main-logo">
+                    <h2>Riservato Staff ITDR</h2>
+                </div>
+                
+                <div class="login-form">
+                    <div class="input-group">
+                        <label>USERNAME</label>
+                        <input type="text" id="username" placeholder="Inserisci il tuo username" autocomplete="off">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>PASSWORD</label>
+                        <input type="password" id="password" placeholder="••••••••">
+                    </div>
+
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">RICORDAMI SU QUESTO DISPOSITIVO</label>
+                    </div>
+
+                    <button onclick="checkLogin()" class="btn-login">Accedi</button>
+                    
+                    <p id="login-error">Credenziali Errate! Riprova.</p>
+                </div>
+
+                <div class="copyright-pavel">
+                    © Tutti i diritti riservati a <strong>Pavel</strong>
+                </div>
             </div>
-            <div class="input-group">
-                <label>PASSWORD</label>
-                <input type="password" id="password" placeholder="••••••••">
-            </div>
-            <button onclick="checkLogin()" class="btn-login">Accedi</button>
-            <p id="login-error">Credenziali errate o formato non valido.</p>
-            <div class="copyright-login">© Tutti i diritti riservati a Pavel</div>
+
         </div>
     </div>
 
@@ -40,10 +71,10 @@
                 <button onclick="showSection('area-personale')"><i class="fas fa-user"></i> Area Personale</button>
                 <button onclick="showSection('gestione-turni')"><i class="fas fa-stopwatch"></i> Gestione Turni</button>
                 <button onclick="showSection('lista-staff')"><i class="fas fa-users"></i> Lista Staff</button>
-                <button id="nav-admin" onclick="showSection('admin-panel')" style="display:none;"><i class="fas fa-lock"></i> Admin Panel</button>
+                <button id="nav-admin" onclick="showSection('admin-panel')" style="display:none;"><i class="fas fa-user-shield"></i> Admin Panel</button>
             </nav>
             <div class="nav-right">
-                <button onclick="location.reload()" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Esci</button>
+                <button onclick="location.reload()" class="btn-logout">Esci <i class="fas fa-sign-out-alt"></i></button>
             </div>
         </header>
 
@@ -51,12 +82,12 @@
             <section id="area-personale" class="tab-content">
                 <div class="header-section">
                     <h1>Benvenuto, <span id="user-display-name">Utente</span></h1>
-                    <p>Visualizza il tuo stato attuale e i tuoi richiami.</p>
+                    <p>Riepilogo del tuo stato operativo nell'ITDR.</p>
                 </div>
                 <div class="stats-grid">
                     <div class="stat-card">
                         <label>GRADO ATTUALE</label>
-                        <div id="staffer-grade" class="val">Grado</div>
+                        <div id="staffer-grade" class="val">---</div>
                     </div>
                     <div class="stat-card">
                         <label>RICHIAMI ATTIVI</label>
@@ -72,7 +103,7 @@
             <section id="gestione-turni" class="tab-content" style="display:none;">
                 <div class="card shift-card">
                     <div class="card-header">
-                        <div class="tag">SERVIZIO OPERATIVO</div>
+                        <span class="tag">SERVIZIO OPERATIVO</span>
                         <h2>Gestione Servizi</h2>
                     </div>
                     
@@ -91,7 +122,8 @@
                             <thead>
                                 <tr><th>DATA INIZIO</th><th>FINE</th><th>DURATA</th><th>STATO</th></tr>
                             </thead>
-                            <tbody id="personal-history"></tbody>
+                            <tbody id="personal-history">
+                                </tbody>
                         </table>
                     </div>
                 </div>
@@ -99,7 +131,7 @@
 
             <section id="lista-staff" class="tab-content" style="display:none;">
                 <div class="card">
-                    <h3>Anagrafica Personale</h3>
+                    <h3>Anagrafica Personale STAFF - ITDR</h3>
                     <table class="data-table">
                         <thead>
                             <tr><th>Matricola</th><th>Nome</th><th>Grado</th></tr>
@@ -115,8 +147,8 @@
                 </div>
                 <div class="admin-tools">
                     <div class="card">
-                        <h3>Gestione Staffer</h3>
-                        <select id="select-staff-admin"></select>
+                        <h3>Gestione Personale</h3>
+                        <select id="select-staff-admin" class="admin-select"></select>
                         <div class="btn-group">
                             <button onclick="modifyWarn(1)" class="btn-danger">+1 Richiamo</button>
                             <button onclick="modifyWarn(-1)" class="btn-warn">-1 Richiamo</button>
