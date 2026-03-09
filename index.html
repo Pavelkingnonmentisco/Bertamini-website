@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Staff ITDR</title>
+    <title>Staff - ITDR Portal</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -59,12 +59,12 @@
                 <div class="logo-text">Staff - ITDR</div>
             </div>
             <nav class="nav-center">
-                <button onclick="showSection('area-personale')">Area personale</button>
-                <button onclick="showSection('gestione-turni')">Gestione turni</button>
-                <button id="nav-admin" style="display:none;" onclick="showSection('admin-panel')">Admin panel</button>
+                <button onclick="showSection('area-personale')"><i class="fas fa-user"></i> Area personale</button>
+                <button onclick="showSection('gestione-turni')"><i class="fas fa-clock"></i> Gestione turni</button>
+                <button id="nav-admin" style="display:none;" onclick="showSection('admin-panel')"><i class="fas fa-shield-alt"></i> Pannello admin</button>
             </nav>
             <div class="nav-right">
-                <button onclick="location.reload()" class="btn-logout">Esci</button>
+                <button onclick="location.reload()" class="btn-logout">Esci <i class="fas fa-sign-out-alt"></i></button>
             </div>
         </header>
 
@@ -72,25 +72,42 @@
             <section id="area-personale" class="tab-content">
                 <div class="header-section">
                     <h1>Benvenuto, <span id="user-display-name">---</span></h1>
+                    <p>Qui puoi visualizzare il tuo stato attuale all'interno dello staff.</p>
                 </div>
                 <div class="stats-grid">
-                    <div class="stat-card"><label>GRADO</label><div id="staffer-grade" class="val">---</div></div>
-                    <div class="stat-card"><label>RICHIAMI</label><div id="staffer-warns" class="val warn-val">0</div></div>
-                    <div class="stat-card"><label>MATRICOLA</label><div id="staffer-id" class="val">ITD-00</div></div>
+                    <div class="stat-card">
+                        <label>Grado attuale</label>
+                        <div id="staffer-grade" class="val">---</div>
+                    </div>
+                    <div class="stat-card">
+                        <label>Richiami attivi</label>
+                        <div id="staffer-warns" class="val warn-val">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <label>Matricola identificativa</label>
+                        <div id="staffer-id" class="val">ITD-00</div>
+                    </div>
                 </div>
             </section>
 
             <section id="gestione-turni" class="tab-content" style="display:none;">
-                <div class="card">
+                <div class="shift-wrapper">
+                    <div class="shift-card-header">
+                        <span class="service-tag">Servizio operativo</span>
+                        <h2>Gestione servizi</h2>
+                    </div>
                     <div class="timer-box">
-                        <span id="status-text">Nessun servizio attivo</span>
+                        <p id="status-text">Nessun servizio attivo</p>
                         <div id="timer-display">00:00:00</div>
-                        <button id="btn-start" onclick="startService()" class="btn-action">Inizia servizio</button>
-                        <button id="btn-stop" onclick="stopService()" class="btn-action btn-danger" style="display:none;">Fine servizio</button>
+                        <div class="controls">
+                            <button id="btn-start" onclick="startService()" class="btn-action">Inizia il servizio</button>
+                            <button id="btn-stop" onclick="stopService()" class="btn-action btn-danger" style="display:none;">Fine servizio</button>
+                        </div>
                     </div>
                 </div>
             </section>
         </main>
+        <footer class="main-footer">© Tutti i diritti riservati a Pavel</footer>
     </div>
 
     <script src="script.js"></script>
