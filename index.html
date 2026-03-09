@@ -56,78 +56,52 @@
                     <div class="stat-card"><label>grado</label><div id="staffer-grade" class="val">---</div></div>
                     <div class="stat-card"><label>richiami</label><div id="staffer-warns" class="val warn-val">0</div></div>
                     <div class="stat-card"><label>matricola</label><div id="staffer-id" class="val">ITD-00</div></div>
-                    <div class="stat-card"><label>totale ore servizio</label><div id="staffer-total-hours" class="val">00:00:00</div></div>
+                    <div class="stat-card" style="border-color: var(--accent);"><label>totale ore servizio</label><div id="staffer-total-hours" class="val">00:00:00</div></div>
                 </div>
             </section>
 
             <section id="gestione-turni" class="tab-content" style="display:none;">
                 <div class="shift-wrapper">
-                    <div class="shift-card-header">
-                        <span class="service-tag">servizio operativo</span>
-                        <h2>Gestione servizi</h2>
-                    </div>
-                    <div class="timer-box">
-                        <p id="status-text">nessun servizio attivo</p>
-                        <div id="timer-display">00:00:00</div>
-                        <div class="controls">
-                            <button id="btn-start" onclick="startService()" class="btn-action">inizia servizio</button>
-                            <button id="btn-pause" onclick="pauseService()" class="btn-action btn-pause" style="display:none;">pausa</button>
-                            <button id="btn-stop" onclick="stopService()" class="btn-action btn-danger" style="display:none;">fine servizio</button>
-                        </div>
+                    <div id="timer-display">00:00:00</div>
+                    <div class="controls">
+                        <button id="btn-start" onclick="startService()" class="btn-action">inizia servizio</button>
+                        <button id="btn-stop" onclick="stopService()" class="btn-action btn-danger" style="display:none;">fine servizio</button>
                     </div>
                 </div>
-                <div class="logs-wrapper">
-                    <h3>I tuoi log recenti</h3>
-                    <div id="logs-list"></div>
-                </div>
+                <div class="logs-wrapper"><h3>Log Recenti</h3><div id="logs-list"></div></div>
             </section>
 
             <section id="pannello-staff" class="tab-content" style="display:none;">
                 <div class="admin-container">
-                    <div class="admin-header"><h2>Gestione Personale ITDR</h2></div>
-                    
-                    <div class="admin-card" style="background: rgba(0, 212, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.2);">
-                        <h3><i class="fas fa-user-plus"></i> Arruolamento Staff</h3>
+                    <div class="admin-card" style="background: rgba(0, 212, 255, 0.1);">
+                        <h3><i class="fas fa-plus"></i> Arruola Nuovo Staff</h3>
                         <div class="admin-input-grid">
                             <input type="text" id="new-name" placeholder="Nome">
                             <input type="text" id="new-pass" placeholder="Password">
                             <input type="text" id="new-grade" placeholder="Grado">
                             <input type="text" id="new-mat" placeholder="Matricola">
                         </div>
-                        <button class="btn-submit" style="margin-top:10px" onclick="addNewStaff()">Aggiungi Nuovo Staffer</button>
+                        <button class="btn-submit" style="margin-top:10px" onclick="addNewStaff()">Aggiungi Staffer</button>
                     </div>
 
-                    <hr style="margin:20px 0; border-color:#222">
-
-                    <h3>Modifica o Rimuovi Staffer</h3>
-                    <select id="staff-selector" onchange="loadStaffMember()">
-                        <option value="">Seleziona uno staffer...</option>
-                    </select>
-
-                    <div id="admin-controls" style="display:none; margin-top: 20px;">
-                        <div class="admin-card">
-                            <div class="input-group">
-                                <input type="text" id="edit-grado" placeholder="Modifica Grado">
-                                <button class="btn-action" onclick="updateStaffGrado()">Salva Grado</button>
+                    <div class="admin-card" style="margin-top:20px">
+                        <h3>Gestisci / Rimuovi Staffer</h3>
+                        <select id="staff-selector" onchange="loadStaffMember()">
+                            <option value="">Seleziona...</option>
+                        </select>
+                        <div id="admin-controls" style="display:none; margin-top:15px;">
+                            <input type="text" id="edit-grado" placeholder="Grado" style="width:48%; padding:10px; background:#000; color:#fff; border:1px solid #333;">
+                            <input type="text" id="edit-matricola" placeholder="Matricola" style="width:48%; padding:10px; background:#000; color:#fff; border:1px solid #333;">
+                            <div style="margin-top:10px;">
+                                <button class="btn-action" onclick="updateStaffData()">Salva Modifiche</button>
+                                <button class="btn-action btn-danger" onclick="removeStaff()">Rimuovi Staffer</button>
                             </div>
-                            <div class="input-group" style="margin-top:10px">
-                                <input type="text" id="edit-matricola" placeholder="Modifica Matricola">
-                                <button class="btn-action" onclick="updateStaffMatricola()">Salva Mat.</button>
-                            </div>
-                        </div>
-                        <div class="admin-card">
-                            <button class="btn-action btn-danger" onclick="modifyWarns(1)">+1 Richiamo</button>
-                            <button class="btn-action" onclick="modifyWarns(-1)">-1 Richiamo</button>
-                            <button class="btn-action" onclick="resetHours()">Reset Ore</button>
-                            <hr style="margin:15px 0; border-color:#333">
-                            <button class="btn-submit" style="background:#ce1212" onclick="removeStaff()">Rimuovi Permanentemente</button>
                         </div>
                     </div>
                 </div>
             </section>
         </main>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
