@@ -34,17 +34,64 @@ const staffDatabase = [
     {nome: "Zio", grado: "Trial Helper", psw: "Zio-01"}
 ];
 
-// Logica di Login e Timer come definita in precedenza...
-function checkLogin() {
-    const userIn = document.getElementById('username').value.trim();
-    const passIn = document.getElementById('password').value.trim();
-    const found = staffDatabase.find(u => u.nome.toLowerCase() === userIn.toLowerCase());
+let globalData = JSON.parse(localStorage.getItem('ITD_Data_Final')) || {};
+let currentUser = null;
+let seconds = 0;
+let timerInterval = null;
 
-    if (found && found.psw === passIn) {
+function checkLogin() {
+    const uInput = document.getElementById('username').value.trim();
+    const pInput = document.getElementById('password').value.trim();
+    const found = staffDatabase.find(u => u.nome.toLowerCase() === uInput.toLowerCase());
+
+    if (found && found.psw === pInput) {
+        currentUser = found;
+        if (!globalData[found.nome]) globalData[found.nome] = { warns: 0, totalSeconds: 0 };
+        
         document.getElementById('login-overlay').style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
-        // Inizializza UI...
+        
+        const adminGradi = ["Founder", "Owner", "Co-Founder", "Co Owner", "Supervisor", "Staff Manager"];
+        if (adminGradi.includes(found.grado)) document.getElementById('nav-admin').style.display = 'inline-block';
+
+        updateUI();
     } else {
-        alert("Password Errata! Ricorda il formato (Es: Nome-01)");
+        alert("Password errata! Ricorda il formato (Es: Nome-01)");
     }
+}
+
+function updateUI() {
+    document.getElementById('user-display-name').innerText = currentUser.nome;
+    document.getElementById('staffer-grade').innerText = currentUser.grado;
+    document.getElementById('staffer-warns').innerText = globalData[currentUser.nome].warns;
+    document.getElementById('staffer-id').innerText = `ITD-${(staffDatabase.findIndex(x => x.nome === currentUser.nome) + 1).toString().padStart(2, '0')}`;
+}
+
+function startService() {
+    document.getElementById('btn-start').style.display = 'none';
+    document.getElementById('btn-stop').style.display = 'inline-block';
+    document.getElementById('status-text').innerText = "Servizio attivo";
+    timerInterval = setInterval(() => {
+        seconds++;
+        let h = Math.floor(seconds/3600).toString().padStart(2,'0');
+        let m = Math.floor((seconds%3600)/60).toString().padStart(2,'0');
+        let s = (seconds%60).toString().padStart(2,'0');
+        document.getElementById('timer-display').innerText = `${h}:${m}:${s}`;
+    }, 1000);
+}
+
+function stopService() {
+    clearInterval(timerInterval);
+    globalData[currentUser.nome].totalSeconds += seconds;
+    seconds = 0;
+    document.getElementById('timer-display').innerText = "00:00:00";
+    document.getElementById('status-text').innerText = "Nessun servizio attivo";
+    document.getElementById('btn-start').style.display = 'inline-block';
+    document.getElementById('btn-stop').style.display = 'none';
+    localStorage.setItem('ITD_Data_Final', JSON.stringify(globalData));
+}
+
+function showSection(id) {
+    document.querySelectorAll('.tab-content').forEach(s => s.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
 }
