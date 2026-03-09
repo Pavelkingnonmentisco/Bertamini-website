@@ -12,10 +12,19 @@ const staffDatabase = [
     {nome: "Ibra", grado: "Trial Helper"}, {nome: "Noxen", grado: "Trial Helper"}, {nome: "Ash", grado: "Trial Helper"}
 ];
 
+// Caricamento dati da memoria locale
+let globalData = JSON.parse(localStorage.getItem('ITD_Management_V5')) || {};
 let currentUser = null;
 let seconds = 0;
 let timer = null;
-let logs = [];
+let selectedStaffer = null;
+
+// Inizializza database se vuoto
+staffDatabase.forEach(s => {
+    if (!globalData[s.nome]) {
+        globalData[s.nome] = { warns: 0, totalSeconds: 0, logs: [] };
+    }
+});
 
 function checkLogin() {
     const user = document.getElementById('username').value.trim();
@@ -26,12 +35,27 @@ function checkLogin() {
         currentUser = found;
         document.getElementById('login-overlay').style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
-        document.getElementById('user-display-name').innerText = found.nome;
-        document.getElementById('staffer-grade').innerText = found.grado;
-        document.getElementById('staffer-id').innerText = "ITD-" + (staffDatabase.indexOf(found) + 1).toString().padStart(2, '0');
+        
+        // Verifica Permessi Admin
+        const admins = ["Founder", "Owner", "Co-Founder", "Co Owner", "Supervisor", "Staff Manager"];
+        if (admins.includes(found.grado)) {
+            document.getElementById('nav-admin').style.display = 'inline-block';
+            populateStaffSelector();
+        }
+
+        updateUI();
     } else { alert("Accesso Negato!"); }
 }
 
+function updateUI() {
+    document.getElementById('user-display-name').innerText = currentUser.nome;
+    document.getElementById('staffer-grade').innerText = currentUser.grado;
+    document.getElementById('staffer-warns').innerText = globalData[currentUser.nome].warns;
+    document.getElementById('staffer-id').innerText = "ITD-" + (staffDatabase.findIndex(x => x.nome === currentUser.nome) + 1).toString().padStart(2, '0');
+    renderLogs();
+}
+
+// LOGICA TIMER
 function startService() {
     document.getElementById('btn-start').style.display = 'none';
     document.getElementById('btn-pause').style.display = 'inline-block';
@@ -51,10 +75,14 @@ function pauseService() {
 function stopService() {
     clearInterval(timer);
     const timeStr = document.getElementById('timer-display').innerText;
-    logs.unshift({ time: timeStr, date: new Date().toLocaleTimeString() });
+    globalData[currentUser.nome].logs.unshift({ time: timeStr, date: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString() });
+    globalData[currentUser.nome].totalSeconds += seconds;
+    
     seconds = 0;
+    saveData();
     updateDisplay();
     renderLogs();
+    
     document.getElementById('btn-start').innerText = "inizia servizio";
     document.getElementById('btn-pause').style.display = 'none';
     document.getElementById('btn-stop').style.display = 'none';
@@ -69,12 +97,64 @@ function updateDisplay() {
     document.getElementById('timer-display').innerText = `${h}:${m}:${s}`;
 }
 
+// LOGICA ADMIN
+function populateStaffSelector() {
+    const sel = document.getElementById('staff-selector');
+    staffDatabase.forEach(s => {
+        let opt = document.createElement('option');
+        opt.value = s.nome;
+        opt.innerText = s.nome + " (" + s.grado + ")";
+        sel.appendChild(opt);
+    });
+}
+
+function loadStaffMember() {
+    selectedStaffer = document.getElementById('staff-selector').value;
+    document.getElementById('admin-controls').style.display = selectedStaffer ? 'block' : 'none';
+}
+
+function modifyWarns(amount) {
+    if (!selectedStaffer) return;
+    globalData[selectedStaffer].warns = Math.max(0, globalData[selectedStaffer].warns + amount);
+    saveData();
+    alert(`Richiami di ${selectedStaffer} aggiornati a: ${globalData[selectedStaffer].warns}`);
+    if (selectedStaffer === currentUser.nome) updateUI();
+}
+
+function resetHours() {
+    if (!selectedStaffer || !confirm(`Vuoi davvero resettare le ore di ${selectedStaffer}?`)) return;
+    globalData[selectedStaffer].totalSeconds = 0;
+    globalData[selectedStaffer].logs = [];
+    saveData();
+    alert(`Ore e Log di ${selectedStaffer} resettati.`);
+    if (selectedStaffer === currentUser.nome) updateUI();
+}
+
+function addManualLog() {
+    const ore = prompt("Quante ore vuoi aggiungere? (Formato HH:MM:SS)", "01:00:00");
+    if (ore) {
+        globalData[selectedStaffer].logs.unshift({ time: ore, date: "Aggiunto Manualmente" });
+        saveData();
+        alert("Turno aggiunto con successo.");
+        if (selectedStaffer === currentUser.nome) updateUI();
+    }
+}
+
 function renderLogs() {
     const list = document.getElementById('logs-list');
-    list.innerHTML = logs.map(l => `<div class="log-item"><span>Durata: ${l.time}</span><span style="color:gray">${l.date}</span></div>`).join('');
+    list.innerHTML = globalData[currentUser.nome].logs.map(l => `
+        <div class="log-item">
+            <span><strong>${l.time}</strong></span>
+            <span style="color:gray">${l.date}</span>
+        </div>
+    `).join('');
 }
 
 function showSection(id) {
     document.querySelectorAll('.tab-content').forEach(s => s.style.display = 'none');
     document.getElementById(id).style.display = 'block';
+}
+
+function saveData() {
+    localStorage.setItem('ITD_Management_V5', JSON.stringify(globalData));
 }
