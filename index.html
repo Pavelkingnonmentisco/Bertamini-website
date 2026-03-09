@@ -3,61 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff - ITDR Portal</title>
+    <title>Login - STAFF ITDR</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <div id="login-overlay">
-        <div class="login-container">
-            
-            <div class="login-info">
-                <p class="subtitle">PORTALE OPERATIVO</p>
+        <header class="login-header-top">
+            <div class="header-logo">
+                <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" alt="Logo">
+                <span>STAFF ITDR · ACCESSO!</span>
+            </div>
+            <button class="btn-home">Home</button>
+        </header>
+
+        <div class="main-login-container">
+            <div class="info-side">
+                <p class="label">PORTALE OPERATIVO</p>
                 <h1>Missioni, turni e comunicazioni sempre con te.</h1>
-                <p class="description">
-                    Dashboard reattiva, workflow digitali e notifiche mirate ti aiutano ad arrivare preparato su ogni intervento. Accedi con le tue credenziali per continuare.
-                </p>
-                <ul class="features">
-                    <li><i class="fas fa-check-circle"></i> Monitoraggio equipaggi in tempo reale</li>
-                    <li><i class="fas fa-check-circle"></i> Richieste digitali con tracciamento automatico</li>
-                    <li><i class="fas fa-check-circle"></i> Supporto IT dedicato H24</li>
+                <p class="desc">Dashboard reattiva, workflow digitali e notifiche mirate ti aiutano ad arrivare preparato su ogni intervento. Accedi con le tue credenziali per continuare.</p>
+                <ul class="check-list">
+                    <li><i class="fas fa-check"></i> Monitoraggio equipaggi in tempo reale</li>
+                    <li><i class="fas fa-check"></i> Richieste digitali con tracciamento automatico</li>
+                    <li><i class="fas fa-check"></i> Supporto IT dedicato H24</li>
                 </ul>
             </div>
 
-            <div class="login-box">
-                <div class="login-header">
-                    <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" alt="Logo ITDR" class="main-logo">
+            <div class="form-side">
+                <div class="glass-box">
+                    <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" class="box-logo">
                     <h2>Riservato Staff ITDR</h2>
-                </div>
-                
-                <div class="login-form">
-                    <div class="input-group">
+                    <div class="input-container">
                         <label>USERNAME</label>
-                        <input type="text" id="username" placeholder="Inserisci il tuo username" autocomplete="off">
+                        <input type="text" id="username" placeholder="">
                     </div>
-                    
-                    <div class="input-group">
+                    <div class="input-container">
                         <label>PASSWORD</label>
-                        <input type="password" id="password" placeholder="••••••••">
+                        <input type="password" id="password" placeholder="">
                     </div>
-
-                    <div class="remember-me">
-                        <input type="checkbox" id="remember">
-                        <label for="remember">RICORDAMI SU QUESTO DISPOSITIVO</label>
+                    <div class="remember-row">
+                        <input type="checkbox" id="rem">
+                        <label for="rem">RICORDAMI SU QUESTO DISPOSITIVO</label>
                     </div>
-
-                    <button onclick="checkLogin()" class="btn-login">Accedi</button>
-                    
-                    <p id="login-error">Credenziali Errate! Riprova.</p>
-                </div>
-
-                <div class="copyright-pavel">
-                    © Tutti i diritti riservati a <strong>Pavel</strong>
+                    <button onclick="checkLogin()" class="btn-submit">Accedi</button>
+                    <div class="pavel-credits">© Tutti i diritti riservati a Pavel</div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -81,16 +73,15 @@
         <main class="container">
             <section id="area-personale" class="tab-content">
                 <div class="header-section">
-                    <h1>Benvenuto, <span id="user-display-name">Utente</span></h1>
-                    <p>Riepilogo del tuo stato operativo nell'ITDR.</p>
+                    <h1>Benvenuto, <span id="user-display-name">---</span></h1>
                 </div>
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <label>GRADO ATTUALE</label>
+                        <label>GRADO</label>
                         <div id="staffer-grade" class="val">---</div>
                     </div>
                     <div class="stat-card">
-                        <label>RICHIAMI ATTIVI</label>
+                        <label>RICHIAMI</label>
                         <div id="staffer-warns" class="val warn-val">0</div>
                     </div>
                     <div class="stat-card">
@@ -106,68 +97,16 @@
                         <span class="tag">SERVIZIO OPERATIVO</span>
                         <h2>Gestione Servizi</h2>
                     </div>
-                    
                     <div class="timer-box">
                         <span id="status-text">NESSUN SERVIZIO ATTIVO</span>
                         <div id="timer-display">00:00:00</div>
-                        <div class="shift-controls">
-                            <button id="btn-start" onclick="startService()" class="btn-action">Inizia il Servizio</button>
-                            <button id="btn-stop" onclick="stopService()" class="btn-action btn-danger" style="display:none;">Fine Servizio</button>
-                        </div>
-                    </div>
-
-                    <div class="history-section">
-                        <h3>Storico dei Miei Servizi</h3>
-                        <table class="data-table">
-                            <thead>
-                                <tr><th>DATA INIZIO</th><th>FINE</th><th>DURATA</th><th>STATO</th></tr>
-                            </thead>
-                            <tbody id="personal-history">
-                                </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <section id="lista-staff" class="tab-content" style="display:none;">
-                <div class="card">
-                    <h3>Anagrafica Personale STAFF - ITDR</h3>
-                    <table class="data-table">
-                        <thead>
-                            <tr><th>Matricola</th><th>Nome</th><th>Grado</th></tr>
-                        </thead>
-                        <tbody id="staffTableBody"></tbody>
-                    </table>
-                </div>
-            </section>
-
-            <section id="admin-panel" class="tab-content" style="display:none;">
-                <div class="header-section">
-                    <h1>Pannello Amministrazione</h1>
-                </div>
-                <div class="admin-tools">
-                    <div class="card">
-                        <h3>Gestione Personale</h3>
-                        <select id="select-staff-admin" class="admin-select"></select>
-                        <div class="btn-group">
-                            <button onclick="modifyWarn(1)" class="btn-danger">+1 Richiamo</button>
-                            <button onclick="modifyWarn(-1)" class="btn-warn">-1 Richiamo</button>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <h3>Report Ore Globali</h3>
-                        <table class="data-table">
-                            <thead><tr><th>Nome</th><th>Grado</th><th>Richiami</th><th>Totale Ore</th></tr></thead>
-                            <tbody id="admin-hours-body"></tbody>
-                        </table>
+                        <button id="btn-start" onclick="startService()" class="btn-action">Inizia il Servizio</button>
+                        <button id="btn-stop" onclick="stopService()" class="btn-action btn-danger" style="display:none;">Fine Servizio</button>
                     </div>
                 </div>
             </section>
         </main>
-        
-        <footer class="main-footer">
-            Tutti i diritti d'autore sono riservati a <strong>Pavel</strong>
-        </footer>
+        <footer class="main-footer">© Riservato Pavel</footer>
     </div>
 
     <script src="script.js"></script>
