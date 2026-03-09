@@ -1,13 +1,40 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
 <title>Staff ITDR Panel</title>
 <link rel="stylesheet" href="style.css">
+<style>
+body{margin:0;font-family:Arial;background:linear-gradient(135deg,#0f172a,#020617);color:white;}
+#login{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;}
+#login img{margin-bottom:20px;}
+input{padding:12px;margin:8px;border-radius:8px;border:none;outline:none;font-size:15px;}
+button{padding:10px 20px;border-radius:6px;border:none;cursor:pointer;transition:0.3s;}
+#panel{display:none;}
+nav{background:#020617;padding:15px;display:flex;align-items:center;gap:10px;}
+nav img{height:45px;margin-right:20px;}
+nav button{background:#1e293b;color:white;border:none;padding:10px 15px;border-radius:6px;transition:0.3s;}
+nav button:hover{background:#334155;}
+section{display:none;padding:30px;}
+.active{display:block;}
+.turniImg{width:70%;margin-top:20px;border-radius:10px;}
+.attiva{background:#22c55e;color:white;}
+.attiva:hover{background:#16a34a;}
+.pausa{background:#facc15;color:black;}
+.pausa:hover{background:#eab308;}
+.termina{background:#ef4444;color:white;}
+.termina:hover{background:#dc2626;}
+table{border-collapse:collapse;width:100%;}
+th,td{padding:6px;text-align:left;border:1px solid #334155;}
+thead{background:#334155;}
+tbody{background:#1e293b;}
+#matricole tbody{display:block;max-height:400px;overflow-y:auto;}
+#matricole thead, #matricole tbody tr{display:table;width:100%;table-layout:fixed;}
+</style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="login">
   <img src="logo.png" width="120">
   <h2>Accesso Staff</h2>
@@ -17,6 +44,7 @@
   <p id="error"></p>
 </div>
 
+<!-- PANEL -->
 <div id="panel">
   <nav>
     <img src="logo.png">
@@ -26,6 +54,7 @@
     <button onclick="showSection('servizio')">Servizio</button>
   </nav>
 
+  <!-- REGOLAMENTI -->
   <section id="regolamenti" class="active">
     <h1>Regolamenti Staff</h1>
     <ul>
@@ -36,21 +65,56 @@
     </ul>
   </section>
 
+  <!-- TURNI -->
   <section id="turni">
     <h1>Turni Staff</h1>
-    <img src="turni.png" class="turniImg">
-    <p>Qui verranno pubblicati i turni dello staff.</p>
+    <div id="tabellaTurni"></div>
   </section>
 
+  <!-- MATRICOLA -->
   <section id="matricole">
     <h1>Matricole</h1>
-    <ul>
-      <li>Nome1</li>
-      <li>Nome2</li>
-      <li>Nome3</li>
-    </ul>
+    <table>
+      <thead><tr><th>Codice</th><th>Nome</th></tr></thead>
+      <tbody>
+        <tr><td>ITD-01</td><td>Daniel</td></tr>
+        <tr><td>ITD-02</td><td>Michele</td></tr>
+        <tr><td>ITD-03</td><td>Mav</td></tr>
+        <tr><td>ITD-04</td><td>Arduino</td></tr>
+        <tr><td>ITD-05</td><td>Strepitoso</td></tr>
+        <tr><td>ITD-06</td><td>Archadian</td></tr>
+        <tr><td>ITD-07</td><td>Baj</td></tr>
+        <tr><td>ITD-08</td><td>Cobra</td></tr>
+        <tr><td>ITD-09</td><td>Djsamy</td></tr>
+        <tr><td>ITD-10</td><td>Mirko</td></tr>
+        <tr><td>ITD-11</td><td>Maverick</td></tr>
+        <tr><td>ITD-12</td><td>Pavel</td></tr>
+        <tr><td>ITD-13</td><td>Diego</td></tr>
+        <tr><td>ITD-14</td><td>Hydro</td></tr>
+        <tr><td>ITD-15</td><td>Fabbri</td></tr>
+        <tr><td>ITD-16</td><td>Matz</td></tr>
+        <tr><td>ITD-17</td><td>Nathalino</td></tr>
+        <tr><td>ITD-18</td><td>Viper</td></tr>
+        <tr><td>ITD-19</td><td>Xenoo</td></tr>
+        <tr><td>ITD-20</td><td>Adamo</td></tr>
+        <tr><td>ITD-21</td><td>Gabriel</td></tr>
+        <tr><td>ITD-22</td><td>Chorno</td></tr>
+        <tr><td>ITD-23</td><td>Joker</td></tr>
+        <tr><td>ITD-24</td><td>Nenne</td></tr>
+        <tr><td>ITD-25</td><td>Mattia</td></tr>
+        <tr><td>ITD-26</td><td>Lollo</td></tr>
+        <tr><td>ITD-27</td><td>Simo</td></tr>
+        <tr><td>ITD-28</td><td>Vortex</td></tr>
+        <tr><td>ITD-29</td><td>Void</td></tr>
+        <tr><td>ITD-30</td><td>Sangue</td></tr>
+        <tr><td>ITD-31</td><td>Ibra</td></tr>
+        <tr><td>ITD-32</td><td>Noxen</td></tr>
+        <tr><td>ITD-33</td><td>Ash</td></tr>
+      </tbody>
+    </table>
   </section>
 
+  <!-- SERVIZIO -->
   <section id="servizio">
     <h1>Gestione Servizio</h1>
     <button class="attiva" onclick="attivaServizio()">Attiva Servizio</button>
@@ -62,6 +126,52 @@
   </section>
 </div>
 
-<script src="script.js"></script>
+<script>
+// --- LOGIN ---
+const utenti = [
+  {username:"Hydro", password:"1234"}, {username:"Fabbri", password:"1234"}, {username:"Matz", password:"1234"},
+  {username:"Nathalino", password:"1234"}, {username:"Viper", password:"1234"}, {username:"Xenoo", password:"1234"},
+  {username:"Adamo", password:"1234"}, {username:"Gabriel", password:"1234"}, {username:"Chorno", password:"1234"},
+  {username:"Joker", password:"1234"}, {username:"Nenne", password:"1234"}, {username:"Mattia", password:"1234"},
+  {username:"Lollo", password:"1234"}, {username:"Simo", password:"1234"}, {username:"Vortex", password:"1234"},
+  {username:"Void", password:"1234"}, {username:"Sangue", password:"1234"}, {username:"Ibra", password:"1234"},
+  {username:"Noxen", password:"1234"}, {username:"Ash", password:"1234"}
+];
+
+let startTime=null, pausaTime=null, tempoTotale=localStorage.getItem("tempoTotale")||0, turni=localStorage.getItem("turni")||0;
+let pianoTurni={};
+const staffer=utenti.map(u=>u.username);
+const giorni=7, perTurno=3, turniGiorno=2;
+
+function login(){
+  let user=document.getElementById("username").value;
+  let pass=document.getElementById("password").value;
+  let accesso=utenti.some(u=>u.username===user && u.password===pass);
+  if(accesso){
+    document.getElementById("login").style.display="none";
+    document.getElementById("panel").style.display="block";
+    aggiornaStats();
+    generaPianoTurni();
+    mostraTabellaTurni();
+  }else document.getElementById("error").innerText="Credenziali errate";
+}
+
+function showSection(sezione){
+  document.querySelectorAll("section").forEach(sec=>sec.classList.remove("active"));
+  document.getElementById(sezione).classList.add("active");
+}
+
+// --- TIMER ---
+function attivaServizio(){startTime=Date.now(); document.getElementById("statoServizio").innerText="Stato: Attivo";}
+function pausaServizio(){if(startTime){pausaTime=Date.now(); tempoTotale=Number(tempoTotale)+(pausaTime-startTime); startTime=null; document.getElementById("statoServizio").innerText="Stato: In Pausa"; localStorage.setItem("tempoTotale",tempoTotale);}}
+function terminaServizio(){if(startTime){tempoTotale=Number(tempoTotale)+(Date.now()-startTime);} turni=Number(turni)+1; localStorage.setItem("tempoTotale",tempoTotale); localStorage.setItem("turni",turni); startTime=null; document.getElementById("statoServizio").innerText="Stato: Terminato"; aggiornaStats();}
+function aggiornaStats(){let ore=Math.floor(tempoTotale/3600000); let minuti=Math.floor((tempoTotale%3600000)/60000); document.getElementById("tempoTotale").innerText="Tempo Totale: "+ore+"h "+minuti+"m"; document.getElementById("turniTotali").innerText="Turni Totali: "+turni;}
+
+// --- TURNI ---
+function shuffle(array){return array.sort(()=>Math.random()-0.5);}
+function generaPianoTurni(){ pianoTurni={}; for(let g=1;g<=giorni;g++){pianoTurni["Giorno "+g]={}; let staffMischiato=shuffle([...staffer]); pianoTurni["Giorno "+g]["Pomeriggio"]=staffMischiato.slice(0,perTurno); pianoTurni["Giorno "+g]["Sera"]=staffMischiato.slice(perTurno,perTurno*2); } }
+function mostraTabellaTurni(){let div=document.getElementById('tabellaTurni'); if(!div)return; div.innerHTML=''; for(let giorno in pianoTurni){div.innerHTML+=`<h3>${giorno}</h3>`; for(let turno in pianoTurni[giorno]){div.innerHTML+=`<strong>${turno}:</strong> ${pianoTurni[giorno][turno].join(', ')}<br>`;}}}
+</script>
+
 </body>
 </html>
