@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Los Santos County - Staff Portal</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
@@ -22,18 +23,57 @@
     <div id="main-content" style="display:none;">
         <nav class="sidebar">
             <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773080841/msb6eamry0kagf21gttx.png" class="nav-logo">
-            <button onclick="showSection('servizio')">⏱ Gestione Servizio</button>
-            <button onclick="showSection('turni')">📅 Turni Settimanali</button>
-            <button onclick="showSection('matricole')">👥 Lista Matricole</button>
+            <button onclick="showSection('servizio')" class="active"><i class="fas fa-clock"></i> Gestione Servizio</button>
+            <button onclick="showSection('turni')"><i class="fas fa-calendar-alt"></i> Turni Settimanali</button>
+            <button onclick="showSection('matricole')"><i class="fas fa-id-badge"></i> Lista Matricole</button>
             <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773081531/z0cs7hkxffmrhaugbzhv.webp" class="sidebar-decor">
         </nav>
 
         <main class="content">
+            
             <section id="servizio" class="tab-content">
                 <div class="section-banner" style="background-image: url('https://res.cloudinary.com/dbxwiln0a/image/upload/v1773081289/nhbbxlsjjkzsdx3ptuin.png');">
                     <h1>GESTIONE SERVIZIO</h1>
                 </div>
-                
+
+                <div class="info-card">
+                    <div class="info-header">
+                        <i class="fas fa-user-shield info-icon"></i>
+                        <div class="info-titles">
+                            <p class="section-label">PROFILO OPERATIVO</p>
+                            <h2 id="staffer-name">Caricamento...</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="info-details">
+                        <div class="detail-box">
+                            <p class="detail-label">Matricola</p>
+                            <p class="detail-value" id="staffer-id">ITD-XX</p>
+                        </div>
+                        <div class="detail-box">
+                            <p class="detail-label">Grado</p>
+                            <p class="detail-value" id="staffer-grade">Staffer</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-stats">
+                        <div class="stat-box">
+                            <i class="fas fa-exclamation-triangle stat-icon warn"></i>
+                            <div class="stat-texts">
+                                <p class="stat-label">Richiami Attivi</p>
+                                <p class="stat-value" id="staffer-warns">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <i class="fas fa-history stat-icon logs"></i>
+                            <div class="stat-texts">
+                                <p class="stat-label">Logs Gestione</p>
+                                <p class="stat-value" id="staffer-logs">Caricamento...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="timer-card">
                     <p id="timer-status">NESSUN SERVIZIO ATTIVO</p>
                     <div id="timer-display">00:00:00</div>
