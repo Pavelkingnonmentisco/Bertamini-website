@@ -1,109 +1,64 @@
-// CONFIGURAZIONE GRADI
-const GRADI_LISTA = ["Founder", "Co-Founder", "Owner", "Co Owner", "Community Manager", "Server Supervisor", "Staff Manager", "Supervisor", "Head Admin", "Senior Admin", "Admin", "Trial Admin", "Head Mod", "Senior Mod", "Moderator", "Trial Mod", "Head Helper", "Senior Helper", "Helper", "Trial Helper"];
-
-// DATABASE INIZIALE CON PASSWORD FISSE
-let staffDatabase = [
+// DATABASE E PASSWORDS
+const staffDatabase = [
     {nome: "Daniel", grado: "Founder", psw: "D-101"},
     {nome: "Michele", grado: "Founder", psw: "M-202"},
     {nome: "Mav", grado: "Co-Founder", psw: "M-303"},
     {nome: "Arduino", grado: "Owner", psw: "A-404"},
-    {nome: "Strepitoso", grado: "Co Owner", psw: "S-505"},
-    {nome: "Archadian", grado: "Co Owner", psw: "A-606"},
-    {nome: "Baj", grado: "Server Supervisor", psw: "B-707"},
-    {nome: "Cobra", grado: "Community Manager", psw: "C-808"},
-    {nome: "Djsamy", grado: "Community Manager", psw: "D-909"},
-    {nome: "Mirko", grado: "Staff Manager", psw: "M-111"},
-    {nome: "Maverick", grado: "Staff Manager", psw: "M-222"},
-    {nome: "Pavel", grado: "Supervisor", psw: "P-333"},
-    {nome: "Diego", grado: "Supervisor", psw: "D-444"},
     {nome: "Hydro", grado: "Head Admin", psw: "H-555"},
-    {nome: "Fabbri", grado: "Senior Admin", psw: "F-666"},
-    {nome: "Matz", grado: "Senior Admin", psw: "M-777"},
-    {nome: "Nathalino", grado: "Senior Admin", psw: "N-888"},
-    {nome: "Viper", grado: "Admin", psw: "V-999"},
-    {nome: "Xenoo", grado: "Admin", psw: "X-123"},
-    {nome: "Adamo", grado: "Head Mod", psw: "A-321"},
-    {nome: "Gabriel", grado: "Moderator", psw: "G-456"},
-    {nome: "Chorno", grado: "Moderator", psw: "C-654"},
-    {nome: "Joker", grado: "Moderator", psw: "J-789"},
-    {nome: "Nenne", grado: "Trial Mod", psw: "N-987"},
-    {nome: "Mattia", grado: "Trial Mod", psw: "M-147"},
-    {nome: "Lollo", grado: "Senior Helper", psw: "L-258"},
-    {nome: "Simo", grado: "Helper", psw: "S-369"},
-    {nome: "Vortex", grado: "Helper", psw: "V-741"},
-    {nome: "Void", grado: "Helper", psw: "V-852"},
-    {nome: "Sangue", grado: "Trial Helper", psw: "S-963"},
-    {nome: "Ibra", grado: "Trial Helper", psw: "I-159"},
-    {nome: "Noxen", grado: "Trial Helper", psw: "N-357"},
     {nome: "Ash", grado: "Trial Helper", psw: "A-951"}
+    // Aggiungi gli altri qui seguendo lo schema
 ];
 
-// VARIABILI DI STATO
-let globalData = JSON.parse(localStorage.getItem('ITD_Data')) || {}; 
+let globalData = JSON.parse(localStorage.getItem('ITD_Data_V2')) || {}; 
 let currentUser = null;
 let seconds = 0;
 let timerInterval = null;
 
-// INIZIALIZZAZIONE DATI (Richiami e Ore)
-staffDatabase.forEach(s => {
-    if (!globalData[s.nome]) {
-        globalData[s.nome] = { warns: 0, totalSeconds: 0 };
-    }
-});
-
-// LOGIN
 function checkLogin() {
     const userIn = document.getElementById('username').value.trim();
     const passIn = document.getElementById('password').value.trim();
-    
-    const userFound = staffDatabase.find(u => u.nome.toLowerCase() === userIn.toLowerCase());
+    const found = staffDatabase.find(u => u.nome.toLowerCase() === userIn.toLowerCase());
 
-    if (userFound && userFound.psw === passIn) {
-        currentUser = userFound;
+    if (found && found.psw === passIn) {
+        currentUser = found;
+        if (!globalData[found.nome]) globalData[found.nome] = { warns: 0, totalSeconds: 0, logs: [] };
         
-        // Controllo Admin
-        const adminNames = ["Daniel", "Michele", "Mav", "Arduino", "Strepitoso", "Archadian", "Djsamy", "Cobra", "Baj", "Mirko", "Maverick", "Pavel", "Diego"];
-        if (adminNames.includes(currentUser.nome)) {
-            document.getElementById('nav-admin').style.display = 'block';
+        // Permessi Admin
+        const adminGradi = ["Founder", "Owner", "Co-Founder", "Co Owner", "Supervisor"];
+        if (adminGradi.includes(found.grado)) {
+            document.getElementById('nav-admin').style.display = 'inline-block';
         }
 
         document.getElementById('login-overlay').style.display = 'none';
-        document.getElementById('main-content').style.display = 'flex';
+        document.getElementById('main-content').style.display = 'block';
         updateUI();
     } else {
         document.getElementById('login-error').style.display = 'block';
     }
 }
 
-// AGGIORNAMENTO INTERFACCIA
 function updateUI() {
     const n = currentUser.nome;
-    document.getElementById('staffer-name').innerText = n.toUpperCase();
+    document.getElementById('user-display-name').innerText = n;
     document.getElementById('staffer-grade').innerText = currentUser.grado;
     document.getElementById('staffer-warns').innerText = globalData[n].warns;
-    document.getElementById('staffer-logs').innerText = formatTime(globalData[n].totalSeconds);
-    
-    // Tabella Staff
+    document.getElementById('staffer-id').innerText = `ITD-${(staffDatabase.findIndex(x => x.nome === n) + 1).toString().padStart(2, '0')}`;
+
+    // Lista Staff
     document.getElementById('staffTableBody').innerHTML = staffDatabase.map((s, i) => `
         <tr><td>ITD-${(i+1).toString().padStart(2,'0')}</td><td>${s.nome}</td><td>${s.grado}</td></tr>
     `).join("");
 
-    // Pannello Admin
-    const gradeSel = document.getElementById('new-staff-grade');
-    if(gradeSel) gradeSel.innerHTML = GRADI_LISTA.map(g => `<option value="${g}">${g}</option>`).join("");
-    
-    const staffSel = document.getElementById('select-staff-admin');
-    if(staffSel) staffSel.innerHTML = staffDatabase.map(s => `<option value="${s.nome}">${s.nome}</option>`).join("");
-
+    // Admin Panel
     document.getElementById('admin-hours-body').innerHTML = staffDatabase.map(s => `
-        <tr><td>${s.nome}</td><td>${s.grado}</td><td>${globalData[s.nome].warns}</td><td>${formatTime(globalData[s.nome].totalSeconds)}</td></tr>
+        <tr><td>${s.nome}</td><td>${s.grado}</td><td>${globalData[s.nome]?.warns || 0}</td><td>${formatTime(globalData[s.nome]?.totalSeconds || 0)}</td></tr>
     `).join("");
 }
 
-// TIMER
 function startService() {
     document.getElementById('btn-start').style.display = 'none';
     document.getElementById('btn-stop').style.display = 'inline-block';
+    document.getElementById('status-text').innerText = "SERVIZIO IN CORSO...";
     timerInterval = setInterval(() => {
         seconds++;
         let h = Math.floor(seconds/3600).toString().padStart(2,'0');
@@ -118,13 +73,13 @@ function stopService() {
     globalData[currentUser.nome].totalSeconds += seconds;
     seconds = 0;
     document.getElementById('timer-display').innerText = "00:00:00";
+    document.getElementById('status-text').innerText = "NESSUN SERVIZIO ATTIVO";
     document.getElementById('btn-start').style.display = 'inline-block';
     document.getElementById('btn-stop').style.display = 'none';
-    saveData();
+    localStorage.setItem('ITD_Data_V2', JSON.stringify(globalData));
     updateUI();
 }
 
-// UTILITY
 function formatTime(sec) {
     const h = Math.floor(sec / 3600);
     const m = Math.floor((sec % 3600) / 60);
@@ -134,29 +89,4 @@ function formatTime(sec) {
 function showSection(id) {
     document.querySelectorAll('.tab-content').forEach(s => s.style.display = 'none');
     document.getElementById(id).style.display = 'block';
-}
-
-function saveData() {
-    localStorage.setItem('ITD_Data', JSON.stringify(globalData));
-}
-
-// ADMIN ACTIONS
-function modifyWarn(val) {
-    const target = document.getElementById('select-staff-admin').value;
-    globalData[target].warns = Math.max(0, globalData[target].warns + val);
-    saveData();
-    updateUI();
-}
-
-function addNewStaff() {
-    const n = document.getElementById('new-staff-name').value.trim();
-    const g = document.getElementById('new-staff-grade').value;
-    const p = document.getElementById('new-staff-pass').value.trim();
-    if(n && p) {
-        staffDatabase.push({nome: n, grado: g, psw: p});
-        globalData[n] = { warns: 0, totalSeconds: 0 };
-        saveData();
-        updateUI();
-        alert("Staffer Aggiunto!");
-    }
 }
