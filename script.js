@@ -1,4 +1,4 @@
-// Database Nomi e Gradi (in ordine di matricola)
+// DATABASE COMPLETO
 const staffDatabase = [
     {nome: "Daniel", grado: "Founder"}, {nome: "Michele", grado: "Founder"},
     {nome: "Mav", grado: "Co-Founder"}, {nome: "Arduino", grado: "Owner"},
@@ -20,30 +20,33 @@ const staffDatabase = [
 ];
 
 const credentials = {};
-staffDatabase.forEach((staff, index) => {
-    const matricolaNum = (index + 1).toString().padStart(2, '0');
-    credentials[staff.nome.toLowerCase()] = {
-        password: staff.nome.charAt(0).toUpperCase() + "-" + matricolaNum,
-        matricola: "ITD-" + matricolaNum,
-        grado: staff.grado
+let globalWarns = {}; // Simulazione DB richiami
+staffDatabase.forEach((s, i) => {
+    const id = (i + 1).toString().padStart(2, '0');
+    credentials[s.nome.toLowerCase()] = {
+        psw: s.nome.charAt(0).toUpperCase() + "-" + id,
+        matricola: "ITD-" + id,
+        grado: s.grado
     };
 });
 
-let currentUser = null;
-let seconds = 0, timerInterval = null, startTime = null, sessionCount = 0;
+let currentUser = null, seconds = 0, timerInterval = null, startTime = null, sessions = 0;
 
 function checkLogin() {
-    const userIn = document.getElementById('username').value.trim().toLowerCase();
-    const passIn = document.getElementById('password').value.trim();
+    const user = document.getElementById('username').value.trim().toLowerCase();
+    const pass = document.getElementById('password').value.trim();
     
-    if (credentials[userIn] && credentials[userIn].password === passIn) {
-        currentUser = { nome: userIn, ...credentials[userIn] };
+    if (credentials[user] && credentials[user].psw === pass) {
+        currentUser = { nome: user, ...credentials[user] };
+        
+        // Controllo Permessi Admin
+        const isAdmin = ["Founder", "Owner", "Co-Founder", "Co Owner", "Server Supervisor", "Supervisor"].includes(currentUser.grado);
+        if (isAdmin) document.getElementById('nav-admin').style.display = 'block';
+
         document.getElementById('login-overlay').style.display = 'none';
         document.getElementById('main-content').style.display = 'flex';
         initData();
-    } else { 
-        document.getElementById('login-error').style.display = 'block'; 
-    }
+    } else { document.getElementById('login-error').style.display = 'block'; }
 }
 
 function showSection(id) {
@@ -51,27 +54,41 @@ function showSection(id) {
     document.getElementById(id).style.display = 'block';
 }
 
-// Timer
+// Logica Timer
 function startService() {
     startTime = new Date().toLocaleString();
-    document.getElementById('timer-status').innerText = "IN SERVIZIO";
+    document.getElementById('timer-status').innerText = "IN SERVIZIO STAFF";
     document.getElementById('btn-start').style.display = 'none';
     document.getElementById('btn-pause').style.display = 'inline-block';
     document.getElementById('btn-stop').style.display = 'inline-block';
     timerInterval = setInterval(() => { seconds++; updateDisplay(); }, 1000);
 }
 
+function pauseService() {
+    clearInterval(timerInterval);
+    document.getElementById('timer-status').innerText = "IN PAUSA";
+    document.getElementById('btn-pause').innerText = "Riprendi";
+    document.getElementById('btn-pause').onclick = resumeService;
+}
+
+function resumeService() {
+    document.getElementById('timer-status').innerText = "IN SERVIZIO STAFF";
+    document.getElementById('btn-pause').innerText = "Metti in Pausa";
+    document.getElementById('btn-pause').onclick = pauseService;
+    timerInterval = setInterval(() => { seconds++; updateDisplay(); }, 1000);
+}
+
 function updateDisplay() {
-    const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
-    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
-    const s = (seconds % 60).toString().padStart(2, '0');
+    const h = Math.floor(seconds/3600).toString().padStart(2,'0');
+    const m = Math.floor((seconds%3600)/60).toString().padStart(2,'0');
+    const s = (seconds%60).toString().padStart(2,'0');
     document.getElementById('timer-display').innerText = `${h}:${m}:${s}`;
 }
 
 function stopService() {
     clearInterval(timerInterval);
-    sessionCount++;
-    document.getElementById('staffer-logs').innerText = sessionCount;
+    sessions++;
+    document.getElementById('staffer-logs').innerText = sessions;
     const row = `<tr><td>${startTime}</td><td>${new Date().toLocaleTimeString()}</td><td>${document.getElementById('timer-display').innerText}</td><td>OK</td></tr>`;
     document.getElementById('history-body').innerHTML += row;
     seconds = 0; updateDisplay();
@@ -80,44 +97,45 @@ function stopService() {
     document.getElementById('btn-stop').style.display = 'none';
 }
 
-function initData() {
-    // Info Profilo
-    document.getElementById('staffer-name').innerText = currentUser.nome.toUpperCase();
-    document.getElementById('staffer-id').innerText = currentUser.matricola;
-    document.getElementById('staffer-grade').innerText = currentUser.grado;
-
-    // Tabella Matricole
-    const mBody = document.querySelector('#staffTable tbody');
-    mBody.innerHTML = "";
-    staffDatabase.forEach((staff, i) => {
-        mBody.innerHTML += `<tr><td>ITD-${(i+1).toString().padStart(2,'0')}</td><td>${staff.nome}</td><td>${staff.grado}</td><td style="color:#44ff44">●</td></tr>`;
-    });
-
-    // Tabella Turni (Membri da Hydro ITD-14 in poi)
-    const tBody = document.querySelector('#scheduleTable tbody');
-    tBody.innerHTML = "";
-    const giorni = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
-    const turniStaff = staffDatabase.slice(13).map(s => s.nome);
-    let idx = 0;
-    giorni.forEach(g => {
-        let p = [], s = [];
-        for(let j=0; j<3; j++) { p.push(turniStaff[idx % turniStaff.length]); idx++; }
-        for(let j=0; j<3; j++) { s.push(turniStaff[idx % turniStaff.length]); idx++; }
-        tBody.innerHTML += `<tr><td><strong>${g}</strong></td><td>${p.join(", ")}</td><td>${s.join(", ")}</td></tr>`;
-    });
+// Gestione Richiami
+function modifyWarn(val) {
+    const target = document.getElementById('select-staff').value;
+    if (!globalWarns[target]) globalWarns[target] = 0;
+    globalWarns[target] = Math.max(0, globalWarns[target] + val);
+    alert(`Richiami per ${target}: ${globalWarns[target]}`);
+    initData();
 }
 
-function exportTableToCSV(tableId, filename) {
-    let csv = [];
-    let rows = document.getElementById(tableId).closest('table').querySelectorAll("tr");
-    rows.forEach(r => {
-        let cols = r.querySelectorAll("td, th");
-        let row = [];
-        cols.forEach(c => row.push(c.innerText.replace(/,/g, ";")));
-        csv.push(row.join(","));
-    });
-    let link = document.createElement("a");
-    link.href = window.URL.createObjectURL(new Blob([csv.join("\n")], {type: "text/csv"}));
-    link.download = filename;
-    link.click();
+function initData() {
+    // Profilo
+    const displayName = currentUser.nome.charAt(0).toUpperCase() + currentUser.nome.slice(1);
+    document.getElementById('staffer-name').innerText = displayName;
+    document.getElementById('staffer-id').innerText = currentUser.matricola;
+    document.getElementById('staffer-grade').innerText = currentUser.grado;
+    document.getElementById('staffer-warns').innerText = globalWarns[displayName] || 0;
+
+    // Tabelle
+    document.querySelector('#staffTable tbody').innerHTML = staffDatabase.map((s,i) => 
+        `<tr><td>ITD-${(i+1).toString().padStart(2,'0')}</td><td>${s.nome}</td><td>${s.grado}</td><td style="color:#44ff44">●</td></tr>`).join("");
+    
+    const select = document.getElementById('select-staff');
+    if(select) select.innerHTML = staffDatabase.map(s => `<option value="${s.nome}">${s.nome}</option>`).join("");
+
+    // Turni (da Hydro in poi)
+    const tStaff = staffDatabase.slice(13).map(s => s.nome);
+    let idx = 0;
+    document.querySelector('#scheduleTable tbody').innerHTML = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"].map(g => {
+        let p = [], s = [];
+        for(let j=0; j<3; j++) p.push(tStaff[idx++ % tStaff.length]);
+        for(let j=0; j<3; j++) s.push(tStaff[idx++ % tStaff.length]);
+        return `<tr><td><strong>${g}</strong></td><td>${p.join(", ")}</td><td>${s.join(", ")}</td></tr>`;
+    }).join("");
+}
+
+function exportTableToCSV(id, file) {
+    let rows = document.getElementById(id).closest('table').querySelectorAll("tr");
+    let csv = Array.from(rows).map(r => Array.from(r.querySelectorAll("td,th")).map(c => c.innerText).join(",")).join("\n");
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"}));
+    a.download = file; a.click();
 }
