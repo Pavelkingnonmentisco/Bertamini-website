@@ -4,50 +4,60 @@
     --bg-gradient: linear-gradient(135deg, #011627 0%, #000 100%);
     --primary: #007bff;
     --accent: #00d4ff;
+    --danger: #ff4747;
     --font-math: 'Poppins', sans-serif;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-math); }
-body { background-color: #000; color: white; }
+body { background-color: #000; color: white; overflow-x: hidden; }
 
-h1, h2, .logo-text, #timer-display, .btn-submit, .btn-action, .stat-card .val {
+h1, h2, h3, .logo-text, #timer-display, .btn-submit, .btn-action, .stat-card .val {
     font-weight: 800;
 }
 
-#login-overlay { min-height: 100vh; background: var(--bg-gradient); display: flex; flex-direction: column; align-items: center; padding: 20px; }
-.login-header-top { width: 100%; max-width: 1200px; display: flex; align-items: center; padding: 20px 0; }
-.header-logo img { width: 35px; margin-right: 10px; }
-
-.main-login-container { display: flex; width: 100%; max-width: 1100px; margin-top: 100px; gap: 60px; align-items: center; }
-.info-side { flex: 1.2; }
+/* LOGIN */
+#login-overlay { min-height: 100vh; background: var(--bg-gradient); display: flex; align-items: center; justify-content: center; padding: 20px; }
+.main-login-container { display: flex; width: 100%; max-width: 1100px; gap: 60px; align-items: center; }
 .info-side h1 { font-size: 48px; color: var(--accent); line-height: 1.1; }
-.info-side .label { color: var(--primary); font-size: 11px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: block; }
-
-.glass-box { flex: 1; background: rgba(255,255,255,0.02); backdrop-filter: blur(20px); border: 1px solid rgba(0,212,255,0.1); border-radius: 24px; padding: 50px; text-align: center; }
+.glass-box { background: rgba(255,255,255,0.02); border: 1px solid rgba(0,212,255,0.1); border-radius: 24px; padding: 50px; text-align: center; width: 450px; }
 .box-logo { width: 60px; margin-bottom: 20px; }
-.glass-box h2 { color: var(--accent); font-size: 18px; margin-bottom: 30px; text-transform: uppercase; }
-
 .input-container { text-align: left; margin-bottom: 20px; }
 .input-container label { font-size: 10px; color: #888; text-transform: uppercase; margin-bottom: 5px; display: block; }
 .input-container input { width: 100%; background: #000; border: 1px solid #222; padding: 14px; border-radius: 10px; color: white; outline: none; }
-
 .btn-submit { width: 100%; padding: 16px; border-radius: 10px; border: none; background: var(--primary); color: white; cursor: pointer; text-transform: uppercase; }
 
-.top-nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; background: #011627; border-bottom: 1px solid rgba(0,212,255,0.1); }
-.nav-center button { background: none; border: none; color: #888; margin: 0 15px; cursor: pointer; text-transform: uppercase; font-size: 12px; }
+/* NAVBAR */
+.top-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 50px; background: #011627; border-bottom: 1px solid rgba(0,212,255,0.1); }
+.logo-text { color: #fff; font-size: 18px; }
+.nav-center button { background: none; border: none; color: #888; margin: 0 15px; cursor: pointer; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
 .nav-center button:hover { color: var(--accent); }
 
-.container { padding: 50px; max-width: 1000px; margin: auto; }
+/* NUOVO TASTO ESCI */
+.btn-logout-new { background: #1a1a1a; color: #ff4747; border: 1px solid #333; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-size: 12px; font-weight: bold; transition: 0.3s; }
+.btn-logout-new:hover { background: #ff4747; color: #fff; border-color: #ff4747; }
+
+/* DASHBOARD */
+.container { padding: 40px; max-width: 1000px; margin: auto; }
 .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .stat-card { background: #011627; padding: 25px; border-radius: 15px; border: 1px solid #111; }
 .stat-card label { font-size: 10px; color: #888; text-transform: uppercase; }
 .stat-card .val { font-size: 24px; color: var(--accent); margin-top: 5px; }
+.warn-val { color: var(--danger) !important; }
 
-.shift-wrapper { background: #011627; border-radius: 20px; text-align: center; padding: 40px; margin-bottom: 30px; }
-#timer-display { font-size: 100px; margin: 20px 0; color: #fff; }
-.btn-action { background: #1e293b; color: white; padding: 12px 25px; border-radius: 8px; border: none; cursor: pointer; margin: 5px; }
+/* TIMER ARES STYLE */
+.shift-wrapper { background: #011627; border-radius: 20px; text-align: center; padding: 50px; margin-bottom: 30px; border: 1px solid #111; }
+#timer-display { font-size: 100px; margin: 15px 0; color: #fff; letter-spacing: -2px; }
+.btn-action { background: #1e293b; color: white; padding: 12px 25px; border-radius: 8px; border: none; cursor: pointer; margin: 5px; font-size: 13px; text-transform: uppercase; }
 .btn-pause { background: #f59e0b; color: #000; }
 .btn-danger { background: #7f1d1d; }
 
+/* PANNELLO STAFF */
+.admin-container { background: #011627; padding: 30px; border-radius: 20px; border: 1px solid #111; }
+.admin-header { margin-bottom: 30px; border-bottom: 1px solid #111; padding-bottom: 15px; }
+.admin-search select { width: 100%; padding: 15px; background: #000; color: white; border: 1px solid #222; border-radius: 10px; margin-bottom: 20px; outline: none; }
+.admin-card { background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; margin-bottom: 15px; }
+.admin-card h3 { font-size: 14px; margin-bottom: 15px; color: var(--accent); text-transform: uppercase; }
+.admin-btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
 .logs-wrapper { background: #011627; padding: 20px; border-radius: 12px; }
-.log-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #111; font-size: 13px; }
+.log-item { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #111; font-size: 13px; }
