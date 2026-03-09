@@ -1,103 +1,76 @@
-:root {
-    --primary: #f17b43; /* Arancio Logo */
-    --secondary: #2d5a57; /* Verde Logo */
-    --bg-dark: #0f1716;
-    --card-bg: #1a2625;
-    --text: #e0e0e0;
+// Membri per i turni (Solo quelli indicati)
+const turniStaff = [
+    "Hydro", "Fabbri", "Matz", "Nathalino", "Viper", "Xenoo", "Adamo", 
+    "Gabriel", "Chorno", "Joker", "Nenne", "Mattia", "Lollo", "Simo", 
+    "Vortex", "Void", "Sangue", "Ibra", "Noxen", "Ash"
+];
+
+// Elenco completo matricole
+const matricole = [
+    "Daniel", "Michele", "Mav", "Arduino", "Strepitoso", "Archadian", "Baj", 
+    "Cobra", "Djsamy", "Mirko", "Maverick", "Pavel", "Diego", "Hydro", "Fabbri", 
+    "Matz", "Nathalino", "Viper", "Xenoo", "Adamo", "Gabriel", "Chorno", "Joker", 
+    "Nenne", "Mattia", "Lollo", "Simo", "Vortex", "Void", "Sangue", "Ibra", "Noxen", "Ash"
+];
+
+const giorni = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
+
+// Funzione Login
+function checkLogin() {
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+    
+    // Regola password: Iniziale Nome + 123 (Es: Hydro -> H123)
+    if (user && pass === user.charAt(0).toUpperCase() + "123") {
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+        initSite();
+    } else {
+        document.getElementById('login-error').style.display = 'block';
+    }
 }
 
-body {
-    background-color: var(--bg-dark);
-    color: var(--text);
-    font-family: 'Segoe UI', sans-serif;
-    margin: 0;
+function initSite() {
+    generateStaffTable();
+    generateSchedule();
 }
 
-/* LOGIN BOX */
-#login-overlay {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+// Genera Tabella Staff
+function generateStaffTable() {
+    const tbody = document.querySelector('#staffTable tbody');
+    matricole.forEach((nome, i) => {
+        const id = (i + 1).toString().padStart(2, '0');
+        tbody.innerHTML += `<tr>
+            <td><span class="badge">ITD-${id}</span></td>
+            <td>${nome}</td>
+            <td style="color: #44ff44;">● Attivo</td>
+        </tr>`;
+    });
 }
 
-.login-box {
-    background: var(--card-bg);
-    padding: 40px;
-    border-radius: 15px;
-    text-align: center;
-    border: 2px solid var(--primary);
-    box-shadow: 0 0 20px rgba(241, 123, 67, 0.3);
-}
+// Genera Turni (3 pom e 3 sera per giorno)
+function generateSchedule() {
+    const tbody = document.querySelector('#scheduleTable tbody');
+    let staffIndex = 0;
 
-.login-logo { width: 150px; margin-bottom: 20px; }
+    giorni.forEach(giorno => {
+        let pom = [], sera = [];
+        
+        // Prendi 3 per il pomeriggio
+        for(let j=0; j<3; j++) {
+            pom.push(turniStaff[staffIndex % turniStaff.length]);
+            staffIndex++;
+        }
+        // Prendi 3 per la sera
+        for(let j=0; j<3; j++) {
+            sera.push(turniStaff[staffIndex % turniStaff.length]);
+            staffIndex++;
+        }
 
-input {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    background: #0a100f;
-    border: 1px solid var(--secondary);
-    color: white;
-    border-radius: 5px;
-}
-
-button {
-    background: var(--primary);
-    border: none;
-    padding: 10px 25px;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: 0.3s;
-}
-
-button:hover { transform: scale(1.05); filter: brightness(1.2); }
-
-#login-error { color: #ff4444; display: none; margin-top: 10px; }
-
-/* MAIN CONTENT */
-header {
-    text-align: center;
-    padding: 30px;
-    background: linear-gradient(to bottom, var(--secondary), transparent);
-}
-
-.header-logo { width: 120px; }
-
-.container { width: 90%; max-width: 1100px; margin: auto; }
-
-.table-wrapper {
-    background: var(--card-bg);
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 30px;
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th {
-    text-align: left;
-    color: var(--primary);
-    border-bottom: 2px solid var(--secondary);
-    padding: 12px;
-}
-
-td { padding: 12px; border-bottom: 1px solid #2a3a39; }
-
-.badge {
-    background: var(--secondary);
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.85em;
-    font-weight: bold;
+        tbody.innerHTML += `<tr>
+            <td><strong>${giorno}</strong></td>
+            <td>${pom.join(", ")}</td>
+            <td>${sera.join(", ")}</td>
+        </tr>`;
+    });
 }
