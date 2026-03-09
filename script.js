@@ -1,4 +1,4 @@
-// LISTA ADMIN AUTORIZZATI
+// LISTA ADMIN AUTORIZZATI (Controllo Rigido)
 const ADMIN_AUTORIZZATI = ["Daniel", "Michele", "Mav", "Arduino", "Strepitoso", "Archadian", "Djsamy", "Cobra", "Baj", "Mirko", "Maverick", "Pavel", "Diego"];
 
 const GRADI_LISTA = [
@@ -8,6 +8,7 @@ const GRADI_LISTA = [
     "Moderator", "Trial Mod", "Head Helper", "Senior Helper", "Helper", "Trial Helper"
 ];
 
+// DATABASE COMPLETO 33 MEMBRI
 let staffDatabase = [
     {nome: "Daniel", grado: "Founder"}, {nome: "Michele", grado: "Founder"},
     {nome: "Mav", grado: "Co-Founder"}, {nome: "Arduino", grado: "Owner"},
@@ -30,86 +31,100 @@ let staffDatabase = [
 
 let globalData = {}; 
 let credentials = {}; 
-let currentUser = null, seconds = 0, timerInterval = null;
+let currentUser = null;
+let seconds = 0, timerInterval = null;
 
+// Funzione di sincronizzazione (Eseguita all'avvio)
 function syncSystem() {
     staffDatabase.forEach((s, i) => {
         const id = (i + 1).toString().padStart(2, '0');
-        const userKey = s.nome.toLowerCase();
+        const userKey = s.nome.toLowerCase(); // Chiave sempre minuscola per evitare errori
+        
         if (!globalData[s.nome]) globalData[s.nome] = { warns: 0, totalSeconds: 0 };
+        
+        // Genera credenziali standard se non esistono già (es. caricate da nuove aggiunte)
         if (!credentials[userKey]) {
             credentials[userKey] = {
                 psw: s.nome.charAt(0).toUpperCase() + "-" + id,
                 matricola: "ITD-" + id,
-                grado: s.grado
+                grado: s.grado,
+                nomeOriginale: s.nome
             };
-        } else {
-            credentials[userKey].grado = s.grado;
-            credentials[userKey].matricola = "ITD-" + id;
         }
     });
 }
 syncSystem();
 
+// FUNZIONE DI LOGIN CORRETTA
 function checkLogin() {
-    const userIn = document.getElementById('username').value.trim();
+    const userIn = document.getElementById('username').value.trim().toLowerCase();
     const passIn = document.getElementById('password').value.trim();
-    const userKey = userIn.toLowerCase();
+    
+    console.log("Tentativo login per:", userIn); // Debug in console
 
-    if (credentials[userKey] && credentials[userKey].psw === passIn) {
-        currentUser = { nome: userIn, ...credentials[userKey] };
-        
-        // CONTROLLO PERMESSI ADMIN NOMINATIVO
-        const nomePulito = userIn.charAt(0).toUpperCase() + userIn.slice(1).toLowerCase();
-        if (ADMIN_AUTORIZZATI.includes(nomePulito)) {
-            document.getElementById('nav-admin').style.display = 'block';
+    if (credentials[userIn]) {
+        if (credentials[userIn].psw === passIn) {
+            // Login Successo
+            const data = credentials[userIn];
+            currentUser = { 
+                nome: data.nomeOriginale, 
+                matricola: data.matricola, 
+                grado: data.grado 
+            };
+
+            // Controllo permessi Admin (confronto esatto nomi)
+            if (ADMIN_AUTORIZZATI.includes(data.nomeOriginale)) {
+                document.getElementById('nav-admin').style.display = 'block';
+            }
+
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('main-content').style.display = 'flex';
+            initData();
+        } else {
+            alert("Password Errata! Ricorda il formato (Es: Daniel-01)");
         }
-
-        document.getElementById('login-overlay').style.display = 'none';
-        document.getElementById('main-content').style.display = 'flex';
-        initData();
     } else {
-        document.getElementById('login-error').style.display = 'block';
+        alert("Utente non trovato nel database!");
     }
 }
 
-// Funzioni Admin
-function addNewStaff() {
-    const n = document.getElementById('new-staff-name').value.trim();
-    const g = document.getElementById('new-staff-grade').value;
-    const p = document.getElementById('new-staff-pass').value.trim();
-    if(n && p) {
-        staffDatabase.push({ nome: n, grado: g });
-        credentials[n.toLowerCase()] = { psw: p };
-        syncSystem(); initData();
-        alert("Staffer aggiunto!");
-    } else { alert("Compila Nome e Password!"); }
-}
-
-function removeStaff() {
-    const t = document.getElementById('select-staff-admin').value;
-    if(confirm("Rimuovere " + t + "?")) {
-        staffDatabase = staffDatabase.filter(s => s.nome !== t);
-        delete credentials[t.toLowerCase()];
-        syncSystem(); initData();
-    }
-}
-
+// Inizializzazione Dati Interfaccia
 function initData() {
-    const dName = currentUser.nome.charAt(0).toUpperCase() + currentUser.nome.slice(1);
-    document.getElementById('staffer-name').innerText = dName.toUpperCase();
+    const n = currentUser.nome;
+    document.getElementById('staffer-name').innerText = n.toUpperCase();
     document.getElementById('staffer-grade').innerText = currentUser.grado;
-    document.getElementById('staffer-warns').innerText = globalData[dName]?.warns || 0;
-    document.getElementById('staffer-logs').innerText = formatTime(globalData[dName]?.totalSeconds || 0);
+    document.getElementById('staffer-id').innerText = currentUser.matricola;
+    document.getElementById('staffer-warns').innerText = globalData[n].warns;
+    document.getElementById('staffer-logs').innerText = formatTime(globalData[n].totalSeconds);
 
-    // Update UI
-    document.getElementById('new-staff-grade').innerHTML = GRADI_LISTA.map(g => `<option value="${g}">${g}</option>`).join("");
-    document.getElementById('select-staff-admin').innerHTML = staffDatabase.map(s => `<option value="${s.nome}">${s.nome}</option>`).join("");
-    document.getElementById('admin-hours-body').innerHTML = staffDatabase.map(s => `<tr><td>${s.nome}</td><td>${s.grado}</td><td>${globalData[s.nome].warns}</td><td>${formatTime(globalData[s.nome].totalSeconds)}</td></tr>`).join("");
-    document.getElementById('staffTableBody').innerHTML = staffDatabase.map((s, i) => `<tr><td>ITD-${(i+1).toString().padStart(2,'0')}</td><td>${s.nome}</td><td>${s.grado}</td></tr>`).join("");
+    // Update Pannello Admin
+    const adminSelect = document.getElementById('select-staff-admin');
+    if(adminSelect) {
+        adminSelect.innerHTML = staffDatabase.map(s => `<option value="${s.nome}">${s.nome}</option>`).join("");
+    }
+    
+    const gradeSelect = document.getElementById('new-staff-grade');
+    if(gradeSelect) {
+        gradeSelect.innerHTML = GRADI_LISTA.map(g => `<option value="${g}">${g}</option>`).join("");
+    }
+
+    // Report Ore
+    document.getElementById('admin-hours-body').innerHTML = staffDatabase.map(s => `
+        <tr>
+            <td>${s.nome}</td>
+            <td>${s.grado}</td>
+            <td>${globalData[s.nome].warns}</td>
+            <td>${formatTime(globalData[s.nome].totalSeconds)}</td>
+        </tr>
+    `).join("");
+
+    // Tabella Matricole
+    document.getElementById('staffTableBody').innerHTML = staffDatabase.map((s, i) => `
+        <tr><td>ITD-${(i+1).toString().padStart(2,'0')}</td><td>${s.nome}</td><td>${s.grado}</td></tr>
+    `).join("");
 }
 
-// Timer e Utility
+// Timer
 function startService() {
     document.getElementById('btn-start').style.display = 'none';
     document.getElementById('btn-stop').style.display = 'inline-block';
@@ -124,12 +139,30 @@ function startService() {
 
 function stopService() {
     clearInterval(timerInterval);
-    const dName = currentUser.nome.charAt(0).toUpperCase() + currentUser.nome.slice(1);
-    globalData[dName].totalSeconds += seconds;
+    globalData[currentUser.nome].totalSeconds += seconds;
     seconds = 0;
     document.getElementById('timer-display').innerText = "00:00:00";
     document.getElementById('btn-start').style.display = 'inline-block';
     document.getElementById('btn-stop').style.display = 'none';
+    initData();
+}
+
+// Admin Actions
+function addNewStaff() {
+    const n = document.getElementById('new-staff-name').value.trim();
+    const g = document.getElementById('new-staff-grade').value;
+    const p = document.getElementById('new-staff-pass').value.trim();
+    if(n && p) {
+        staffDatabase.push({ nome: n, grado: g });
+        credentials[n.toLowerCase()] = { psw: p, matricola: "ITD-NEW", grado: g, nomeOriginale: n };
+        syncSystem(); initData();
+        alert("Staffer aggiunto!");
+    }
+}
+
+function modifyWarn(v) {
+    const t = document.getElementById('select-staff-admin').value;
+    globalData[t].warns = Math.max(0, globalData[t].warns + v);
     initData();
 }
 
@@ -142,10 +175,4 @@ function formatTime(sec) {
 function showSection(id) {
     document.querySelectorAll('.tab-content').forEach(s => s.style.display = 'none');
     document.getElementById(id).style.display = 'block';
-}
-
-function modifyWarn(v) {
-    const t = document.getElementById('select-staff-admin').value;
-    globalData[t].warns = Math.max(0, globalData[t].warns + v);
-    initData();
 }
