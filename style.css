@@ -10,7 +10,6 @@
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 body { background-color: #000; color: white; }
 
-/* Font Math Sans Bold style */
 h1, h2, h3, .logo-text, #timer-display, .btn-submit, .btn-action, .val { font-weight: 800; }
 
 #login-overlay { min-height: 100vh; background: radial-gradient(circle at center, #012a4a 0%, #000 100%); display: flex; align-items: center; justify-content: center; }
@@ -29,10 +28,11 @@ h1, h2, h3, .logo-text, #timer-display, .btn-submit, .btn-action, .val { font-we
 .btn-logout-new { background: #1a1a1a; color: var(--danger); border: 1px solid #333; padding: 8px 18px; border-radius: 20px; cursor: pointer; font-size: 11px; }
 
 .container { padding: 40px; max-width: 1100px; margin: auto; }
-.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+/* Griglia a 2 colonne per Area Personale */
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 .stat-card { background: var(--bg); padding: 25px; border-radius: 15px; border: 1px solid #111; }
 .stat-card label { font-size: 10px; color: #888; text-transform: uppercase; }
-.stat-card .val { font-size: 22px; color: var(--accent); margin-top: 5px; }
+.stat-card .val { font-size: 24px; color: var(--accent); margin-top: 5px; }
 .warn-val { color: var(--danger) !important; }
 
 .shift-wrapper { background: var(--bg); border-radius: 20px; padding: 40px; text-align: center; margin-bottom: 25px; border: 1px solid #111; }
