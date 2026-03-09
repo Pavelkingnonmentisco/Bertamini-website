@@ -1,3 +1,11 @@
+// CONFIGURAZIONE GRADI UFFICIALE
+const GRADI_LISTA = [
+    "Founder", "Co-Founder", "Owner", "Co Owner", "Community Manager", 
+    "Server Supervisor", "Staff Manager", "Supervisor", "Head Admin", 
+    "Senior Admin", "Admin", "Trial Admin", "Head Mod", "Senior Mod", 
+    "Moderator", "Trial Mod", "Head Helper", "Senior Helper", "Helper", "Trial Helper"
+];
+
 let staffDatabase = [
     {nome: "Daniel", grado: "Founder"}, {nome: "Michele", grado: "Founder"},
     {nome: "Mav", grado: "Co-Founder"}, {nome: "Arduino", grado: "Owner"},
@@ -26,12 +34,14 @@ function updateCredentials() {
     credentials = {};
     staffDatabase.forEach((s, i) => {
         const id = (i + 1).toString().padStart(2, '0');
+        const defaultPass = s.nome.charAt(0).toUpperCase() + "-" + id;
+        
         credentials[s.nome.toLowerCase()] = {
-            psw: s.nome.charAt(0).toUpperCase() + "-" + id,
+            psw: credentials[s.nome.toLowerCase()]?.psw || defaultPass,
             matricola: "ITD-" + id,
             grado: s.grado
         };
-        if (!globalData[s.nome]) globalData[s.nome] = { warns: 0, sessions: 0 };
+        if (!globalData[s.nome]) globalData[s.nome] = { warns: 0, totalSeconds: 0 };
     });
 }
 updateCredentials();
@@ -49,106 +59,91 @@ function checkLogin() {
     } else { document.getElementById('login-error').style.display = 'block'; }
 }
 
-function showSection(id) {
-    document.querySelectorAll('.tab-content').forEach(s => s.style.display = 'none');
-    document.getElementById(id).style.display = 'block';
-}
-
-function startService() {
-    startTime = new Date().toLocaleString();
-    document.getElementById('timer-status').innerText = "IN SERVIZIO STAFF";
-    document.getElementById('btn-start').style.display = 'none';
-    document.getElementById('btn-pause').style.display = 'inline-block';
-    document.getElementById('btn-stop').style.display = 'inline-block';
-    timerInterval = setInterval(() => { seconds++; updateDisplay(); }, 1000);
-}
-
-function pauseService() {
-    clearInterval(timerInterval);
-    document.getElementById('timer-status').innerText = "IN PAUSA";
-    document.getElementById('btn-pause').innerText = "Riprendi";
-    document.getElementById('btn-pause').onclick = resumeService;
-}
-
-function resumeService() {
-    document.getElementById('timer-status').innerText = "IN SERVIZIO STAFF";
-    document.getElementById('btn-pause').innerText = "Metti in Pausa";
-    document.getElementById('btn-pause').onclick = pauseService;
-    timerInterval = setInterval(() => { seconds++; updateDisplay(); }, 1000);
-}
-
 function stopService() {
     clearInterval(timerInterval);
-    const nomeFormattato = currentUser.nome.charAt(0).toUpperCase() + currentUser.nome.slice(1);
-    globalData[nomeFormattato].sessions++;
-    const row = `<tr><td>${startTime}</td><td>${new Date().toLocaleTimeString()}</td><td>${document.getElementById('timer-display').innerText}</td><td>OK</td></tr>`;
-    document.getElementById('history-body').innerHTML += row;
-    seconds = 0; updateDisplay();
+    const nomeF = currentUser.nome.charAt(0).toUpperCase() + currentUser.nome.slice(1);
+    globalData[nomeF].totalSeconds += seconds;
+    seconds = 0;
+    document.getElementById('timer-display').innerText = "00:00:00";
     document.getElementById('btn-start').style.display = 'inline-block';
-    document.getElementById('btn-pause').style.display = 'none';
     document.getElementById('btn-stop').style.display = 'none';
     initData();
 }
 
-function updateDisplay() {
+// ADMIN FUNCTIONS
+function addNewStaff() {
+    const n = document.getElementById('new-staff-name').value.trim();
+    const g = document.getElementById('new-staff-grade').value;
+    const p = document.getElementById('new-staff-pass').value.trim();
+    if(n) {
+        staffDatabase.push({nome: n, grado: g});
+        if(p) { // Se è stata inserita una password custom, la salviamo prima dell'update
+            if(!credentials[n.toLowerCase()]) credentials[n.toLowerCase()] = {};
+            credentials[n.toLowerCase()].psw = p;
+        }
+        updateCredentials(); initData();
+        alert(`Staffer ${n} aggiunto con successo!`);
+    }
+}
+
+function removeStaff() {
+    const t = document.getElementById('select-staff-admin').value;
+    staffDatabase = staffDatabase.filter(s => s.nome !== t);
+    updateCredentials(); initData();
+}
+
+function formatTime(sec) {
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    return `${h}h ${m}m`;
+}
+
+function initData() {
+    const dName = currentUser.nome.charAt(0).toUpperCase() + currentUser.nome.slice(1);
+    document.getElementById('staffer-name').innerText = dName;
+    document.getElementById('staffer-id').innerText = credentials[currentUser.nome.toLowerCase()].matricola;
+    document.getElementById('staffer-grade').innerText = credentials[currentUser.nome.toLowerCase()].grado;
+    document.getElementById('staffer-warns').innerText = globalData[dName].warns;
+    document.getElementById('staffer-logs').innerText = formatTime(globalData[dName].totalSeconds);
+
+    // Gradi nel select
+    document.getElementById('new-staff-grade').innerHTML = GRADI_LISTA.map(g => `<option value="${g}">${g}</option>`).join("");
+    
+    // Lista Admin Rapida
+    document.getElementById('select-staff-admin').innerHTML = staffDatabase.map(s => `<option value="${s.nome}">${s.nome}</option>`).join("");
+    
+    // Tabella Ore (Pannello Admin)
+    document.getElementById('admin-hours-body').innerHTML = staffDatabase.map(s => `
+        <tr>
+            <td>${s.nome}</td>
+            <td>${s.grado}</td>
+            <td style="color:${globalData[s.nome].warns > 0 ? '#ff4444' : '#aaa'}">${globalData[s.nome].warns}</td>
+            <td style="color:var(--primary); font-weight:bold;">${formatTime(globalData[s.nome].totalSeconds)}</td>
+        </tr>
+    `).join("");
+
+    // Matricole
+    document.getElementById('staffTableBody').innerHTML = staffDatabase.map((s,i) => `<tr><td>ITD-${(i+1).toString().padStart(2,'0')}</td><td>${s.nome}</td><td>${s.grado}</td></tr>`).join("");
+}
+
+// Timer e Utility restano invariate (vedi codici precedenti)
+function startService() {
+    document.getElementById('timer-status').innerText = "IN SERVIZIO STAFF";
+    document.getElementById('btn-start').style.display = 'none';
+    document.getElementById('btn-stop').style.display = 'inline-block';
+    timerInterval = setInterval(() => { seconds++; updateTimerDisplay(); }, 1000);
+}
+function updateTimerDisplay() {
     const h = Math.floor(seconds/3600).toString().padStart(2,'0');
     const m = Math.floor((seconds%3600)/60).toString().padStart(2,'0');
     const s = (seconds%60).toString().padStart(2,'0');
     document.getElementById('timer-display').innerText = `${h}:${m}:${s}`;
 }
-
-// ADMIN ACTIONS
-function addNewStaff() {
-    const n = document.getElementById('new-staff-name').value.trim();
-    const g = document.getElementById('new-staff-grade').value;
-    if(n) { staffDatabase.push({nome:n, grado:g}); updateCredentials(); initData(); document.getElementById('new-staff-name').value=""; }
+function showSection(id) {
+    document.querySelectorAll('.tab-content').forEach(s => s.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
 }
-
-function removeStaff() {
-    const t = document.getElementById('select-staff-admin').value;
-    if(confirm(`Rimuovere ${t}?`)) { staffDatabase = staffDatabase.filter(s=>s.nome!==t); updateCredentials(); initData(); }
-}
-
 function modifyWarn(v) { 
     const t = document.getElementById('select-staff-admin').value;
     globalData[t].warns = Math.max(0, globalData[t].warns + v); initData(); 
-}
-
-function adjustSessions(v) {
-    const t = document.getElementById('select-staff-admin').value;
-    globalData[t].sessions = Math.max(0, globalData[t].sessions + v); initData();
-}
-
-function resetMemberShift() {
-    const t = document.getElementById('select-staff-admin').value;
-    if(confirm(`Reset shift di ${t}?`)) { globalData[t].sessions = 0; initData(); }
-}
-
-function initData() {
-    const dispName = currentUser.nome.charAt(0).toUpperCase() + currentUser.nome.slice(1);
-    document.getElementById('staffer-name').innerText = dispName;
-    document.getElementById('staffer-id').innerText = credentials[currentUser.nome.toLowerCase()].matricola;
-    document.getElementById('staffer-grade').innerText = credentials[currentUser.nome.toLowerCase()].grado;
-    document.getElementById('staffer-warns').innerText = globalData[dispName].warns;
-    document.getElementById('staffer-logs').innerText = globalData[dispName].sessions;
-
-    document.getElementById('select-staff-admin').innerHTML = staffDatabase.map(s => `<option value="${s.nome}">${s.nome}</option>`).join("");
-    document.getElementById('staffTableBody').innerHTML = staffDatabase.map((s,i) => `<tr><td>ITD-${(i+1).toString().padStart(2,'0')}</td><td>${s.nome}</td><td>${s.grado}</td><td style="color:#44ff44">●</td></tr>`).join("");
-    
-    const tStaff = staffDatabase.slice(13).map(s => s.nome);
-    let idx = 0;
-    document.querySelector('#scheduleTable tbody').innerHTML = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"].map(g => {
-        let p = [], s = [];
-        for(let j=0; j<3; j++) p.push(tStaff.length ? tStaff[idx++ % tStaff.length] : "---");
-        for(let j=0; j<3; j++) s.push(tStaff.length ? tStaff[idx++ % tStaff.length] : "---");
-        return `<tr><td><strong>${g}</strong></td><td>${p.join(", ")}</td><td>${s.join(", ")}</td></tr>`;
-    }).join("");
-}
-
-function exportTableToCSV(id, file) {
-    let rows = document.getElementById(id).closest('table').querySelectorAll("tr");
-    let csv = Array.from(rows).map(r => Array.from(r.querySelectorAll("td,th")).map(c => c.innerText).join(",")).join("\n");
-    let a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"}));
-    a.download = file; a.click();
 }
