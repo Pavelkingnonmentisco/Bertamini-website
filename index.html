@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LSC Staff Portal</title>
+    <title>LSC Staff Portal - Secure</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-
     <div id="login-overlay">
         <div class="login-box">
             <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773080841/msb6eamry0kagf21gttx.png" class="login-logo">
             <h2>Area Riservata Staff</h2>
             <input type="text" id="username" placeholder="Nome Staff">
-            <input type="password" id="password" placeholder="Password (Es: D-01)">
+            <input type="password" id="password" placeholder="Password (Es: D-123)">
             <button onclick="checkLogin()">Accedi</button>
             <p id="login-error" style="color: #ff4444; display:none; margin-top:10px;">Credenziali errate!</p>
         </div>
@@ -23,31 +22,23 @@
     <div id="main-content" style="display:none;">
         <nav class="sidebar">
             <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773080841/msb6eamry0kagf21gttx.png" class="nav-logo">
-            <button onclick="showSection('servizio')"><i class="fas fa-clock"></i> Il Tuo Servizio</button>
+            <button onclick="showSection('servizio')"><i class="fas fa-clock"></i> Servizio</button>
             <button onclick="showSection('matricole')"><i class="fas fa-list"></i> Lista Staff</button>
-            <button id="nav-admin" onclick="showSection('admin-panel')" style="display:none; color: #ff4444; font-weight: bold; border: 1px solid #ff4444; margin-top: 15px;">
-                <i class="fas fa-user-shield"></i> PANNELLO ADMIN
+            <button id="nav-admin" onclick="showSection('admin-panel')" style="display:none; color: #ff4444; border: 1px solid #ff4444; margin-top: 15px;">
+                <i class="fas fa-user-shield"></i> ADMIN PANEL
             </button>
-            <button onclick="location.reload()" style="margin-top: auto; color: #aaa;"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </nav>
 
         <main class="content">
             <section id="servizio" class="tab-content">
                 <div class="info-card">
-                    <div class="info-header">
-                        <i class="fas fa-user-circle info-icon"></i>
-                        <div class="info-titles">
-                            <h2 id="staffer-name">---</h2>
-                            <p id="staffer-grade" style="color: var(--primary); font-weight: bold;">---</p>
-                        </div>
-                    </div>
-                    <div class="info-details">
-                        <div class="detail-box"><p class="detail-label">Matricola</p><p class="detail-value" id="staffer-id">---</p></div>
-                        <div class="detail-box"><p class="detail-label">Richiami</p><p class="detail-value" id="staffer-warns">0</p></div>
-                        <div class="detail-box"><p class="detail-label">Ore Totali</p><p class="detail-value" id="staffer-logs">0h 0m</p></div>
+                    <h2 id="staffer-name">---</h2>
+                    <p id="staffer-grade">---</p>
+                    <div class="info-stats">
+                        <div class="stat-box">Richiami: <span id="staffer-warns">0</span></div>
+                        <div class="stat-box">Ore: <span id="staffer-logs">0h 0m</span></div>
                     </div>
                 </div>
-
                 <div class="timer-card">
                     <div id="timer-display">00:00:00</div>
                     <button id="btn-start" onclick="startService()" class="btn-main">ENTRA IN SERVIZIO</button>
@@ -56,28 +47,17 @@
             </section>
 
             <section id="admin-panel" class="tab-content" style="display:none;">
-                <div class="info-card" style="border-left: 5px solid #ff4444;">
-                    <h3><i class="fas fa-user-plus"></i> Aggiungi/Modifica Staffer</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top:10px;">
+                <div class="info-card">
+                    <h3>Aggiungi Staffer</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <input type="text" id="new-staff-name" placeholder="Nome">
                         <select id="new-staff-grade"></select>
-                        <input type="text" id="new-staff-pass" placeholder="Password Personale">
-                        <button onclick="addNewStaff()" class="btn-main" style="background:#10b981;">SALVA UTENTE</button>
+                        <input type="text" id="new-staff-pass" placeholder="Password (lascia vuoto per casuale)">
+                        <button onclick="addNewStaff()" class="btn-main">SALVA</button>
                     </div>
                 </div>
-
-                <div class="info-card">
-                    <h3><i class="fas fa-edit"></i> Azioni Veloci</h3>
-                    <select id="select-staff-admin" style="width:100%; margin-bottom:10px;"></select>
-                    <div style="display: flex; gap: 10px;">
-                        <button onclick="modifyWarn(1)" class="btn-danger">+1 Richiamo</button>
-                        <button onclick="modifyWarn(-1)" class="btn-warn">-1 Richiamo</button>
-                        <button onclick="removeStaff()" class="btn-danger" style="background:#444;">Rimuovi</button>
-                    </div>
-                </div>
-
                 <div class="table-wrapper">
-                    <h3>Report Ore Staff Completo</h3>
+                    <h3>Report Ore Totale</h3>
                     <table>
                         <thead><tr><th>Nome</th><th>Grado</th><th>Richiami</th><th>Ore</th></tr></thead>
                         <tbody id="admin-hours-body"></tbody>
@@ -88,7 +68,7 @@
             <section id="matricole" class="tab-content" style="display:none;">
                 <div class="table-wrapper">
                     <table>
-                        <thead><tr><th>Matricola</th><th>Nome</th><th>Grado</th></tr></thead>
+                        <thead><tr><th>ID</th><th>Nome</th><th>Grado</th></tr></thead>
                         <tbody id="staffTableBody"></tbody>
                     </table>
                 </div>
