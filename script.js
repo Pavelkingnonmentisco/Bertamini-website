@@ -1,47 +1,54 @@
 const authorizedAdmins = ["Daniel", "Michele", "Mav", "Arduino", "Strepitoso", "Archadian", "Djsamy", "Cobra", "Baj", "Mirko", "Maverick", "Pavel", "Diego"];
 
-let globalData = JSON.parse(localStorage.getItem('ITDR_DATA_V8')) || {};
+// DATABASE VERSION 9 (Update se cambi struttura)
+let globalData = JSON.parse(localStorage.getItem('ITDR_DATA_V9')) || {};
 let currentUser = null;
 let seconds = 0;
 let timer = null;
 let selectedStaffer = null;
 
+// Popolamento iniziale se il database è vuoto
 const initialStaff = [
     {nome: "Daniel", grado: "Founder"}, {nome: "Michele", grado: "Founder"}, {nome: "Mav", grado: "Co-Founder"},
     {nome: "Arduino", grado: "Owner"}, {nome: "Strepitoso", grado: "Co Owner"}, {nome: "Archadian", grado: "Co Owner"},
     {nome: "Djsamy", grado: "Community Manager"}, {nome: "Cobra", grado: "Community Manager"}, {nome: "Baj", grado: "Server Supervisor"},
     {nome: "Mirko", grado: "Staff Manager"}, {nome: "Maverick", grado: "Staff Manager"}, {nome: "Pavel", grado: "Supervisor"},
-    {nome: "Diego", grado: "Supervisor"}, {nome: "Hydro", grado: "Head Admin"}, {nome: "Fabbri", grado: "Senior Admin"},
-    {nome: "Matz", grado: "Senior Admin"}, {nome: "Nathalino", grado: "Senior Admin"}, {nome: "Viper", grado: "Admin"},
-    {nome: "Xenoo", grado: "Admin"}, {nome: "Adamo", grado: "Head Mod"}, {nome: "Gabriel", grado: "Moderator"},
-    {nome: "Chorno", grado: "Moderator"}, {nome: "Joker", grado: "Moderator"}, {nome: "Nenne", grado: "Trial Mod"},
-    {nome: "Mattia", grado: "Trial Mod"}, {nome: "Lollo", grado: "Senior Helper"}, {nome: "Simo", grado: "Helper"},
-    {nome: "Vortex", grado: "Helper"}, {nome: "Void", grado: "Helper"}, {nome: "Sangue", grado: "Trial Helper"},
-    {nome: "Ibra", grado: "Trial Helper"}, {nome: "Noxen", grado: "Trial Helper"}, {nome: "Ash", grado: "Trial Helper"}
+    {nome: "Diego", grado: "Supervisor"}
+    // ... Altri membri aggiunti dinamicamente o tramite arruolamento
 ];
 
 if (Object.keys(globalData).length === 0) {
     initialStaff.forEach((s, i) => {
-        globalData[s.nome] = { grado: s.grado, matricola: "ITD-" + (i + 1).toString().padStart(2, '0'), warns: 0, totalSeconds: 0, logs: [] };
+        globalData[s.nome] = { 
+            pass: s.nome + "-01", // Password default
+            grado: s.grado, 
+            matricola: "ITD-" + (i + 1).toString().padStart(2, '0'), 
+            warns: 0, 
+            totalSeconds: 0, 
+            logs: [] 
+        };
     });
-    localStorage.setItem('ITDR_DATA_V8', JSON.stringify(globalData));
+    save();
 }
 
 function checkLogin() {
     const user = document.getElementById('username').value.trim();
     const pass = document.getElementById('password').value.trim();
+    
+    // Cerca lo staffer nel database (case insensitive per il nome)
     const staffName = Object.keys(globalData).find(n => n.toLowerCase() === user.toLowerCase());
 
-    if (staffName && pass === staffName + "-01") {
+    if (staffName && pass === globalData[staffName].pass) {
         currentUser = staffName;
         document.getElementById('login-overlay').style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
+        
         if (authorizedAdmins.includes(staffName)) {
             document.getElementById('nav-admin').style.display = 'inline-block';
             populateStaffSelector();
         }
         updateUI();
-    } else { alert("Dati errati!"); }
+    } else { alert("Credenziali errate o utente inesistente!"); }
 }
 
 function updateUI() {
@@ -53,13 +60,58 @@ function updateUI() {
     renderLogs();
 }
 
-// Timer
+// ARRUOLAMENTO NUOVO STAFF
+function addNewStaff() {
+    const name = document.getElementById('new-name').value.trim();
+    const pass = document.getElementById('new-pass').value.trim();
+    const grade = document.getElementById('new-grade').value.trim();
+    const mat = document.getElementById('new-mat').value.trim();
+
+    if (!name || !pass || !grade || !mat) {
+        alert("Compila tutti i campi per l'arruolamento!");
+        return;
+    }
+
+    if (globalData[name]) {
+        alert("Questo nome utente esiste già nel database!");
+        return;
+    }
+
+    globalData[name] = {
+        pass: pass,
+        grado: grade,
+        matricola: mat,
+        warns: 0,
+        totalSeconds: 0,
+        logs: []
+    };
+
+    save();
+    alert("Staffer " + name + " arruolato con successo!");
+    
+    // Pulisce i campi
+    document.getElementById('new-name').value = "";
+    document.getElementById('new-pass').value = "";
+    document.getElementById('new-grade').value = "";
+    document.getElementById('new-mat').value = "";
+    
+    populateStaffSelector();
+}
+
+// --- FUNZIONI TIMER E UI (Mantenere le stesse della versione precedente) ---
+function formatTime(totalSec) {
+    const h = Math.floor(totalSec/3600).toString().padStart(2,'0');
+    const m = Math.floor((totalSec%3600)/60).toString().padStart(2,'0');
+    const s = (totalSec%60).toString().padStart(2,'0');
+    return `${h}:${m}:${s}`;
+}
+
 function startService() {
     document.getElementById('btn-start').style.display = 'none';
     document.getElementById('btn-pause').style.display = 'inline-block';
     document.getElementById('btn-stop').style.display = 'inline-block';
     document.getElementById('status-text').innerText = "In Servizio";
-    timer = setInterval(() => { seconds++; updateTimerDisplay(); }, 1000);
+    timer = setInterval(() => { seconds++; document.getElementById('timer-display').innerText = formatTime(seconds); }, 1000);
 }
 
 function pauseService() {
@@ -73,14 +125,11 @@ function pauseService() {
 function stopService() {
     clearInterval(timer);
     const time = document.getElementById('timer-display').innerText;
-    
-    // Aggiornamento dati globali
     globalData[currentUser].totalSeconds += seconds;
     globalData[currentUser].logs.unshift({ time, date: new Date().toLocaleString() });
-    
     seconds = 0;
     save();
-    updateTimerDisplay();
+    document.getElementById('timer-display').innerText = "00:00:00";
     updateUI();
     document.getElementById('btn-start').innerText = "Inizia Servizio";
     document.getElementById('btn-start').style.display = 'inline-block';
@@ -89,18 +138,7 @@ function stopService() {
     document.getElementById('status-text').innerText = "Nessun servizio attivo";
 }
 
-function updateTimerDisplay() {
-    document.getElementById('timer-display').innerText = formatTime(seconds);
-}
-
-function formatTime(totalSec) {
-    const h = Math.floor(totalSec/3600).toString().padStart(2,'0');
-    const m = Math.floor((totalSec%3600)/60).toString().padStart(2,'0');
-    const s = (totalSec%60).toString().padStart(2,'0');
-    return `${h}:${m}:${s}`;
-}
-
-// Admin Functions
+// --- ADMIN CONTROLS ---
 function populateStaffSelector() {
     const sel = document.getElementById('staff-selector');
     sel.innerHTML = '<option value="">Seleziona uno staffer...</option>';
@@ -120,12 +158,12 @@ function loadStaffMember() {
 
 function updateStaffGrado() {
     globalData[selectedStaffer].grado = document.getElementById('edit-grado').value;
-    save(); alert("Grado modificato!"); updateUI();
+    save(); alert("Grado aggiornato!"); updateUI();
 }
 
 function updateStaffMatricola() {
     globalData[selectedStaffer].matricola = document.getElementById('edit-matricola').value;
-    save(); alert("Matricola modificata!"); updateUI();
+    save(); alert("Matricola aggiornata!"); updateUI();
 }
 
 function modifyWarns(n) {
@@ -134,7 +172,7 @@ function modifyWarns(n) {
 }
 
 function resetHours() {
-    if(confirm("Sei sicuro di voler azzerare le ore e i log di " + selectedStaffer + "?")) {
+    if(confirm("Vuoi azzerare i log di " + selectedStaffer + "?")) {
         globalData[selectedStaffer].totalSeconds = 0;
         globalData[selectedStaffer].logs = [];
         save(); updateUI();
@@ -151,4 +189,4 @@ function showSection(id) {
     document.getElementById(id).style.display = 'block';
 }
 
-function save() { localStorage.setItem('ITDR_DATA_V8', JSON.stringify(globalData)); }
+function save() { localStorage.setItem('ITDR_DATA_V9', JSON.stringify(globalData)); }
