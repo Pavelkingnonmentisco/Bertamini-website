@@ -22,38 +22,45 @@ let staffDatabase = [
     {nome: "Ash", grado: "Trial Helper"}
 ];
 
-let globalData = {}; 
-let credentials = {}; 
+// Carica dati salvati o crea nuovi
+let globalData = JSON.parse(localStorage.getItem('LSC_Data')) || {}; 
+let credentials = JSON.parse(localStorage.getItem('LSC_Credentials')) || {}; 
 let currentUser = null;
 let seconds = 0, timerInterval = null;
 
-// Funzione per generare numero casuale a 3 cifre
-function gen3Digits() {
-    return Math.floor(100 + Math.random() * 900);
-}
+function gen3Digits() { return Math.floor(100 + Math.random() * 900); }
 
 function syncSystem() {
-    console.log("--- ELENCO PASSWORD GENERATE ---");
     staffDatabase.forEach((s, i) => {
         const userKey = s.nome.toLowerCase();
         if (!globalData[s.nome]) globalData[s.nome] = { warns: 0, totalSeconds: 0 };
         
         if (!credentials[userKey]) {
-            // Password: Iniziale - 3 numeri casuali
-            const pass = s.nome.charAt(0).toUpperCase() + "-" + gen3Digits();
+            // Se è uno dei primi 4, mettiamo password fisse per facilità, altrimenti casuali
+            let pass;
+            if(s.nome === "Daniel") pass = "D-101";
+            else if(s.nome === "Michele") pass = "M-202";
+            else if(s.nome === "Mav") pass = "M-303";
+            else if(s.nome === "Arduino") pass = "A-404";
+            else pass = s.nome.charAt(0).toUpperCase() + "-" + gen3Digits();
+
             credentials[userKey] = {
                 psw: pass,
                 matricola: "ITD-" + (i + 1).toString().padStart(2, '0'),
                 grado: s.grado,
                 nomeOriginale: s.nome
             };
-            console.log(`UTENTE: ${s.nome} | PASSWORD: ${pass}`);
         }
     });
-    console.log("--------------------------------");
+    localStorage.setItem('LSC_Credentials', JSON.stringify(credentials));
+    localStorage.setItem('LSC_Data', JSON.stringify(globalData));
 }
 
 syncSystem();
+
+// MOSTRA TUTTE LE PASSWORD IN CONSOLE PER L'ADMIN
+console.log("--- ELENCO PASSWORD ATTUALI ---");
+for(let u in credentials) { console.log(`${credentials[u].nomeOriginale}: ${credentials[u].psw}`); }
 
 function checkLogin() {
     const userIn = document.getElementById('username').value.trim().toLowerCase();
@@ -69,7 +76,7 @@ function checkLogin() {
         document.getElementById('main-content').style.display = 'flex';
         initData();
     } else {
-        alert("Credenziali Errate! Controlla Nome e Password.");
+        alert("Credenziali Errate!");
     }
 }
 
@@ -104,21 +111,9 @@ function stopService() {
     document.getElementById('timer-display').innerText = "00:00:00";
     document.getElementById('btn-start').style.display = 'inline-block';
     document.getElementById('btn-stop').style.display = 'none';
-    initData();
-}
-
-function addNewStaff() {
-    const n = document.getElementById('new-staff-name').value.trim();
-    const g = document.getElementById('new-staff-grade').value;
-    let p = document.getElementById('new-staff-pass').value.trim();
     
-    if(n) {
-        if(!p) p = n.charAt(0).toUpperCase() + "-" + gen3Digits();
-        staffDatabase.push({ nome: n, grado: g });
-        credentials[n.toLowerCase()] = { psw: p, matricola: "ITD-NEW", grado: g, nomeOriginale: n };
-        syncSystem(); initData();
-        alert(`Staffer ${n} aggiunto! Password: ${p}`);
-    }
+    localStorage.setItem('LSC_Data', JSON.stringify(globalData));
+    initData();
 }
 
 function formatTime(sec) {
@@ -130,4 +125,18 @@ function formatTime(sec) {
 function showSection(id) {
     document.querySelectorAll('.tab-content').forEach(s => s.style.display = 'none');
     document.getElementById(id).style.display = 'block';
+}
+
+function addNewStaff() {
+    const n = document.getElementById('new-staff-name').value.trim();
+    const g = document.getElementById('new-staff-grade').value;
+    let p = document.getElementById('new-staff-pass').value.trim();
+    if(n) {
+        if(!p) p = n.charAt(0).toUpperCase() + "-" + gen3Digits();
+        staffDatabase.push({ nome: n, grado: g });
+        credentials[n.toLowerCase()] = { psw: p, matricola: "ITD-NEW", grado: g, nomeOriginale: n };
+        localStorage.setItem('LSC_Credentials', JSON.stringify(credentials));
+        syncSystem(); initData();
+        alert(`Aggiunto! Password: ${p}`);
+    }
 }
