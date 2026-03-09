@@ -9,7 +9,6 @@
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 body { background: #05070a; color: white; overflow-x: hidden; }
 
-/* Login identico */
 #login-overlay { width: 100%; min-height: 100vh; background: var(--bg-gradient); display: flex; flex-direction: column; align-items: center; padding: 20px; }
 .login-header-top { width: 100%; max-width: 1200px; display: flex; align-items: center; padding: 20px 0; }
 .header-logo { display: flex; align-items: center; gap: 12px; }
@@ -28,33 +27,25 @@ body { background: #05070a; color: white; overflow-x: hidden; }
 .input-container label { display: block; font-size: 10px; color: var(--text-dim); font-weight: bold; margin-bottom: 8px; }
 .input-container input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 10px; color: white; outline: none; }
 .btn-submit { width: 100%; padding: 15px; border-radius: 10px; border: none; background: #2d3748; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-.btn-submit:hover { background: #3b82f6; }
+.btn-submit:hover { background: var(--primary); }
 
-/* Navbar superiore richiesto */
 .top-nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; background: rgba(10, 14, 23, 0.95); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 100; }
-.nav-left { display: flex; align-items: center; gap: 15px; }
-.nav-logo { width: 40px; }
-.logo-text { font-weight: 800; letter-spacing: 1px; color: white; font-size: 18px; }
 .nav-center button { background: transparent; border: none; color: var(--text-dim); margin: 0 15px; font-weight: 600; cursor: pointer; transition: 0.3s; }
 .nav-center button:hover { color: var(--accent); }
 .btn-logout { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 8px 15px; border-radius: 8px; cursor: pointer; }
 
-/* Dashboard e Area Personale */
 .container { padding: 50px; max-width: 1200px; margin: auto; }
 .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; }
 .stat-card { background: #0f131a; padding: 30px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); }
 .stat-card label { font-size: 11px; font-weight: bold; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
 .stat-card .val { font-size: 28px; font-weight: 800; margin-top: 10px; color: var(--accent); }
-.warn-val { color: #ef4444 !important; }
 
-/* Timer e Gestione Turni (Stile Ares) */
 .shift-wrapper { background: #0f131a; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
 .shift-card-header { padding: 30px; border-bottom: 1px solid rgba(255,255,255,0.05); }
 .service-tag { background: rgba(0, 212, 255, 0.1); color: var(--accent); padding: 5px 12px; border-radius: 5px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
-.timer-box { padding: 80px 30px; text-align: center; background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, rgba(0, 0, 0, 0) 70%); }
+.timer-box { padding: 80px 30px; text-align: center; }
 #timer-display { font-size: 120px; font-weight: 100; margin: 20px 0; letter-spacing: -5px; color: white; }
 #status-text { color: var(--text-dim); text-transform: uppercase; font-size: 12px; font-weight: bold; letter-spacing: 2px; }
 .btn-action { background: #1e293b; color: white; border: none; padding: 15px 40px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; }
 .btn-danger { background: #7f1d1d; }
-
 .main-footer { text-align: center; padding: 30px; font-size: 12px; color: var(--text-dim); opacity: 0.5; }
