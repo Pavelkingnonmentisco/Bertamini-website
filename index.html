@@ -13,9 +13,9 @@
             <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773080841/msb6eamry0kagf21gttx.png" alt="Logo" class="login-logo">
             <h2>Area Riservata Staff</h2>
             <input type="text" id="username" placeholder="Nome Staff (es. Hydro)">
-            <input type="password" id="password" placeholder="Password">
+            <input type="password" id="password" placeholder="Password (es. H-14)">
             <button onclick="checkLogin()">Accedi</button>
-            <p id="login-error">Credenziali non valide!</p>
+            <p id="login-error">Credenziali errate!</p>
         </div>
     </div>
 
@@ -25,17 +25,18 @@
             <button onclick="showSection('servizio')">⏱ Gestione Servizio</button>
             <button onclick="showSection('turni')">📅 Turni Settimanali</button>
             <button onclick="showSection('matricole')">👥 Lista Matricole</button>
+            <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773081531/z0cs7hkxffmrhaugbzhv.webp" class="sidebar-decor">
         </nav>
 
         <main class="content">
             <section id="servizio" class="tab-content">
-                <p class="section-label">SERVIZIO OPERATIVO</p>
-                <h1>Gestione Servizio Staff</h1>
+                <div class="section-banner" style="background-image: url('https://res.cloudinary.com/dbxwiln0a/image/upload/v1773081289/nhbbxlsjjkzsdx3ptuin.png');">
+                    <h1>GESTIONE SERVIZIO</h1>
+                </div>
                 
                 <div class="timer-card">
                     <p id="timer-status">NESSUN SERVIZIO ATTIVO</p>
                     <div id="timer-display">00:00:00</div>
-                    
                     <div class="timer-controls">
                         <button id="btn-start" onclick="startService()" class="btn-main">Inizia il Servizio</button>
                         <button id="btn-pause" onclick="pauseService()" class="btn-warn" style="display:none;">Metti in Pausa</button>
@@ -43,53 +44,46 @@
                     </div>
                 </div>
 
-                <h3>Storico dei Miei Servizi</h3>
+                <div class="header-with-btn">
+                    <h3>Storico dei Miei Servizi</h3>
+                    <button onclick="exportTableToCSV('history-body', 'storico.csv')" class="btn-export">📥 Export Sheets</button>
+                </div>
                 <div class="table-wrapper">
                     <table>
-                        <thead>
-                            <tr>
-                                <th>DATA INIZIO</th>
-                                <th>FINE</th>
-                                <th>DURATA</th>
-                                <th>STATO</th>
-                            </tr>
-                        </thead>
-                        <tbody id="history-body">
-                            </tbody>
+                        <thead><tr><th>INIZIO</th><th>FINE</th><th>DURATA</th><th>STATO</th></tr></thead>
+                        <tbody id="history-body"></tbody>
                     </table>
                 </div>
             </section>
 
             <section id="turni" class="tab-content" style="display:none;">
-                <h1>📅 Turni Settimanali</h1>
+                <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773081446/da4kj6wbj2uevyszffz9.png" class="full-banner">
+                <div class="header-with-btn">
+                    <h1>Tabella Turni Settimanali</h1>
+                    <button onclick="exportTableToCSV('scheduleTable', 'turni.csv')" class="btn-export">📥 Export Sheets</button>
+                </div>
                 <div class="table-wrapper">
                     <table id="scheduleTable">
-                        <thead>
-                            <tr>
-                                <th>Giorno</th>
-                                <th>Pomeriggio</th>
-                                <th>Sera</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>Giorno</th><th>Pomeriggio</th><th>Sera</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
+                <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773081497/iwbn1vkgilf9sxeepv5h.webp" class="decor-img">
             </section>
 
             <section id="matricole" class="tab-content" style="display:none;">
-                <h1>👥 Elenco Matricole ITD</h1>
+                <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773081387/flb1z7y9rzwjlxpkxyse.png" class="full-banner">
+                <div class="header-with-btn">
+                    <h1>Elenco Matricole Ufficiali</h1>
+                    <button onclick="exportTableToCSV('staffTable', 'matricole.csv')" class="btn-export">📥 Export Sheets</button>
+                </div>
                 <div class="table-wrapper">
                     <table id="staffTable">
-                        <thead>
-                            <tr>
-                                <th>Matricola</th>
-                                <th>Nome</th>
-                                <th>Stato</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>Matricola</th><th>Nome</th><th>Stato</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
+                <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773081517/uum43gscwr6fpqxdb5c9.webp" class="decor-img">
             </section>
         </main>
     </div>
