@@ -6,15 +6,17 @@
     <title>ITDR STAFF PORTAL v31.0 | 2026</title>
     <style>
         :root {
-            --blue: #007bff;
-            --dark: #051e34;
-            --danger: #dc3545;
-            --accent: #00d4ff;
-            --glass: rgba(0, 123, 255, 0.1);
+            /* TEMA ORO E NERO */
+            --gold: #D4AF37;
+            --gold-bright: #FFD700;
+            --dark-bg: #000000;
+            --card-bg: #0a0a0a;
+            --danger: #ff4d4d;
+            --glass: rgba(212, 175, 55, 0.1);
         }
 
         body {
-            background: #000;
+            background: var(--dark-bg);
             color: #fff;
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
@@ -32,77 +34,84 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
                         url('https://res.cloudinary.com/dbxwiln0a/image/upload/v1773154953/eb3pca3vvbnearhoockt.webp');
             background-size: cover;
             background-position: center;
         }
 
         .login-box {
-            background: rgba(5, 30, 52, 0.95);
+            background: var(--card-bg);
             padding: 40px;
             border-radius: 20px;
-            border: 2px solid var(--blue);
+            border: 2px solid var(--gold);
             text-align: center;
             width: 360px;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.2);
+            backdrop-filter: blur(10px);
         }
+
+        .login-box h2 { color: var(--gold); letter-spacing: 2px; }
 
         /* --- NAVBAR --- */
         nav {
-            background: var(--dark);
+            background: #050505;
             padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid var(--blue);
+            border-bottom: 2px solid var(--gold);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
-        .nav-logo { height: 45px; width: 45px; border-radius: 50%; border: 2px solid var(--blue); }
+        .nav-logo { height: 45px; width: 45px; border-radius: 50%; border: 2px solid var(--gold); }
         .nav-links { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; flex: 1; }
 
         nav button {
             background: var(--glass);
-            color: #fff;
-            border: 1px solid var(--blue);
+            color: var(--gold);
+            border: 1px solid var(--gold);
             padding: 8px 15px;
             cursor: pointer;
             font-weight: bold;
             border-radius: 5px;
             text-transform: uppercase;
             font-size: 10px;
+            transition: 0.3s;
         }
 
-        nav button:hover { background: var(--blue); }
+        nav button:hover { background: var(--gold); color: #000; }
 
         /* --- LAYOUT --- */
         .container { padding: 30px; max-width: 1100px; margin: auto; text-align: center; flex: 1; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
-        .card { background: var(--dark); padding: 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); }
-        .card h3 { color: var(--accent); margin: 0; font-size: 11px; text-transform: uppercase; }
-        .card p { font-size: 22px; margin: 10px 0; font-weight: bold; }
+        .card { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid rgba(212, 175, 55, 0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .card h3 { color: var(--gold); margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+        .card p { font-size: 22px; margin: 10px 0; font-weight: bold; color: #fff; }
 
-        .img-header { width: 100%; max-width: 550px; border-radius: 15px; margin-bottom: 30px; border: 2px solid var(--blue); }
+        .img-header { width: 100%; max-width: 550px; border-radius: 15px; margin-bottom: 30px; border: 2px solid var(--gold); }
 
-        .m-table { width: 100%; border-collapse: collapse; background: var(--dark); border-radius: 10px; overflow: hidden; }
-        .m-table th { background: var(--blue); color: white; padding: 15px; text-align: left; font-size: 12px; }
-        .m-table td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: left; }
+        .m-table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid rgba(212, 175, 55, 0.2); }
+        .m-table th { background: var(--gold); color: black; padding: 15px; text-align: left; font-size: 12px; text-transform: uppercase; }
+        .m-table td { padding: 12px 15px; border-bottom: 1px solid rgba(212, 175, 55, 0.1); text-align: left; }
 
         /* --- ADMIN --- */
         .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; text-align: left; }
-        .admin-card { background: #0a2540; padding: 20px; border-radius: 12px; border: 1px solid #1a3a5a; }
+        .admin-card { background: #080808; padding: 20px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.3); }
+        .admin-card h3 { color: var(--gold); margin-bottom: 15px; }
 
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; }
-        .btn-primary { width: 100%; padding: 12px; background: var(--blue); border: none; color: #fff; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
-        .btn-danger { background: var(--danger); }
-        .btn-warn { background: #f39c12; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; outline: none; }
+        input:focus, select:focus { border-color: var(--gold); }
 
-        #timer-val { font-size: 70px; font-weight: 900; margin: 20px 0; display: block; text-shadow: 0 0 20px var(--blue); }
-        footer { background: var(--dark); padding: 15px; text-align: center; font-size: 11px; color: rgba(255,255,255,0.5); }
+        .btn-primary { width: 100%; padding: 12px; background: var(--gold); border: none; color: #000; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-primary:hover { background: var(--gold-bright); transform: translateY(-2px); }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-warn { background: #b8860b; color: #fff; }
+
+        #timer-val { font-size: 70px; font-weight: 900; margin: 20px 0; display: block; text-shadow: 0 0 20px rgba(212, 175, 55, 0.4); color: var(--gold); }
+        footer { background: #050505; padding: 15px; text-align: center; font-size: 11px; color: var(--gold); border-top: 1px solid rgba(212, 175, 55, 0.2); opacity: 0.7; }
     </style>
 </head>
 <body>
@@ -114,7 +123,7 @@
             <input type="text" id="user-in" placeholder="Username">
             <input type="password" id="pass-in" placeholder="Password">
             <button class="btn-primary" onclick="login()">ACCEDI</button>
-            <p style="font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 20px;">© 2026 Sviluppato da Pavel</p>
+            <p style="font-size: 10px; color: rgba(212, 175, 55, 0.5); margin-top: 20px;">© 2026 Sviluppato da Pavel</p>
         </div>
     </div>
 
@@ -127,7 +136,7 @@
                 <button onclick="tab('turni')">Turni</button>
                 <button onclick="tab('matricole')">Membri</button>
                 <button id="adm-btn" class="hidden" onclick="tab('admin')">Admin</button>
-                <button onclick="location.reload()" style="color:var(--danger)">Esci</button>
+                <button onclick="location.reload()" style="color:var(--danger); border-color: var(--danger);">Esci</button>
             </div>
             <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773155102/q616frliniciy9cdxhsk.gif" class="nav-logo">
         </nav>
@@ -164,8 +173,8 @@
                     </div>
                 </div>
                 <div class="grid">
-                    <div class="card"><h3>Pomeriggio</h3><p id="p-list">-</p></div>
-                    <div class="card"><h3>Sera</h3><p id="s-list">-</p></div>
+                    <div class="card"><h3>Pomeriggio</h3><p id="p-list" style="color: var(--gold)">-</p></div>
+                    <div class="card"><h3>Sera</h3><p id="s-list" style="color: var(--gold)">-</p></div>
                 </div>
             </section>
 
@@ -202,7 +211,7 @@
                 </div>
             </section>
         </div>
-        <footer>© 2026 ITDR Staff Portal | Powered by Pavel</footer>
+        <footer>© 2026 ITDR Staff Portal | Gold & Black Edition | Powered by Pavel</footer>
     </div>
 
     <script>
@@ -246,7 +255,7 @@
                 username: "ITDR LOG SYSTEM",
                 embeds: [{
                     title: tipo === "INIZIO" ? "🚀 STAFF ENTRATO IN SERVIZIO" : "🏁 STAFF USCITO DAL SERVIZIO",
-                    color: tipo === "INIZIO" ? 0x28a745 : 0xdc3545,
+                    color: tipo === "INIZIO" ? 0xD4AF37 : 0xff4d4d,
                     fields: [
                         { name: "Nome staffer", value: user, inline: true },
                         { name: "Matricola", value: db[user].mat, inline: true },
