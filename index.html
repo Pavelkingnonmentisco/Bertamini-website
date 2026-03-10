@@ -6,7 +6,6 @@
     <title>ITDR STAFF PORTAL v31.0 | 2026</title>
     <style>
         :root {
-            /* TEMA ORO E NERO */
             --gold: #D4AF37;
             --gold-bright: #FFD700;
             --dark-bg: #000000;
@@ -51,8 +50,6 @@
             backdrop-filter: blur(10px);
         }
 
-        .login-box h2 { color: var(--gold); letter-spacing: 2px; }
-
         /* --- NAVBAR --- */
         nav {
             background: #050505;
@@ -79,7 +76,6 @@
             border-radius: 5px;
             text-transform: uppercase;
             font-size: 10px;
-            transition: 0.3s;
         }
 
         nav button:hover { background: var(--gold); color: #000; }
@@ -87,31 +83,27 @@
         /* --- LAYOUT --- */
         .container { padding: 30px; max-width: 1100px; margin: auto; text-align: center; flex: 1; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
-        .card { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid rgba(212, 175, 55, 0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .card h3 { color: var(--gold); margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
-        .card p { font-size: 22px; margin: 10px 0; font-weight: bold; color: #fff; }
+        .card { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid rgba(212, 175, 55, 0.2); }
+        .card h3 { color: var(--gold); margin: 0; font-size: 11px; text-transform: uppercase; }
+        .card p { font-size: 22px; margin: 10px 0; font-weight: bold; }
 
         .img-header { width: 100%; max-width: 550px; border-radius: 15px; margin-bottom: 30px; border: 2px solid var(--gold); }
 
         .m-table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid rgba(212, 175, 55, 0.2); }
-        .m-table th { background: var(--gold); color: black; padding: 15px; text-align: left; font-size: 12px; text-transform: uppercase; }
+        .m-table th { background: var(--gold); color: black; padding: 15px; text-align: left; font-size: 12px; }
         .m-table td { padding: 12px 15px; border-bottom: 1px solid rgba(212, 175, 55, 0.1); text-align: left; }
 
         /* --- ADMIN --- */
         .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; text-align: left; }
         .admin-card { background: #080808; padding: 20px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.3); }
-        .admin-card h3 { color: var(--gold); margin-bottom: 15px; }
 
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; outline: none; }
-        input:focus, select:focus { border-color: var(--gold); }
-
-        .btn-primary { width: 100%; padding: 12px; background: var(--gold); border: none; color: #000; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-        .btn-primary:hover { background: var(--gold-bright); transform: translateY(-2px); }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; }
+        .btn-primary { width: 100%; padding: 12px; background: var(--gold); border: none; color: #000; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
         .btn-danger { background: var(--danger); color: #fff; }
         .btn-warn { background: #b8860b; color: #fff; }
 
-        #timer-val { font-size: 70px; font-weight: 900; margin: 20px 0; display: block; text-shadow: 0 0 20px rgba(212, 175, 55, 0.4); color: var(--gold); }
-        footer { background: #050505; padding: 15px; text-align: center; font-size: 11px; color: var(--gold); border-top: 1px solid rgba(212, 175, 55, 0.2); opacity: 0.7; }
+        #timer-val { font-size: 70px; font-weight: 900; margin: 20px 0; display: block; color: var(--gold); }
+        footer { background: #050505; padding: 15px; text-align: center; font-size: 11px; color: var(--gold); }
     </style>
 </head>
 <body>
@@ -119,11 +111,10 @@
     <div id="login-screen">
         <div class="login-box">
             <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" width="90">
-            <h2>ITDR STAFF PORTAL</h2>
+            <h2 style="color:var(--gold)">ITDR STAFF PORTAL</h2>
             <input type="text" id="user-in" placeholder="Username">
             <input type="password" id="pass-in" placeholder="Password">
             <button class="btn-primary" onclick="login()">ACCEDI</button>
-            <p style="font-size: 10px; color: rgba(212, 175, 55, 0.5); margin-top: 20px;">© 2026 Sviluppato da Pavel</p>
         </div>
     </div>
 
@@ -136,7 +127,7 @@
                 <button onclick="tab('turni')">Turni</button>
                 <button onclick="tab('matricole')">Membri</button>
                 <button id="adm-btn" class="hidden" onclick="tab('admin')">Admin</button>
-                <button onclick="location.reload()" style="color:var(--danger); border-color: var(--danger);">Esci</button>
+                <button onclick="location.reload()" style="color:var(--danger)">Esci</button>
             </div>
             <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773155102/q616frliniciy9cdxhsk.gif" class="nav-logo">
         </nav>
@@ -173,8 +164,8 @@
                     </div>
                 </div>
                 <div class="grid">
-                    <div class="card"><h3>Pomeriggio</h3><p id="p-list" style="color: var(--gold)">-</p></div>
-                    <div class="card"><h3>Sera</h3><p id="s-list" style="color: var(--gold)">-</p></div>
+                    <div class="card"><h3>Pomeriggio</h3><p id="p-list">-</p></div>
+                    <div class="card"><h3>Sera</h3><p id="s-list">-</p></div>
                 </div>
             </section>
 
@@ -188,7 +179,16 @@
             <section id="admin" class="hidden">
                 <div class="admin-grid">
                     <div class="admin-card">
-                        <h3>GESTIONE STAFF</h3>
+                        <h3 style="color:var(--gold)">AGGIUNGI NUOVO MEMBRO</h3>
+                        <input type="text" id="new-u" placeholder="Nome Staffer">
+                        <input type="text" id="new-g" placeholder="Grado (es. Staff)">
+                        <input type="text" id="new-m" placeholder="Matricola (es. ITD-00)">
+                        <button class="btn-primary" onclick="addMember()">AGGIUNGI STAFF</button>
+                        <p style="font-size:9px; color:gray; margin-top:5px;">*La password iniziale sarà: Nome-01</p>
+                    </div>
+
+                    <div class="admin-card">
+                        <h3 style="color:var(--gold)">GESTIONE STAFF</h3>
                         <select id="s-sel" onchange="loadStaffData()"><option value="">Scegli...</option></select>
                         <input type="text" id="ed-g" placeholder="Grado">
                         <input type="text" id="ed-m" placeholder="Matricola">
@@ -199,8 +199,9 @@
                             <button class="btn-primary btn-danger" onclick="changeWarns(-1)">-1 SANZIONE</button>
                         </div>
                     </div>
+
                     <div class="admin-card">
-                        <h3>TURNI</h3>
+                        <h3 style="color:var(--gold)">TURNI</h3>
                         <select id="e-day">
                             <option value="Lunedi">Lunedi</option><option value="Martedi">Martedi</option><option value="Mercoledi">Mercoledi</option><option value="Giovedi">Giovedi</option><option value="Venerdi">Venerdi</option><option value="Sabato">Sabato</option><option value="Domenica">Domenica</option>
                         </select>
@@ -211,7 +212,7 @@
                 </div>
             </section>
         </div>
-        <footer>© 2026 ITDR Staff Portal | Gold & Black Edition | Powered by Pavel</footer>
+        <footer>© 2026 ITDR Staff Portal | Powered by Pavel</footer>
     </div>
 
     <script>
@@ -241,6 +242,22 @@
             } else alert("Dati errati!");
         }
 
+        function addMember() {
+            let u = document.getElementById('new-u').value.trim();
+            let g = document.getElementById('new-g').value.trim();
+            let m = document.getElementById('new-m').value.trim();
+            if(!u || !g || !m) return alert("Compila tutti i campi!");
+            if(db[u]) return alert("Staffer già esistente!");
+            db[u] = { pass: u + "-01", grado: g, mat: m, ore: 0, warns: 0 };
+            save();
+            refreshAdmList();
+            renderMatricole();
+            document.getElementById('new-u').value = "";
+            document.getElementById('new-g').value = "";
+            document.getElementById('new-m').value = "";
+            alert("Membro aggiunto con successo!");
+        }
+
         function updateArea() {
             document.getElementById('u-grado').innerText = db[user].grado;
             document.getElementById('u-mat').innerText = db[user].mat;
@@ -255,7 +272,7 @@
                 username: "ITDR LOG SYSTEM",
                 embeds: [{
                     title: tipo === "INIZIO" ? "🚀 STAFF ENTRATO IN SERVIZIO" : "🏁 STAFF USCITO DAL SERVIZIO",
-                    color: tipo === "INIZIO" ? 0xD4AF37 : 0xff4d4d,
+                    color: tipo === "INIZIO" ? 0xD4AF37 : 0xdc3545,
                     fields: [
                         { name: "Nome staffer", value: user, inline: true },
                         { name: "Matricola", value: db[user].mat, inline: true },
@@ -265,12 +282,10 @@
                     timestamp: new Date()
                 }]
             };
-
             if(tipo === "FINE") {
                 embed.embeds[0].fields.push({ name: "Totale tempo sessione", value: fmt(sessione), inline: true });
                 embed.embeds[0].fields.push({ name: "Ore totali accumulate", value: fmt(db[user].ore), inline: true });
             }
-
             await fetch(DISCORD_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(embed) });
         }
 
