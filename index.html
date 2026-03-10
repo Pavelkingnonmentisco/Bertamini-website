@@ -2,13 +2,27 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>ITDR STAFF PORTAL v17</title>
+    <title>ITDR STAFF PORTAL v19</title>
     <style>
         :root { --blue: #007bff; --dark: #051e34; --danger: #dc3545; --accent: #00d4ff; --glass: rgba(0, 123, 255, 0.1); }
         body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; }
         .hidden { display: none !important; }
         
-        /* Navbar Centrata */
+        /* LOGIN CON GIF ANIMATA */
+        #login-screen { 
+            height: 100vh; display: flex; justify-content: center; align-items: center; 
+            background: radial-gradient(circle, #012a4a 0%, #000 100%); 
+        }
+        .login-box { 
+            background: linear-gradient(rgba(5, 30, 52, 0.8), rgba(5, 30, 52, 0.8)), 
+                        url('https://res.cloudinary.com/dbxwiln0a/image/upload/v1773153136/xqqtcuahb5q9gxycupvc.gif');
+            background-size: cover;
+            background-position: center;
+            padding: 40px; border-radius: 20px; border: 2px solid var(--blue); 
+            text-align: center; width: 360px; box-shadow: 0 0 30px rgba(0, 123, 255, 0.3);
+        }
+
+        /* Navbar */
         nav { background: var(--dark); padding: 15px; display: flex; justify-content: center; gap: 10px; border-bottom: 2px solid var(--blue); position: sticky; top: 0; z-index: 100; flex-wrap: wrap; }
         nav button { background: var(--glass); color: #fff; border: 1px solid var(--blue); padding: 10px 18px; cursor: pointer; font-weight: bold; border-radius: 50px; transition: 0.3s; text-transform: uppercase; font-size: 10px; }
         nav button:hover { background: var(--blue); box-shadow: 0 0 10px var(--blue); }
@@ -24,7 +38,7 @@
 
         .img-header { width: 100%; max-width: 500px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--blue); }
 
-        /* Turni 7 Giorni */
+        /* Turni */
         .days-nav { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
         .day-btn { background: #0a2540; border: 1px solid #1a3a5a; color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 11px; }
         .day-btn:hover { border-color: var(--accent); color: var(--accent); }
@@ -46,13 +60,13 @@
 </head>
 <body>
 
-    <div id="login-screen" style="height:100vh; display:flex; justify-content:center; align-items:center; background:#000;">
-        <div style="background:var(--dark); padding:35px; border-radius:20px; border:1px solid var(--blue); text-align:center; width:340px;">
-            <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" width="70">
-            <h2 style="margin:20px 0;">ITDR STAFF</h2>
-            <input type="text" id="user-in" placeholder="Nome">
+    <div id="login-screen">
+        <div class="login-box">
+            <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" width="80" style="margin-bottom: 10px;">
+            <h2 style="margin:10px 0; letter-spacing: 2px; text-shadow: 0 0 10px #000;">STAFF LOGIN</h2>
+            <input type="text" id="user-in" placeholder="Username">
             <input type="password" id="pass-in" placeholder="Password">
-            <button class="btn-save" onclick="login()">ACCEDI</button>
+            <button class="btn-save" style="margin-top: 15px;" onclick="login()">ACCEDI AL PORTALE</button>
         </div>
     </div>
 
@@ -87,19 +101,19 @@
             <section id="turni" class="hidden">
                 <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773151042/g2bk1uwpi9jybgexnerm.png" class="img-header">
                 <div class="days-nav">
-                    <button class="day-btn" onclick="showDay('Lunedi')">Lunedì</button>
-                    <button class="day-btn" onclick="showDay('Martedi')">Martedì</button>
-                    <button class="day-btn" onclick="showDay('Mercoledi')">Mercoledì</button>
-                    <button class="day-btn" onclick="showDay('Giovedi')">Giovedì</button>
-                    <button class="day-btn" onclick="showDay('Venerdi')">Venerdì</button>
-                    <button class="day-btn" onclick="showDay('Sabato')">Sabato</button>
-                    <button class="day-btn" onclick="showDay('Domenica')">Domenica</button>
+                    <button class="day-btn" onclick="showDay('Lunedi', event)">Lunedì</button>
+                    <button class="day-btn" onclick="showDay('Martedi', event)">Martedì</button>
+                    <button class="day-btn" onclick="showDay('Mercoledi', event)">Mercoledì</button>
+                    <button class="day-btn" onclick="showDay('Giovedi', event)">Giovedì</button>
+                    <button class="day-btn" onclick="showDay('Venerdi', event)">Venerdì</button>
+                    <button class="day-btn" onclick="showDay('Sabato', event)">Sabato</button>
+                    <button class="day-btn" onclick="showDay('Domenica', event)">Domenica</button>
                 </div>
                 <div id="shift-res" class="card">
                     <h2 id="day-title" style="color:var(--accent);">Seleziona un giorno</h2>
                     <div class="grid">
-                        <div class="card"><h3>Pomeriggio (14:00 - 19:00)</h3><p id="p-list" style="font-size:14px; color:#ddd;">-</p></div>
-                        <div class="card"><h3>Sera (21:00 - 01:00)</h3><p id="s-list" style="font-size:14px; color:#ddd;">-</p></div>
+                        <div class="card"><h3>Pomeriggio</h3><p id="p-list" style="font-size:14px; color:#ddd;">-</p></div>
+                        <div class="card"><h3>Sera</h3><p id="s-list" style="font-size:14px; color:#ddd;">-</p></div>
                     </div>
                 </div>
             </section>
@@ -130,9 +144,9 @@
                             <option value="Venerdi">Venerdi</option><option value="Sabato">Sabato</option>
                             <option value="Domenica">Domenica</option>
                         </select>
-                        <textarea id="e-p" placeholder="3 Nomi Pomeriggio..."></textarea>
-                        <textarea id="e-s" placeholder="3 Nomi Sera..."></textarea>
-                        <button class="btn-save" style="background:#f39c12" onclick="saveT()">SALVA TURNI SETTIMANALI</button>
+                        <textarea id="e-p" placeholder="Pomeriggio..."></textarea>
+                        <textarea id="e-s" placeholder="Sera..."></textarea>
+                        <button class="btn-save" style="background:#f39c12" onclick="saveT()">SALVA TURNI</button>
                     </div>
                 </div>
             </section>
@@ -141,8 +155,8 @@
 
     <script>
         const ADM = ["Daniel", "Michele", "Mav", "Arduino", "Strepitoso", "Archadian", "Djsamy", "Cobra", "Baj", "Mirko", "Maverick", "Pavel", "Diego"];
-        let db = JSON.parse(localStorage.getItem('ITDR_V17_DB')) || {};
-        let tr = JSON.parse(localStorage.getItem('ITDR_V17_TR')) || {
+        let db = JSON.parse(localStorage.getItem('ITDR_V19_DB')) || {};
+        let tr = JSON.parse(localStorage.getItem('ITDR_V19_TR')) || {
             "Lunedi":{p:"Barone, Hydro, Fabbri", s:"Matz, Nathalino, Viper"},
             "Martedi":{p:"Xenoo, Adamo, Gabriel", s:"Chorno, Joker, Nenne"},
             "Mercoledi":{p:"Mattia, Lollo, Simo", s:"Vortex, Void, Sangue"},
@@ -189,7 +203,7 @@
             document.getElementById('u-warns').innerText = db[user].warns;
         }
 
-        function showDay(d) {
+        function showDay(d, event) {
             document.getElementById('day-title').innerText = d;
             document.getElementById('p-list').innerText = tr[d].p;
             document.getElementById('s-list').innerText = tr[d].s;
@@ -199,7 +213,7 @@
 
         function renderMatricole() {
             let b = document.getElementById('m-body');
-            b.innerHTML = Object.keys(db).sort((x,y) => db[x].mat.localeCompare(db[y].mat)).map(k => `<tr><td>${db[k].mat}</td><td>${k}</td><td>${db[k].grado}</td></tr>`).join('');
+            b.innerHTML = Object.keys(db).sort((x,y) => db[x].mat.localeCompare(db[y].mat, undefined, {numeric: true})).map(k => `<tr><td>${db[k].mat}</td><td>${k}</td><td>${db[k].grado}</td></tr>`).join('');
         }
 
         function toggleT() {
@@ -238,7 +252,7 @@
         function saveT() {
             let d = document.getElementById('e-day').value;
             tr[d] = { p: document.getElementById('e-p').value, s: document.getElementById('e-s').value };
-            save(); alert("Turni Settimanali salvati!");
+            save(); alert("Turni salvati!");
         }
 
         function refreshAdminList() {
@@ -249,8 +263,8 @@
 
         function fmt(s) { return new Date(s * 1000).toISOString().substr(11, 8); }
         function save() { 
-            localStorage.setItem('ITDR_V17_DB', JSON.stringify(db)); 
-            localStorage.setItem('ITDR_V17_TR', JSON.stringify(tr)); 
+            localStorage.setItem('ITDR_V19_DB', JSON.stringify(db)); 
+            localStorage.setItem('ITDR_V19_TR', JSON.stringify(tr)); 
         }
         function tab(id) {
             ["area", "servizio", "turni", "admin", "matricole"].forEach(t => document.getElementById(t).classList.add('hidden'));
