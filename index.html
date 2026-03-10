@@ -93,7 +93,7 @@
         .m-table th { background: var(--gold); color: black; padding: 15px; text-align: left; font-size: 12px; }
         .m-table td { padding: 12px 15px; border-bottom: 1px solid rgba(212, 175, 55, 0.1); text-align: left; }
 
-        /* --- ADMIN AGGIUSTATO --- */
+        /* --- ADMIN --- */
         .admin-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
@@ -118,7 +118,7 @@
             border: 1px solid #333; 
             color: #fff; 
             border-radius: 6px; 
-            box-sizing: border-box; /* Evita che escano dai bordi */
+            box-sizing: border-box;
         }
         
         .btn-primary { width: 100%; padding: 12px; background: var(--gold); border: none; color: #000; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
@@ -193,6 +193,7 @@
             </section>
 
             <section id="matricole" class="hidden">
+                <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773150993/dp66lxgcjwmtonwpc9gc.png" class="img-header">
                 <table class="m-table">
                     <thead><tr><th>Mat.</th><th>Staffer</th><th>Grado</th><th>Sanzioni</th></tr></thead>
                     <tbody id="m-body"></tbody>
