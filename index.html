@@ -3,41 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ITDR STAFF PORTAL v40.0 | 2026</title>
+    <title>ITDR STAFF PORTAL v38.0 | 2026</title>
     <style>
-        :root { --gold: #D4AF37; --dark-bg: #000; --card-bg: #0a0a0a; --danger: #ff4d4d; }
-        body { background: var(--dark-bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        :root {
+            --gold: #D4AF37;
+            --dark-bg: #000000;
+            --card-bg: #0a0a0a;
+            --danger: #ff4d4d;
+            --glass: rgba(212, 175, 55, 0.1);
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
         .hidden { display: none !important; }
-        
-        /* NAVBAR */
-        nav { background: #050505; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); sticky; top: 0; z-index: 100; }
-        .nav-logo { height: 40px; width: 40px; border-radius: 50%; border: 1px solid var(--gold); }
-        .nav-links { display: flex; gap: 10px; }
-        nav button { background: rgba(212,175,55,0.1); color: var(--gold); border: 1px solid var(--gold); padding: 5px 12px; cursor: pointer; border-radius: 4px; font-size: 11px; font-weight: bold; }
+
+        /* --- LOGIN --- */
+        #login-screen {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
+                        url('https://res.cloudinary.com/dbxwiln0a/image/upload/v1773154953/eb3pca3vvbnearhoockt.webp');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .login-box {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid var(--gold);
+            text-align: center;
+            width: 360px;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- NAVBAR --- */
+        nav {
+            background: #050505;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--gold);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo { height: 45px; width: 45px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; }
+        .nav-links { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; flex: 1; }
+
+        nav button {
+            background: var(--glass);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 8px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            text-transform: uppercase;
+            font-size: 10px;
+        }
+
         nav button:hover { background: var(--gold); color: #000; }
 
-        /* CONTAINER */
-        .container { padding: 20px; max-width: 1100px; margin: auto; text-align: center; flex: 1; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
-        .card { background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid rgba(212,175,55,0.2); }
-        .card h3 { color: var(--gold); margin: 0 0 10px 0; font-size: 12px; text-transform: uppercase; }
-        .img-header { width: 100%; max-width: 500px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--gold); }
+        /* --- LAYOUT --- */
+        .container { padding: 30px; max-width: 1200px; margin: auto; text-align: center; flex: 1; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+        .card { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid rgba(212, 175, 55, 0.2); }
+        .card h3 { color: var(--gold); margin: 0; font-size: 11px; text-transform: uppercase; }
+        .card p { font-size: 22px; margin: 10px 0; font-weight: bold; }
 
-        /* TABELLE E INPUT */
-        .m-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-        .m-table th { background: var(--gold); color: #000; padding: 10px; }
-        .m-table td { padding: 10px; border-bottom: 1px solid #222; }
-        input, select { width: 100%; padding: 10px; margin: 5px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 5px; box-sizing: border-box; }
-        .btn-primary { background: var(--gold); color: #000; border: none; padding: 10px; font-weight: bold; cursor: pointer; width: 100%; border-radius: 5px; }
+        .img-header { width: 100%; max-width: 550px; border-radius: 15px; margin-bottom: 30px; border: 2px solid var(--gold); display: block; margin-left: auto; margin-right: auto; }
+
+        .m-table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid rgba(212, 175, 55, 0.2); }
+        .m-table th { background: var(--gold); color: black; padding: 15px; text-align: left; font-size: 12px; }
+        .m-table td { padding: 12px 15px; border-bottom: 1px solid rgba(212, 175, 55, 0.1); text-align: left; }
+
+        /* --- ADMIN --- */
+        .admin-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 20px; 
+            text-align: left; 
+            align-items: start;
+        }
+        .admin-card { 
+            background: #080808; 
+            padding: 20px; 
+            border-radius: 12px; 
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            height: fit-content;
+        }
+
+        input, select, textarea { 
+            width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; box-sizing: border-box;
+        }
         
-        #timer-val { font-size: 50px; color: var(--gold); font-weight: bold; margin: 10px 0; display: block; }
+        .btn-primary { width: 100%; padding: 12px; background: var(--gold); border: none; color: #000; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-warn { background: #b8860b; color: #fff; }
+
+        #timer-val { font-size: 70px; font-weight: 900; margin: 20px 0; display: block; color: var(--gold); }
+        footer { background: #050505; padding: 15px; text-align: center; font-size: 11px; color: var(--gold); }
     </style>
 </head>
 <body>
 
-    <div id="login-screen" style="height:100vh; display:flex; align-items:center; justify-content:center;">
-        <div class="card" style="width:300px;">
-            <h2 style="color:var(--gold)">ITDR LOGIN</h2>
+    <div id="login-screen">
+        <div class="login-box">
+            <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" width="90">
+            <h2 style="color:var(--gold)">ITDR STAFF PORTAL</h2>
             <input type="text" id="user-in" placeholder="Username">
             <input type="password" id="pass-in" placeholder="Password">
             <button class="btn-primary" onclick="login()">ACCEDI</button>
@@ -55,6 +143,7 @@
                 <button id="adm-btn" class="hidden" onclick="tab('admin')">Admin</button>
                 <button onclick="location.reload()" style="color:var(--danger)">Esci</button>
             </div>
+            <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773155102/q616frliniciy9cdxhsk.gif" class="nav-logo">
         </nav>
 
         <div class="container">
@@ -63,118 +152,199 @@
                 <div class="grid">
                     <div class="card"><h3>Grado</h3><p id="u-grado">-</p></div>
                     <div class="card"><h3>Matricola</h3><p id="u-mat">-</p></div>
-                    <div class="card"><h3>Totale Ore</h3><p id="u-ore">00:00:00</p></div>
+                    <div class="card"><h3>Tempo di Servizio</h3><p id="u-ore">00:00:00</p></div>
                     <div class="card"><h3>Sanzioni</h3><p id="u-warns" style="color:var(--danger)">0</p></div>
                 </div>
             </section>
 
             <section id="servizio" class="hidden">
+                <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773150993/dp66lxgcjwmtonwpc9gc.png" class="img-header">
                 <div class="card">
-                    <h3>Registrazione Servizio</h3>
                     <span id="timer-val">00:00:00</span>
-                    <button id="t-btn" class="btn-primary" onclick="toggleT()">INIZIA SERVIZIO</button>
+                    <div style="display:flex; gap:10px; max-width:400px; margin:auto;">
+                        <button id="t-btn" class="btn-primary" onclick="toggleT()">INIZIA</button>
+                        <button id="p-btn" class="btn-primary btn-warn hidden" onclick="togglePause()">PAUSA</button>
+                    </div>
                 </div>
             </section>
 
             <section id="turni" class="hidden">
-                <div class="card">
-                    <h3>Turni Settimanali</h3>
-                    <select id="view-day" onchange="showDay(this.value)">
-                        <option value="">Seleziona Giorno...</option>
-                        <option value="Lunedi">Lunedi</option><option value="Martedi">Martedi</option><option value="Mercoledi">Mercoledi</option><option value="Giovedi">Giovedi</option><option value="Venerdi">Venerdi</option><option value="Sabato">Sabato</option><option value="Domenica">Domenica</option>
-                    </select>
+                <div class="grid">
+                    <div class="card"><h3>Seleziona Giorno</h3>
+                        <select id="view-day" onchange="showDay(this.value)">
+                            <option value="">Scegli...</option>
+                            <option value="Lunedi">Lunedi</option><option value="Martedi">Martedi</option><option value="Mercoledi">Mercoledi</option><option value="Giovedi">Giovedi</option><option value="Venerdi">Venerdi</option><option value="Sabato">Sabato</option><option value="Domenica">Domenica</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="grid">
-                    <div class="card"><h3>Pomeriggio (15-19)</h3><p id="p-list">-</p></div>
-                    <div class="card"><h3>Sera (21-01)</h3><p id="s-list">-</p></div>
+                    <div class="card"><h3>Pomeriggio</h3><p id="p-list">-</p></div>
+                    <div class="card"><h3>Sera</h3><p id="s-list">-</p></div>
                 </div>
             </section>
 
             <section id="matricole" class="hidden">
                 <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773168536/vyhu3p1x8nasmlap6z7p.png" class="img-header">
                 <table class="m-table">
-                    <thead><tr><th>Mat.</th><th>Nome</th><th>Grado</th><th>Warns</th></tr></thead>
+                    <thead><tr><th>Mat.</th><th>Staffer</th><th>Grado</th><th>Sanzioni</th></tr></thead>
                     <tbody id="m-body"></tbody>
                 </table>
             </section>
 
             <section id="admin" class="hidden">
-                <div class="grid">
-                    <div class="card">
-                        <h3>Gestione Turni</h3>
-                        <button class="btn-primary" onclick="generateRandomTurni()">GENERA TURNI CASUALI</button>
-                    </div>
-                    <div class="card">
-                        <h3>Gestione Staff</h3>
-                        <select id="s-sel" onchange="loadStaffData()"><option value="">Scegli Staff...</option></select>
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h3 style="color:var(--gold)">GESTIONE STAFF</h3>
+                        <select id="s-sel" onchange="loadStaffData()"><option value="">Scegli...</option></select>
+                        <input type="text" id="ed-g" placeholder="Grado">
+                        <input type="text" id="ed-m" placeholder="Matricola">
                         <input type="number" id="ed-h" placeholder="Secondi totali">
-                        <button class="btn-primary" onclick="saveStaffData()" style="margin-bottom:5px;">SALVA ORE</button>
-                        <button class="btn-primary" onclick="changeWarns(1)" style="background:orange;">+1 WARN</button>
+                        <button class="btn-primary" onclick="saveStaffData()">AGGIORNA DATI</button>
+                        <div style="display:flex; gap:5px; margin-top:10px;">
+                            <button class="btn-primary btn-warn" onclick="changeWarns(1)">+1 Warn</button>
+                            <button class="btn-primary btn-danger" onclick="changeWarns(-1)">-1 Warn</button>
+                        </div>
                     </div>
-                    <div class="card">
-                        <h3>Nuovo Membro</h3>
+
+                    <div class="admin-card">
+                        <h3 style="color:var(--gold)">GESTIONE TURNI</h3>
+                        <select id="t-day">
+                            <option value="Lunedi">Lunedi</option><option value="Martedi">Martedi</option><option value="Mercoledi">Mercoledi</option><option value="Giovedi">Giovedi</option><option value="Venerdi">Venerdi</option><option value="Sabato">Sabato</option><option value="Domenica">Domenica</option>
+                        </select>
+                        <select id="t-slot"><option value="p">Pomeriggio</option><option value="s">Sera</option></select>
+                        <input type="text" id="t-staff" placeholder="Nomi (es: Pavel, Daniel)">
+                        <button class="btn-primary" onclick="saveTurni()">SALVA TURNO</button>
+                    </div>
+
+                    <div class="admin-card">
+                        <h3 style="color:var(--gold)">AGGIUNGI MEMBRO</h3>
                         <input type="text" id="new-u" placeholder="Nome">
                         <input type="text" id="new-g" placeholder="Grado">
                         <input type="text" id="new-m" placeholder="Matricola">
-                        <button class="btn-primary" onclick="addMember()">AGGIUNGI</button>
+                        <button class="btn-primary" onclick="addMember()">AGGIUNGI STAFF</button>
                     </div>
                 </div>
             </section>
         </div>
+        <footer>© 2026 ITDR Staff Portal | Powered by Pavel</footer>
     </div>
 
     <script>
         const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1480996793096605838/avlMEkY5vYoM-fTkLQKovYhQTGh-JXzH9dquQhPMqMYaKvUcQV2feXb4rtvADz42rai-";
-        const STAFF_POOL = ["Barone","Hydro","Fabbri","Matz","Nathalino","Viper","Xenoo","Adamo","Nano","Gabriel","Chorno","Joker","Nenne","Mattia","Lollo","Simo","Vortex","Void","Sangue","Ibra","Noxen","Ash","Pietro"];
-        const ADM_LIST = ["Daniel", "Michele", "Mav", "Arduino", "Pavel"];
+        const ADM_LIST = ["Daniel", "Michele", "Mav", "Arduino", "Strepitoso", "Archadian", "Djsamy", "Cobra", "Baj", "Mirko", "Maverick", "Pavel", "Hydro", "Barone", "Diego"];
 
-        let db = JSON.parse(localStorage.getItem('ITDR_DB_V40')) || {};
-        let tr = JSON.parse(localStorage.getItem('ITDR_TR_V40')) || { "Lunedi":{p:"-",s:"-"}, "Martedi":{p:"-",s:"-"}, "Mercoledi":{p:"-",s:"-"}, "Giovedi":{p:"-",s:"-"}, "Venerdi":{p:"-",s:"-"}, "Sabato":{p:"-",s:"-"}, "Domenica":{p:"-",s:"-"} };
+        let db = JSON.parse(localStorage.getItem('ITDR_V38_DB')) || {};
+        let tr = JSON.parse(localStorage.getItem('ITDR_V38_TR')) || { 
+            "Lunedi":{p:"-",s:"-"}, "Martedi":{p:"-",s:"-"}, "Mercoledi":{p:"-",s:"-"}, 
+            "Giovedi":{p:"-",s:"-"}, "Venerdi":{p:"-",s:"-"}, "Sabato":{p:"-",s:"-"}, "Domenica":{p:"-",s:"-"} 
+        };
 
-        let user = null, sec = 0, interval = null, on = false;
+        const INITIAL_STAFF = [
+            ["Daniel","Founder","ITD-01"],["Michele","Founder","ITD-02"],["Mav","Co-Founder","ITD-03"],
+            ["Arduino","Owner","ITD-04"],["Strepitoso","Co Owner","ITD-05"],["Archadian","Co Owner","ITD-06"],
+            ["Baj","Server Supervisor","ITD-07"],["Cobra","Community Manager","ITD-08"],["Djsamy","Community Manager","ITD-09"],
+            ["Mirko","Staff Manager","ITD-10"],["Maverick","Staff Manager","ITD-11"],["Pavel","Supervisor","ITD-12"],
+            ["Diego","Supervisor","ITD-13"],["Barone","Head Admin","ITD-14"],["Hydro","Head Admin","ITD-15"],
+            ["Fabbri","Senior Admin","ITD-16"],["Matz","Senior Admin","ITD-17"],["Nathalino","Senior Admin","ITD-18"],
+            ["Viper","Admin","ITD-19"],["Xenoo","Admin","ITD-20"],["Adamo","Head Mod","ITD-21"],
+            ["Nano","Moderator","ITD-22"],["Gabriel","Moderator","ITD-23"],["Chorno","Moderator","ITD-24"],
+            ["Joker","Moderator","ITD-25"],["Nenne","Trial Mod","ITD-26"],["Mattia","Trial Mod","ITD-27"],
+            ["Lollo","Senior Helper","ITD-28"],["Simo","Helper","ITD-29"],["Vortex","Helper","ITD-30"],
+            ["Void","Helper","ITD-31"],["Sangue","Trial Helper","ITD-32"],["Ibra","Trial Helper","ITD-33"],
+            ["Noxen","Trial Helper","ITD-34"],["Ash","Trial Helper","ITD-35"],["Pietro","Trial Helper","ITD-36"]
+        ];
+
+        if(Object.keys(db).length === 0) {
+            INITIAL_STAFF.forEach(s => {
+                db[s[0]] = { pass: s[0] + "-01", grado: s[1], mat: s[2], ore: 0, warns: 0 };
+            });
+            save();
+        }
+
+        let user = null, sec = 0, interval = null, on = false, isPaused = false;
 
         function login() {
             let u = document.getElementById('user-in').value.trim();
-            if(u && (db[u] || ADM_LIST.includes(u))) {
+            let p = document.getElementById('pass-in').value.trim();
+            if(db[u] && db[u].pass === p) {
                 user = u;
-                if(!db[u]) db[u] = { grado: "Admin", mat: "ADM", ore: 0, warns: 0 };
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('portal').classList.remove('hidden');
-                if(ADM_LIST.includes(u)) document.getElementById('adm-btn').classList.remove('hidden');
-                updateArea(); renderMatricole(); refreshAdmList();
-            } else alert("Utente non trovato!");
+                if(ADM_LIST.includes(u)) { document.getElementById('adm-btn').classList.remove('hidden'); refreshAdmList(); }
+                updateArea(); renderMatricole();
+            } else alert("Dati errati!");
         }
 
         async function sendLog(tipo, sessione = 0) {
-            let embed = { embeds: [{ title: tipo === "IN" ? "🚀 SERVIZIO INIZIATO" : "🏁 SERVIZIO FINITO", color: tipo === "IN" ? 5025616 : 16724531, fields: [{name:"Staff", value:user, inline:true},{name:"Sessione", value:fmt(sessione), inline:true}] }] };
-            fetch(DISCORD_WEBHOOK, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(embed)});
+            const now = new Date().toLocaleTimeString('it-IT');
+            let embed = {
+                username: "ITDR LOG SYSTEM",
+                embeds: [{
+                    title: tipo === "INIZIO" ? "🚀 ENTRATO IN SERVIZIO" : "🏁 USCITO DAL SERVIZIO",
+                    color: tipo === "INIZIO" ? 55295 : 16711680,
+                    fields: [
+                        { name: "Staffer", value: user, inline: true },
+                        { name: "Matricola", value: db[user].mat, inline: true },
+                        { name: "Orario", value: now, inline: false }
+                    ],
+                    timestamp: new Date()
+                }]
+            };
+            if(tipo === "FINE") {
+                embed.embeds[0].fields.push({ name: "Sessione", value: fmt(sessione), inline: true });
+                embed.embeds[0].fields.push({ name: "Totale", value: fmt(db[user].ore), inline: true });
+            }
+            fetch(DISCORD_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(embed) });
         }
 
         function toggleT() {
-            let b = document.getElementById('t-btn');
+            let b = document.getElementById('t-btn'), pBtn = document.getElementById('p-btn');
             if(!on) {
-                on = true; b.innerText = "STOP SERVIZIO"; b.style.background = "red";
+                on = true; isPaused = false;
+                b.innerText = "FINE"; b.classList.add('btn-danger');
+                pBtn.classList.remove('hidden');
                 interval = setInterval(() => { sec++; document.getElementById('timer-val').innerText = fmt(sec); }, 1000);
-                sendLog("IN");
+                sendLog("INIZIO");
             } else {
-                on = false; b.innerText = "INIZIA SERVIZIO"; b.style.background = "var(--gold)";
+                on = false; b.innerText = "INIZIA"; b.classList.remove('btn-danger');
+                pBtn.classList.add('hidden');
                 clearInterval(interval);
                 db[user].ore += sec;
-                sendLog("OUT", sec);
+                sendLog("FINE", sec);
                 sec = 0; document.getElementById('timer-val').innerText = "00:00:00";
                 save(); updateArea();
             }
         }
 
-        function generateRandomTurni() {
-            const giorni = ["Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi", "Sabato", "Domenica"];
-            giorni.forEach(g => {
-                let r = [...STAFF_POOL].sort(() => 0.5 - Math.random());
-                tr[g].p = r.slice(0, 3).join(", ");
-                tr[g].s = r.slice(3, 6).join(", ");
-            });
-            localStorage.setItem('ITDR_TR_V40', JSON.stringify(tr));
-            alert("Turni Generati!");
+        function togglePause() {
+            let pBtn = document.getElementById('p-btn');
+            if(!isPaused) { isPaused = true; clearInterval(interval); pBtn.innerText = "RIPRENDI"; }
+            else { isPaused = false; interval = setInterval(() => { sec++; document.getElementById('timer-val').innerText = fmt(sec); }, 1000); pBtn.innerText = "PAUSA"; }
+        }
+
+        function loadStaffData() {
+            let s = document.getElementById('s-sel').value;
+            if(!db[s]) return;
+            document.getElementById('ed-g').value = db[s].grado;
+            document.getElementById('ed-m').value = db[s].mat;
+            document.getElementById('ed-h').value = db[s].ore;
+        }
+
+        function saveStaffData() {
+            let s = document.getElementById('s-sel').value;
+            db[s].grado = document.getElementById('ed-g').value;
+            db[s].mat = document.getElementById('ed-m').value;
+            db[s].ore = parseInt(document.getElementById('ed-h').value);
+            save(); renderMatricole(); alert("Dati Staff Aggiornati!");
+        }
+
+        function saveTurni() {
+            let d = document.getElementById('t-day').value;
+            let s = document.getElementById('t-slot').value;
+            let val = document.getElementById('t-staff').value;
+            tr[d][s] = val || "-";
+            localStorage.setItem('ITDR_V38_TR', JSON.stringify(tr));
+            alert("Turni salvati per " + d);
         }
 
         function showDay(d) {
@@ -183,48 +353,45 @@
             document.getElementById('s-list').innerText = tr[d].s;
         }
 
-        function addMember() {
-            let u = document.getElementById('new-u').value.trim();
-            if(!u) return;
-            db[u] = { grado: document.getElementById('new-g').value, mat: document.getElementById('new-m').value, ore:0, warns:0 };
-            save(); renderMatricole(); refreshAdmList(); alert("Aggiunto!");
-        }
-
-        function loadStaffData() {
+        function changeWarns(v) {
             let s = document.getElementById('s-sel').value;
-            if(db[s]) document.getElementById('ed-h').value = db[s].ore;
-        }
-
-        function saveStaffData() {
-            let s = document.getElementById('s-sel').value;
-            db[s].ore = parseInt(document.getElementById('ed-h').value);
-            save(); updateArea(); alert("Ore aggiornate!");
-        }
-
-        function changeWarns(n) {
-            let s = document.getElementById('s-sel').value;
-            if(db[s]) { db[s].warns += n; save(); renderMatricole(); }
+            if(!db[s]) return;
+            db[s].warns = Math.max(0, (db[s].warns || 0) + v);
+            save(); renderMatricole();
         }
 
         function updateArea() {
             document.getElementById('u-grado').innerText = db[user].grado;
             document.getElementById('u-mat').innerText = db[user].mat;
             document.getElementById('u-ore').innerText = fmt(db[user].ore);
-            document.getElementById('u-warns').innerText = db[user].warns;
+            document.getElementById('u-warns').innerText = db[user].warns || 0;
         }
 
         function renderMatricole() {
-            document.getElementById('m-body').innerHTML = Object.keys(db).map(k => `<tr><td>${db[k].mat}</td><td>${k}</td><td>${db[k].grado}</td><td>${db[k].warns}</td></tr>`).join('');
+            let b = document.getElementById('m-body');
+            const sorted = Object.keys(db).sort((x,y) => db[x].mat.localeCompare(db[y].mat, undefined, {numeric: true}));
+            b.innerHTML = sorted.map(k => `<tr><td>${db[k].mat}</td><td>${k}</td><td>${db[k].grado}</td><td>${db[k].warns || 0}</td></tr>`).join('');
         }
 
         function refreshAdmList() {
-            document.getElementById('s-sel').innerHTML = '<option value="">Scegli Staff...</option>' + Object.keys(db).map(k => `<option value="${k}">${k}</option>`).join('');
+            let s = document.getElementById('s-sel');
+            s.innerHTML = '<option value="">Scegli...</option>' + Object.keys(db).sort().map(k => `<option value="${k}">${k}</option>`).join('');
+        }
+
+        function addMember() {
+            let u = document.getElementById('new-u').value.trim();
+            if(!u || db[u]) return alert("Errore: Nome vuoto o già esistente!");
+            db[u] = { pass: u + "-01", grado: document.getElementById('new-g').value, mat: document.getElementById('new-m').value, ore: 0, warns: 0 };
+            save(); refreshAdmList(); renderMatricole(); alert("Staffer " + u + " aggiunto con successo!");
         }
 
         function fmt(s) { return new Date(s * 1000).toISOString().substr(11, 8); }
-        function save() { localStorage.setItem('ITDR_DB_V40', JSON.stringify(db)); }
-        function tab(id) { 
-            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+        function save() { localStorage.setItem('ITDR_V38_DB', JSON.stringify(db)); }
+        function tab(id) {
+            ["area", "servizio", "turni", "matricole", "admin"].forEach(t => {
+                const el = document.getElementById(t);
+                if(el) el.classList.add('hidden');
+            });
             document.getElementById(id).classList.remove('hidden');
         }
     </script>
