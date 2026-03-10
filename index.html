@@ -6,9 +6,9 @@
     <title>ITDR STAFF PORTAL | 2026</title>
     <style>
         :root {
-            --accent: #FFD700;    /* Giallo Oro del logo */
+            --accent: #FFD700;    /* Oro del logo */
             --bg-dark: #0a0a0a;   /* Nero profondo */
-            --card-bg: rgba(25, 25, 25, 0.9); 
+            --card-bg: rgba(25, 25, 25, 0.95); 
             --text: #ffffff;
             --danger: #ff4d4d;
         }
@@ -77,7 +77,6 @@
 
         /* --- CONTAINER --- */
         .container { padding: 40px 20px; max-width: 1000px; margin: auto; flex: 1; }
-        
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
         
         .card { 
@@ -85,18 +84,15 @@
             padding: 25px; 
             border-radius: 12px; 
             border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: 0.3s;
         }
         
         .card h3 { color: #888; margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
         .card p { font-size: 24px; margin: 10px 0; font-weight: 700; color: var(--accent); }
 
-        /* --- TABLES --- */
         .m-table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 10px; overflow: hidden; }
         .m-table th { background: #151515; color: var(--accent); padding: 15px; text-align: left; font-size: 12px; border-bottom: 1px solid #333; }
         .m-table td { padding: 14px 15px; border-bottom: 1px solid #222; font-size: 14px; }
 
-        /* --- INPUTS & BUTTONS --- */
         input, select, textarea { 
             width: 100%; padding: 12px; margin: 8px 0; 
             background: #111; border: 1px solid #333; color: #fff; border-radius: 6px; 
@@ -106,12 +102,10 @@
         .btn-primary { 
             width: 100%; padding: 12px; background: var(--accent); color: #000; 
             border: none; font-weight: 700; border-radius: 6px; cursor: pointer; 
-            text-transform: uppercase; transition: 0.2s;
+            text-transform: uppercase;
         }
-        .btn-primary:hover { opacity: 0.9; transform: scale(0.98); }
 
         #timer-val { font-size: 72px; font-weight: 800; margin: 20px 0; color: #fff; letter-spacing: -2px; }
-        
         footer { padding: 30px; text-align: center; font-size: 11px; color: #444; border-top: 1px solid #111; }
     </style>
 </head>
@@ -120,7 +114,7 @@
     <div id="login-screen">
         <div class="login-box">
             <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" width="80">
-            <h2 style="margin: 20px 0; font-size: 18px;">STAFF PORTAL</h2>
+            <h2 style="margin: 20px 0; font-size: 18px; letter-spacing: 1px;">STAFF PORTAL</h2>
             <input type="text" id="user-in" placeholder="Username">
             <input type="password" id="pass-in" placeholder="Password">
             <button class="btn-primary" onclick="login()">Accedi</button>
@@ -155,7 +149,7 @@
 
             <section id="servizio" class="hidden">
                 <div class="card" style="max-width: 500px; margin: auto; text-align: center;">
-                    <h3>Sessione Attiva</h3>
+                    <h3>Servizio Attivo</h3>
                     <span id="timer-val">00:00:00</span>
                     <div style="display:flex; gap:10px;">
                         <button id="t-btn" class="btn-primary" onclick="toggleT()">Inizia</button>
@@ -193,35 +187,31 @@
                         <input type="text" id="ed-m" placeholder="Matricola">
                         <input type="number" id="ed-h" placeholder="Secondi totali">
                         <button class="btn-primary" onclick="saveStaffData()">Salva</button>
-                        <div style="display:flex; gap:5px; margin-top:10px;">
-                            <button class="btn-primary" style="background:#444; color:#fff;" onclick="changeWarns(1)">+1 Sanzione</button>
-                            <button class="btn-primary" style="background:#222; color:#fff;" onclick="changeWarns(-1)">-1</button>
-                        </div>
                     </div>
                     <div class="card">
-                        <h3>Editor Turni</h3>
+                        <h3>Turni</h3>
                         <select id="e-day">
                             <option value="Lunedi">Lunedì</option><option value="Martedi">Martedì</option><option value="Mercoledi">Mercoledì</option><option value="Giovedi">Giovedì</option><option value="Venerdi">Venerdì</option><option value="Sabato">Sabato</option><option value="Domenica">Domenica</option>
                         </select>
                         <textarea id="e-p" placeholder="Pomeriggio..."></textarea>
                         <textarea id="e-s" placeholder="Sera..."></textarea>
-                        <button class="btn-primary" onclick="saveT()">Aggiorna Turni</button>
+                        <button class="btn-primary" onclick="saveT()">Aggiorna</button>
                     </div>
                 </div>
             </section>
         </div>
-        <footer>© 2026 ITDR PORTAL | Powered by Pavel</footer>
+        <footer>© 2026 ITDR PORTAL | Sviluppato da Pavel</footer>
     </div>
 
     <script>
         const ADM_LIST = ["Daniel", "Michele", "Mav", "Arduino", "Strepitoso", "Archadian", "Djsamy", "Cobra", "Baj", "Mirko", "Maverick", "Pavel"];
         const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1480953347941990512/tO72Y7nUOLn0atj93WQfdwrpvOw1213-opTl7hBTmunCVvht4Ck6lJcvb_7GPm-ZcLmr";
 
-        let db = JSON.parse(localStorage.getItem('ITDR_V27_DB')) || {};
-        let tr = JSON.parse(localStorage.getItem('ITDR_V27_TR')) || { "Lunedi":{p:"-",s:"-"}, "Martedi":{p:"-",s:"-"}, "Mercoledi":{p:"-",s:"-"}, "Giovedi":{p:"-",s:"-"}, "Venerdi":{p:"-",s:"-"}, "Sabato":{p:"-",s:"-"}, "Domenica":{p:"-",s:"-"} };
+        let db = JSON.parse(localStorage.getItem('ITDR_DB')) || {};
+        let tr = JSON.parse(localStorage.getItem('ITDR_TR')) || { "Lunedi":{p:"-",s:"-"}, "Martedi":{p:"-",s:"-"}, "Mercoledi":{p:"-",s:"-"}, "Giovedi":{p:"-",s:"-"}, "Venerdi":{p:"-",s:"-"}, "Sabato":{p:"-",s:"-"}, "Domenica":{p:"-",s:"-"} };
 
         if(Object.keys(db).length === 0) {
-            const RAW = [["Daniel","Founder","ITD-01"],["Pavel","Supervisor","ITD-12"]];
+            const RAW = [["Daniel","Founder","1"],["Pavel","Supervisor","12"]];
             RAW.forEach(s => { db[s[0]] = { pass: s[0]+"-01", grado: s[1], mat: s[2], ore: 0, warns: 0 }; });
             save();
         }
@@ -237,24 +227,35 @@
                 document.getElementById('portal').classList.remove('hidden');
                 if(ADM_LIST.includes(u)) { document.getElementById('adm-btn').classList.remove('hidden'); refreshAdmList(); }
                 updateArea(); renderMatricole();
-            } else alert("Dati non validi");
+            } else alert("Accesso Negato");
         }
 
-        function updateArea() {
-            document.getElementById('u-grado').innerText = db[user].grado;
-            document.getElementById('u-mat').innerText = db[user].mat;
-            document.getElementById('u-ore').innerText = fmt(db[user].ore);
-            document.getElementById('u-warns').innerText = db[user].warns || 0;
+        async function sendLog(tipo, sessione = 0) {
+            if(!DISCORD_WEBHOOK) return;
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('it-IT');
+            const timeStr = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+            
+            let messaggio = "";
+            if (tipo === "INIZIO") {
+                messaggio = `📥 **ENTRATA IN SERVIZIO – STAFF**\n👤 Operatore: <@${db[user].mat}>\n🆔 ID Operatore: ${db[user].mat}\n🏷️ Ruolo: ${db[user].grado}\n⏰ Orario Entrata: ${dateStr} - ${timeStr}`;
+            } else {
+                const start = new Date(now - sessione * 1000);
+                const startDateStr = start.toLocaleDateString('it-IT');
+                const startTimeStr = start.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                messaggio = `📤 **USCITA DAL SERVIZIO – STAFF**\n👤 Operatore: <@${db[user].mat}>\n🆔 ID Operatore: ${db[user].mat}\n🏷️ Ruolo: ${db[user].grado}\n⏰ Orario Entrata: ${startDateStr} - ${startTimeStr}\n⏰ Orario Uscita: ${dateStr} - ${timeStr}\n⏳ Durata Totale: ${fmt(sessione)}`;
+            }
+
+            fetch(DISCORD_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: messaggio }) });
         }
 
         function toggleT() {
             let b = document.getElementById('t-btn');
             let pBtn = document.getElementById('p-btn');
             if(!on) {
-                on = true; b.innerText = "Fine"; b.style.background = "#ff4d4d";
+                on = true; b.innerText = "Fine"; b.style.background = "var(--danger)";
                 pBtn.classList.remove('hidden');
-                startTimer();
-                sendLog("INIZIO");
+                startTimer(); sendLog("INIZIO");
             } else {
                 on = false; b.innerText = "Inizia"; b.style.background = "var(--accent)";
                 pBtn.classList.add('hidden');
@@ -273,76 +274,45 @@
             else { isPaused = false; startTimer(); pBtn.innerText = "Pausa"; }
         }
 
-        function showDay(d) {
-            if(!d) return;
-            document.getElementById('p-list').innerText = tr[d].p;
-            document.getElementById('s-list').innerText = tr[d].s;
-        }
-
-        function renderMatricole() {
-            let b = document.getElementById('m-body');
-            const sorted = Object.keys(db).sort((x,y) => db[x].mat.localeCompare(db[y].mat, undefined, {numeric: true}));
-            b.innerHTML = sorted.map(k => `<tr><td>${db[k].mat}</td><td>${k}</td><td>${db[k].grado}</td><td style="color:${db[k].warns > 0 ? 'red':'white'}">${db[k].warns || 0}</td></tr>`).join('');
-        }
-
-        function loadStaffData() {
-            let s = document.getElementById('s-sel').value;
-            if(!s) return;
-            document.getElementById('ed-g').value = db[s].grado;
-            document.getElementById('ed-m').value = db[s].mat;
-            document.getElementById('ed-h').value = db[s].ore;
-        }
-
-        function saveStaffData() {
-            let s = document.getElementById('s-sel').value;
-            if(!s) return;
-            db[s].grado = document.getElementById('ed-g').value;
-            db[s].mat = document.getElementById('ed-m').value;
-            db[s].ore = parseInt(document.getElementById('ed-h').value);
-            save(); renderMatricole(); alert("Salvato");
-        }
-
-        function changeWarns(val) {
-            let s = document.getElementById('s-sel').value;
-            if(!s) return;
-            db[s].warns = Math.max(0, (db[s].warns || 0) + val);
-            save(); renderMatricole();
-        }
-
-        function saveT() {
-            let d = document.getElementById('e-day').value;
-            tr[d] = { p: document.getElementById('e-p').value, s: document.getElementById('e-s').value };
-            save(); alert("Turni aggiornati");
-        }
-
-        function refreshAdmList() {
-            let s = document.getElementById('s-sel');
-            s.innerHTML = '<option value="">Scegli...</option>';
-            Object.keys(db).sort().forEach(k => s.innerHTML += `<option value="${k}">${k}</option>`);
-        }
-
         function fmt(s) { return new Date(s * 1000).toISOString().substr(11, 8); }
-        function save() { localStorage.setItem('ITDR_V27_DB', JSON.stringify(db)); localStorage.setItem('ITDR_V27_TR', JSON.stringify(tr)); }
+        function save() { localStorage.setItem('ITDR_DB', JSON.stringify(db)); localStorage.setItem('ITDR_TR', JSON.stringify(tr)); }
         function tab(id) {
             ["area", "servizio", "turni", "matricole", "admin"].forEach(t => document.getElementById(t).classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
         }
-
-        async function sendLog(tipo, sessione = 0) {
-            if(!DISCORD_WEBHOOK) return;
-            const embed = {
-                embeds: [{
-                    title: tipo === "INIZIO" ? "ENTRATA SERVIZIO" : "USCITA SERVIZIO",
-                    color: tipo === "INIZIO" ? 0xFFD700 : 0xFF0000,
-                    fields: [
-                        { name: "Staffer", value: user, inline: true },
-                        { name: "Matricola", value: db[user].mat, inline: true }
-                    ],
-                    timestamp: new Date()
-                }]
-            };
-            if(tipo === "FINE") embed.embeds[0].fields.push({ name: "Sessione", value: fmt(sessione) });
-            fetch(DISCORD_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(embed) });
+        function showDay(d) { if(d) { document.getElementById('p-list').innerText = tr[d].p; document.getElementById('s-list').innerText = tr[d].s; } }
+        function renderMatricole() {
+            let b = document.getElementById('m-body');
+            const sorted = Object.keys(db).sort((x,y) => db[x].mat.localeCompare(db[y].mat, undefined, {numeric: true}));
+            b.innerHTML = sorted.map(k => `<tr><td>${db[k].mat}</td><td>${k}</td><td>${db[k].grado}</td><td>${db[k].warns || 0}</td></tr>`).join('');
+        }
+        function updateArea() {
+            document.getElementById('u-grado').innerText = db[user].grado;
+            document.getElementById('u-mat').innerText = db[user].mat;
+            document.getElementById('u-ore').innerText = fmt(db[user].ore);
+            document.getElementById('u-warns').innerText = db[user].warns || 0;
+        }
+        function refreshAdmList() {
+            let s = document.getElementById('s-sel'); s.innerHTML = '<option value="">Scegli...</option>';
+            Object.keys(db).sort().forEach(k => s.innerHTML += `<option value="${k}">${k}</option>`);
+        }
+        function loadStaffData() {
+            let s = document.getElementById('s-sel').value; if(!s) return;
+            document.getElementById('ed-g').value = db[s].grado;
+            document.getElementById('ed-m').value = db[s].mat;
+            document.getElementById('ed-h').value = db[s].ore;
+        }
+        function saveStaffData() {
+            let s = document.getElementById('s-sel').value; if(!s) return;
+            db[s].grado = document.getElementById('ed-g').value;
+            db[s].mat = document.getElementById('ed-m').value;
+            db[s].ore = parseInt(document.getElementById('ed-h').value);
+            save(); renderMatricole(); alert("Dati salvati");
+        }
+        function saveT() {
+            let d = document.getElementById('e-day').value;
+            tr[d] = { p: document.getElementById('e-p').value, s: document.getElementById('e-s').value };
+            save(); alert("Turni aggiornati");
         }
     </script>
 </body>
