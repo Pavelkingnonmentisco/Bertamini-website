@@ -6,8 +6,8 @@
     <title>ITDR STAFF PORTAL | 2026</title>
     <style>
         :root {
-            --accent: #FFD700;    /* Oro del logo */
-            --bg-dark: #0a0a0a;   /* Nero profondo */
+            --accent: #FFD700;
+            --bg-dark: #0a0a0a;
             --card-bg: rgba(25, 25, 25, 0.95); 
             --text: #ffffff;
             --danger: #ff4d4d;
@@ -184,7 +184,7 @@
                         <h3>Gestione Membri</h3>
                         <select id="s-sel" onchange="loadStaffData()"><option value="">Seleziona...</option></select>
                         <input type="text" id="ed-g" placeholder="Grado">
-                        <input type="text" id="ed-m" placeholder="Matricola">
+                        <input type="text" id="ed-m" placeholder="Matricola (es. ITD-01)">
                         <input type="number" id="ed-h" placeholder="Secondi totali">
                         <button class="btn-primary" onclick="saveStaffData()">Salva</button>
                     </div>
@@ -210,8 +210,9 @@
         let db = JSON.parse(localStorage.getItem('ITDR_DB')) || {};
         let tr = JSON.parse(localStorage.getItem('ITDR_TR')) || { "Lunedi":{p:"-",s:"-"}, "Martedi":{p:"-",s:"-"}, "Mercoledi":{p:"-",s:"-"}, "Giovedi":{p:"-",s:"-"}, "Venerdi":{p:"-",s:"-"}, "Sabato":{p:"-",s:"-"}, "Domenica":{p:"-",s:"-"} };
 
+        // Inizializzazione con prefisso ITD
         if(Object.keys(db).length === 0) {
-            const RAW = [["Daniel","Founder","1"],["Pavel","Supervisor","12"]];
+            const RAW = [["Daniel","Founder","ITD-01"],["Michele","Founder","ITD-02"],["Mav","Co-Founder","ITD-03"],["Arduino","Owner","ITD-04"],["Strepitoso","Co Owner","ITD-05"],["Archadian","Co Owner","ITD-06"],["Djsamy","Community Manager","ITD-07"],["Cobra","Community Manager","ITD-08"],["Baj","Server Supervisor","ITD-09"],["Mirko","Staff Manager","ITD-10"],["Maverick","Staff Manager","ITD-11"],["Pavel","Supervisor","ITD-12"]];
             RAW.forEach(s => { db[s[0]] = { pass: s[0]+"-01", grado: s[1], mat: s[2], ore: 0, warns: 0 }; });
             save();
         }
@@ -227,7 +228,7 @@
                 document.getElementById('portal').classList.remove('hidden');
                 if(ADM_LIST.includes(u)) { document.getElementById('adm-btn').classList.remove('hidden'); refreshAdmList(); }
                 updateArea(); renderMatricole();
-            } else alert("Accesso Negato");
+            } else alert("Credenziali Errate");
         }
 
         async function sendLog(tipo, sessione = 0) {
@@ -236,17 +237,39 @@
             const dateStr = now.toLocaleDateString('it-IT');
             const timeStr = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
             
-            let messaggio = "";
+            let description = "";
+            let color = 0;
+
             if (tipo === "INIZIO") {
-                messaggio = `📥 **ENTRATA IN SERVIZIO – STAFF**\n👤 Operatore: <@${db[user].mat}>\n🆔 ID Operatore: ${db[user].mat}\n🏷️ Ruolo: ${db[user].grado}\n⏰ Orario Entrata: ${dateStr} - ${timeStr}`;
+                color = 16766720; // Oro
+                description = `📥 **ENTRATA IN SERVIZIO – STAFF**\n` +
+                              `👤 Operatore: <@${db[user].mat.replace('ITD-', '')}>\n` +
+                              `🆔 ID Operatore: ${db[user].mat}\n` +
+                              `🏷️ Ruolo: ${db[user].grado}\n` +
+                              `⏰ Orario Entrata: ${dateStr} - ${timeStr}`;
             } else {
+                color = 16711680; // Rosso
                 const start = new Date(now - sessione * 1000);
                 const startDateStr = start.toLocaleDateString('it-IT');
                 const startTimeStr = start.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-                messaggio = `📤 **USCITA DAL SERVIZIO – STAFF**\n👤 Operatore: <@${db[user].mat}>\n🆔 ID Operatore: ${db[user].mat}\n🏷️ Ruolo: ${db[user].grado}\n⏰ Orario Entrata: ${startDateStr} - ${startTimeStr}\n⏰ Orario Uscita: ${dateStr} - ${timeStr}\n⏳ Durata Totale: ${fmt(sessione)}`;
+                description = `📤 **USCITA DAL SERVIZIO – STAFF**\n` +
+                              `👤 Operatore: <@${db[user].mat.replace('ITD-', '')}>\n` +
+                              `🆔 ID Operatore: ${db[user].mat}\n` +
+                              `🏷️ Ruolo: ${db[user].grado}\n` +
+                              `⏰ Orario Entrata: ${startDateStr} - ${startTimeStr}\n` +
+                              `⏰ Orario Uscita: ${dateStr} - ${timeStr}\n` +
+                              `⏳ Durata Totale: ${fmt(sessione)}`;
             }
 
-            fetch(DISCORD_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: messaggio }) });
+            const payload = {
+                embeds: [{
+                    description: description,
+                    color: color,
+                    timestamp: new Date()
+                }]
+            };
+
+            fetch(DISCORD_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         }
 
         function toggleT() {
@@ -284,7 +307,7 @@
         function renderMatricole() {
             let b = document.getElementById('m-body');
             const sorted = Object.keys(db).sort((x,y) => db[x].mat.localeCompare(db[y].mat, undefined, {numeric: true}));
-            b.innerHTML = sorted.map(k => `<tr><td>${db[k].mat}</td><td>${k}</td><td>${db[k].grado}</td><td>${db[k].warns || 0}</td></tr>`).join('');
+            b.innerHTML = sorted.map(k => `<tr><td><b>${db[k].mat}</b></td><td>${k}</td><td>${db[k].grado}</td><td>${db[k].warns || 0}</td></tr>`).join('');
         }
         function updateArea() {
             document.getElementById('u-grado').innerText = db[user].grado;
@@ -307,7 +330,7 @@
             db[s].grado = document.getElementById('ed-g').value;
             db[s].mat = document.getElementById('ed-m').value;
             db[s].ore = parseInt(document.getElementById('ed-h').value);
-            save(); renderMatricole(); alert("Dati salvati");
+            save(); renderMatricole(); alert("Database aggiornato con successo");
         }
         function saveT() {
             let d = document.getElementById('e-day').value;
