@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ITDR STAFF PORTAL v31.1 | 2026</title>
+    <title>ITDR STAFF PORTAL v31.0 | 2026</title>
     <style>
         :root {
             --blue: #007bff;
             --dark: #051e34;
             --danger: #dc3545;
             --accent: #00d4ff;
-            --glass: rgba(0, 123, 255, 0.15);
-            --card-bg: rgba(5, 30, 52, 0.85);
+            --glass: rgba(0, 123, 255, 0.1);
         }
 
         body {
@@ -26,30 +25,6 @@
         }
 
         .hidden { display: none !important; }
-
-        /* --- BACKGROUNDS PER SEZIONE --- */
-        #area { 
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://res.cloudinary.com/dbxwiln0a/image/upload/v1773159772/dejgkvp5mafpswebsklx.webp'); 
-        }
-        #servizio { 
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://res.cloudinary.com/dbxwiln0a/image/upload/v1773159773/xdjgrwzdhv2b8pjnaid0.webp'); 
-        }
-        #turni { 
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://image2url.com/r2/default/images/1773159871831-355d56c8-6aeb-4d24-b7a3-88e2d3af8f7a.webp'); 
-        }
-        #matricole { 
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://kommodo.ai/i/diU5wMpInkEMTu73mamN'); 
-        }
-        #admin { background: #000; }
-
-        section {
-            min-height: calc(100vh - 70px);
-            background-size: cover !important;
-            background-position: center !important;
-            background-attachment: fixed !important;
-            padding: 40px 20px;
-            box-sizing: border-box;
-        }
 
         /* --- LOGIN --- */
         #login-screen {
@@ -71,7 +46,7 @@
             text-align: center;
             width: 360px;
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(5px);
         }
 
         /* --- NAVBAR --- */
@@ -105,27 +80,21 @@
         nav button:hover { background: var(--blue); }
 
         /* --- LAYOUT --- */
-        .container { max-width: 1100px; margin: auto; text-align: center; flex: 1; }
+        .container { padding: 30px; max-width: 1100px; margin: auto; text-align: center; flex: 1; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
-        .card { 
-            background: var(--card-bg); 
-            padding: 25px; 
-            border-radius: 15px; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            backdrop-filter: blur(5px);
-        }
+        .card { background: var(--dark); padding: 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); }
         .card h3 { color: var(--accent); margin: 0; font-size: 11px; text-transform: uppercase; }
         .card p { font-size: 22px; margin: 10px 0; font-weight: bold; }
 
         .img-header { width: 100%; max-width: 550px; border-radius: 15px; margin-bottom: 30px; border: 2px solid var(--blue); }
 
-        .m-table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 10px; overflow: hidden; backdrop-filter: blur(5px); }
+        .m-table { width: 100%; border-collapse: collapse; background: var(--dark); border-radius: 10px; overflow: hidden; }
         .m-table th { background: var(--blue); color: white; padding: 15px; text-align: left; font-size: 12px; }
         .m-table td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: left; }
 
         /* --- ADMIN --- */
         .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; text-align: left; }
-        .admin-card { background: rgba(10, 37, 64, 0.9); padding: 20px; border-radius: 12px; border: 1px solid #1a3a5a; }
+        .admin-card { background: #0a2540; padding: 20px; border-radius: 12px; border: 1px solid #1a3a5a; }
 
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; }
         .btn-primary { width: 100%; padding: 12px; background: var(--blue); border: none; color: #fff; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
@@ -201,12 +170,10 @@
             </section>
 
             <section id="matricole" class="hidden">
-                <div style="padding-top:20px;">
-                    <table class="m-table">
-                        <thead><tr><th>Mat.</th><th>Staffer</th><th>Grado</th><th>Sanzioni</th></tr></thead>
-                        <tbody id="m-body"></tbody>
-                    </table>
-                </div>
+                <table class="m-table">
+                    <thead><tr><th>Mat.</th><th>Staffer</th><th>Grado</th><th>Sanzioni</th></tr></thead>
+                    <tbody id="m-body"></tbody>
+                </table>
             </section>
 
             <section id="admin" class="hidden">
@@ -285,7 +252,7 @@
                         { name: "Matricola", value: db[user].mat, inline: true },
                         { name: tipo === "INIZIO" ? "Orario di inizio" : "Orario Fine", value: now, inline: false }
                     ],
-                    footer: { text: "ITDR Portal v31.1 | 2026" },
+                    footer: { text: "ITDR Portal v31 | 2026" },
                     timestamp: new Date()
                 }]
             };
