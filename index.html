@@ -2,75 +2,202 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Portale ITDR - Gestione Totale</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>ITDR - GESTIONE STAFF</title>
+    <style>
+        /* CSS INTEGRATO */
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        .hidden { display: none !important; }
+        
+        /* Login */
+        #login-page { height: 100vh; display: flex; justify-content: center; align-items: center; background: radial-gradient(#012a4a, #000); }
+        .login-box { background: #051e34; padding: 30px; border-radius: 15px; border: 1px solid #007bff; text-align: center; width: 320px; }
+        
+        /* Navbar */
+        nav { background: #051e34; padding: 15px; display: flex; justify-content: space-between; border-bottom: 2px solid #007bff; }
+        nav button { background: #007bff; color: white; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold; margin-right: 5px; border-radius: 4px; }
+        .btn-red { background: #dc3545 !important; }
+
+        /* Main Content */
+        .container { padding: 20px; max-width: 1000px; margin: auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .card { background: #051e34; padding: 20px; border-radius: 10px; border: 1px solid #102a43; text-align: center; }
+        .card h3 { margin-top: 0; color: #00d4ff; font-size: 14px; text-transform: uppercase; }
+        .card p { font-size: 24px; font-weight: bold; margin: 10px 0; }
+
+        /* Pannello Admin */
+        .admin-section { background: #102a43; padding: 20px; border-radius: 10px; margin-top: 20px; }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
+        .admin-flex { display: flex; gap: 20px; flex-wrap: wrap; }
+        .admin-box { flex: 1; min-width: 300px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; }
+    </style>
 </head>
 <body>
-    <div id="login-overlay">
-        <div class="glass-box">
+
+    <div id="login-page">
+        <div class="login-box">
             <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773088043/mahwplqpvvuy34vczm3j.webp" width="60">
-            <h2>ITDR LOGIN</h2>
-            <input type="text" id="username" placeholder="Nome Utente">
-            <input type="password" id="password" placeholder="Password">
-            <button onclick="checkLogin()" class="btn-primary">ACCEDI</button>
+            <h2>ITDR STAFF</h2>
+            <input type="text" id="user-in" placeholder="Nome Utente">
+            <input type="password" id="pass-in" placeholder="Password">
+            <button onclick="login()">ACCEDI</button>
         </div>
     </div>
 
-    <div id="main-content" style="display:none;">
-        <nav class="navbar">
-            <span class="logo">ITDR STAFF</span>
-            <div class="menu">
-                <button onclick="tab('area-personale')">Area Personale</button>
-                <button onclick="tab('turni')">Turni</button>
-                <button id="admin-link" style="display:none;" onclick="tab('admin')">PANNELLO ADMIN</button>
+    <div id="main-page" class="hidden">
+        <nav>
+            <div>
+                <button onclick="show('area')">Area Personale</button>
+                <button onclick="show('turni')">Turni</button>
+                <button id="admin-btn" class="hidden" onclick="show('admin')">PANNELLO STAFF</button>
             </div>
-            <button onclick="location.reload()" class="logout">ESCI</button>
+            <button class="btn-red" onclick="location.reload()">ESCI</button>
         </nav>
 
         <div class="container">
-            <section id="area-personale" class="page">
+            <section id="area">
                 <div class="grid">
-                    <div class="card"><h3>GRADO</h3><p id="u-grado">-</p></div>
-                    <div class="card"><h3>MATRICOLA</h3><p id="u-mat">-</p></div>
-                    <div class="card"><h3>ORE TOTALI</h3><p id="u-ore">00:00:00</p></div>
-                    <div class="card"><h3>RICHIAMI</h3><p id="u-warns" style="color:red">0</p></div>
+                    <div class="card"><h3>Grado</h3><p id="txt-grado">-</p></div>
+                    <div class="card"><h3>Matricola</h3><p id="txt-mat">-</p></div>
+                    <div class="card"><h3>Ore Totali</h3><p id="txt-ore">00:00:00</p></div>
+                    <div class="card"><h3>Richiami</h3><p id="txt-warns" style="color:red">0</p></div>
                 </div>
             </section>
 
-            <section id="turni" class="page" style="display:none;">
-                <div class="timer-card">
-                    <h2 id="timer">00:00:00</h2>
-                    <button id="b-start" onclick="startT()">INIZIA</button>
-                    <button id="b-stop" style="display:none;" onclick="stopT()">FINE</button>
+            <section id="turni" class="hidden">
+                <div class="card">
+                    <h1 id="timer">00:00:00</h1>
+                    <button id="start-btn" onclick="toggleTimer()">INIZIA SERVIZIO</button>
                 </div>
-                <div id="logs"></div>
             </section>
 
-            <section id="admin" class="page" style="display:none;">
-                <div class="admin-grid">
-                    <div class="card-admin">
-                        <h3>AGGIUNGI STAFF</h3>
-                        <input type="text" id="n-n" placeholder="Nome">
-                        <input type="text" id="n-p" placeholder="Password">
-                        <input type="text" id="n-g" placeholder="Grado">
-                        <input type="text" id="n-m" placeholder="Matricola">
-                        <button onclick="addS()">AGGIUNGI</button>
+            <section id="admin" class="hidden">
+                <div class="admin-flex">
+                    <div class="admin-box">
+                        <h3>➕ AGGIUNGI NUOVO STAFF</h3>
+                        <input type="text" id="add-n" placeholder="Nome">
+                        <input type="text" id="add-p" placeholder="Password">
+                        <input type="text" id="add-g" placeholder="Grado">
+                        <input type="text" id="add-m" placeholder="Matricola">
+                        <button onclick="aggiungiStaff()">CONFERMA ARRUOLAMENTO</button>
                     </div>
-                    <div class="card-admin">
-                        <h3>GESTISCI STAFF</h3>
-                        <select id="staff-list" onchange="loadS()"></select>
-                        <div id="edit-zone" style="display:none; margin-top:10px;">
-                            <input type="text" id="e-g">
-                            <input type="text" id="e-m">
-                            <button onclick="saveS()">SALVA</button>
-                            <button onclick="delS()" style="background:red">ELIMINA STAFF</button>
+
+                    <div class="admin-box">
+                        <h3>⚙️ GESTISCI / RIMUOVI</h3>
+                        <select id="select-staff" onchange="caricaDati()"></select>
+                        <div id="mod-area" class="hidden">
+                            <input type="text" id="mod-g" placeholder="Nuovo Grado">
+                            <input type="text" id="mod-m" placeholder="Nuova Matricola">
+                            <button onclick="salvaMod()">SALVA MODIFICHE</button>
+                            <button class="btn-red" style="margin-top:10px" onclick="rimuoviStaff()">ELIMINA STAFF DAL SITO</button>
                         </div>
                     </div>
                 </div>
             </section>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        // LOGICA JAVASCRIPT
+        const ADMINS = ["Daniel", "Michele", "Mav", "Arduino", "Strepitoso", "Archadian", "Djsamy", "Cobra", "Baj", "Mirko", "Maverick", "Pavel", "Diego"];
+        let db = JSON.parse(localStorage.getItem('ITDR_FINAL_V12')) || {};
+        let loggato = null; let secondi = 0; let intervallo = null; let inServizio = false;
+
+        // Inizializzazione
+        if (Object.keys(db).length === 0) {
+            ADMINS.forEach(n => {
+                db[n] = { pass: n + "-01", grado: "Staff", mat: "ITD-00", ore: 0, warns: 0 };
+            });
+            salvaDB();
+        }
+
+        function login() {
+            let u = document.getElementById('user-in').value;
+            let p = document.getElementById('pass-in').value;
+            if (db[u] && db[u].pass === p) {
+                loggato = u;
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('main-page').classList.remove('hidden');
+                if (ADMINS.includes(u)) {
+                    document.getElementById('admin-btn').classList.remove('hidden');
+                    aggiornaListaAdmin();
+                }
+                aggiornaUI();
+            } else alert("Accesso Negato!");
+        }
+
+        function aggiornaUI() {
+            document.getElementById('txt-grado').innerText = db[loggato].grado;
+            document.getElementById('txt-mat').innerText = db[loggato].mat;
+            document.getElementById('txt-warns').innerText = db[loggato].warns;
+            document.getElementById('txt-ore').innerText = format(db[loggato].ore);
+        }
+
+        function toggleTimer() {
+            let btn = document.getElementById('start-btn');
+            if (!inServizio) {
+                inServizio = true; btn.innerText = "FINE SERVIZIO"; btn.classList.add('btn-red');
+                intervallo = setInterval(() => { secondi++; document.getElementById('timer').innerText = format(secondi); }, 1000);
+            } else {
+                inServizio = false; btn.innerText = "INIZIA SERVIZIO"; btn.classList.remove('btn-red');
+                clearInterval(intervallo);
+                db[loggato].ore += secondi; secondi = 0; salvaDB(); aggiornaUI();
+                document.getElementById('timer').innerText = "00:00:00";
+            }
+        }
+
+        // FUNZIONI PANNELLO STAFF
+        function aggiungiStaff() {
+            let n = document.getElementById('add-n').value;
+            if (!n) return alert("Metti il nome!");
+            db[n] = {
+                pass: document.getElementById('add-p').value,
+                grado: document.getElementById('add-g').value,
+                mat: document.getElementById('add-m').value,
+                ore: 0, warns: 0
+            };
+            salvaDB(); aggiornaListaAdmin(); alert("Staffer aggiunto!");
+        }
+
+        function rimuoviStaff() {
+            let scelto = document.getElementById('select-staff').value;
+            if (scelto === loggato) return alert("Non puoi eliminare te stesso!");
+            if (confirm("Vuoi davvero eliminare " + scelto + " dal sito?")) {
+                delete db[scelto];
+                salvaDB(); aggiornaListaAdmin();
+                document.getElementById('mod-area').classList.add('hidden');
+                alert("Staffer rimosso.");
+            }
+        }
+
+        function caricaDati() {
+            let scelto = document.getElementById('select-staff').value;
+            if (!scelto) return document.getElementById('mod-area').classList.add('hidden');
+            document.getElementById('mod-area').classList.remove('hidden');
+            document.getElementById('mod-g').value = db[scelto].grado;
+            document.getElementById('mod-m').value = db[scelto].mat;
+        }
+
+        function salvaMod() {
+            let scelto = document.getElementById('select-staff').value;
+            db[scelto].grado = document.getElementById('mod-g').value;
+            db[scelto].mat = document.getElementById('mod-m').value;
+            salvaDB(); aggiornaUI(); alert("Dati salvati!");
+        }
+
+        function aggiornaListaAdmin() {
+            let s = document.getElementById('select-staff');
+            s.innerHTML = '<option value="">-- Seleziona Staffer --</option>';
+            Object.keys(db).sort().forEach(n => { s.innerHTML += `<option value="${n}">${n}</option>`; });
+        }
+
+        function format(s) { return new Date(s * 1000).toISOString().substr(11, 8); }
+        function show(id) {
+            document.getElementById('area').classList.add('hidden');
+            document.getElementById('turni').classList.add('hidden');
+            document.getElementById('admin').classList.add('hidden');
+            document.getElementById(id).classList.remove('hidden');
+        }
+        function salvaDB() { localStorage.setItem('ITDR_FINAL_V12', JSON.stringify(db)); }
+    </script>
 </body>
 </html>
