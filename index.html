@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ITDR STAFF PORTAL v32.0 | 2026</title>
+    <title>ITDR STAFF PORTAL v33.0 | 2026</title>
     <style id="custom-theme">
         :root {
             --gold: #D4AF37;
@@ -196,15 +196,13 @@
                 <div class="admin-grid">
                     <div class="admin-card">
                         <h3 style="color:var(--gold)">🎨 DESIGN & ESTETICA</h3>
-                        <label style="font-size: 11px;">Colore Principale:</label>
                         <input type="color" id="cfg-color" onchange="updateTheme()">
-                        <input type="text" id="cfg-logo" placeholder="URL Logo Navigazione" onchange="updateTheme()">
+                        <input type="text" id="cfg-logo" placeholder="URL Logo" onchange="updateTheme()">
                         <input type="text" id="cfg-b-home" placeholder="URL Banner Home" onchange="updateTheme()">
                         <input type="text" id="cfg-b-serv" placeholder="URL Banner Servizio" onchange="updateTheme()">
                         <input type="text" id="cfg-b-memb" placeholder="URL Banner Membri" onchange="updateTheme()">
                         <button class="btn-primary" onclick="saveTheme()">SALVA ESTETICA</button>
                     </div>
-
                     <div class="admin-card">
                         <h3 style="color:var(--gold)">GESTIONE STAFF</h3>
                         <select id="s-sel" onchange="loadStaffData()"><option value="">Scegli...</option></select>
@@ -217,14 +215,6 @@
                             <button class="btn-primary btn-danger" onclick="changeWarns(-1)">-1 Warn</button>
                         </div>
                     </div>
-
-                    <div class="admin-card">
-                        <h3 style="color:var(--gold)">AGGIUNGI MEMBRO</h3>
-                        <input type="text" id="new-u" placeholder="Nome">
-                        <input type="text" id="new-g" placeholder="Grado">
-                        <input type="text" id="new-m" placeholder="Matricola">
-                        <button class="btn-primary" onclick="addMember()">AGGIUNGI</button>
-                    </div>
                 </div>
             </section>
         </div>
@@ -233,12 +223,35 @@
 
     <script>
         const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1480996793096605838/avlMEkY5vYoM-fTkLQKovYhQTGh-JXzH9dquQhPMqMYaKvUcQV2feXb4rtvADz42rai-";
-        const ADM_LIST = ["Daniel", "Michele", "Mav", "Arduino", "Strepitoso", "Archadian", "Djsamy", "Cobra", "Baj", "Mirko", "Maverick", "Pavel"];
+        const ADM_LIST = ["Daniel", "Michele", "Mav", "Arduino", "Strepitoso", "Archadian", "Djsamy", "Cobra", "Baj", "Mirko", "Maverick", "Pavel", "Hydro", "Barone", "Diego"];
 
-        let db = JSON.parse(localStorage.getItem('ITDR_V27_DB')) || {};
-        let tr = JSON.parse(localStorage.getItem('ITDR_V27_TR')) || { "Lunedi":{p:"-",s:"-"}, "Martedi":{p:"-",s:"-"}, "Mercoledi":{p:"-",s:"-"}, "Giovedi":{p:"-",s:"-"}, "Venerdi":{p:"-",s:"-"}, "Sabato":{p:"-",s:"-"}, "Domenica":{p:"-",s:"-"} };
+        // DATABASE INIZIALE CON TUTTI I MEMBRI
+        const INITIAL_STAFF = [
+            ["Daniel","Founder","ITD-01"],["Michele","Founder","ITD-02"],["Mav","Co-Founder","ITD-03"],
+            ["Arduino","Owner","ITD-04"],["Strepitoso","Co Owner","ITD-05"],["Archadian","Co Owner","ITD-06"],
+            ["Baj","Server Supervisor","ITD-07"],["Cobra","Community Manager","ITD-08"],["Djsamy","Community Manager","ITD-09"],
+            ["Mirko","Staff Manager","ITD-10"],["Maverick","Staff Manager","ITD-11"],["Pavel","Supervisor","ITD-12"],
+            ["Diego","Supervisor","ITD-13"],["Barone","Head Admin","ITD-14"],["Hydro","Head Admin","ITD-15"],
+            ["Fabbri","Senior Admin","ITD-16"],["Matz","Senior Admin","ITD-17"],["Nathalino","Senior Admin","ITD-18"],
+            ["Viper","Admin","ITD-19"],["Xenoo","Admin","ITD-20"],["Adamo","Head Mod","ITD-21"],
+            ["Nano","Moderator","ITD-22"],["Gabriel","Moderator","ITD-23"],["Chorno","Moderator","ITD-24"],
+            ["Joker","Moderator","ITD-25"],["Nenne","Trial Mod","ITD-26"],["Mattia","Trial Mod","ITD-27"],
+            ["Lollo","Senior Helper","ITD-28"],["Simo","Helper","ITD-29"],["Vortex","Helper","ITD-30"],
+            ["Void","Helper","ITD-31"],["Sangue","Trial Helper","ITD-32"],["Ibra","Trial Helper","ITD-33"],
+            ["Noxen","Trial Helper","ITD-34"],["Ash","Trial Helper","ITD-35"],["Pietro","Trial Helper","ITD-36"]
+        ];
+
+        let db = JSON.parse(localStorage.getItem('ITDR_V33_DB')) || {};
+        let tr = JSON.parse(localStorage.getItem('ITDR_V33_TR')) || { "Lunedi":{p:"-",s:"-"}, "Martedi":{p:"-",s:"-"}, "Mercoledi":{p:"-",s:"-"}, "Giovedi":{p:"-",s:"-"}, "Venerdi":{p:"-",s:"-"}, "Sabato":{p:"-",s:"-"}, "Domenica":{p:"-",s:"-"} };
         
-        // Caricamento Tema
+        // Se il DB è vuoto, lo popolo con la lista completa
+        if(Object.keys(db).length === 0) {
+            INITIAL_STAFF.forEach(s => {
+                db[s[0]] = { pass: s[0] + "-01", grado: s[1], mat: s[2], ore: 0, warns: 0 };
+            });
+            save();
+        }
+
         let theme = JSON.parse(localStorage.getItem('ITDR_THEME')) || {
             color: "#D4AF37",
             logo: "https://res.cloudinary.com/dbxwiln0a/image/upload/v1773155102/q616frliniciy9cdxhsk.gif",
@@ -246,11 +259,6 @@
             bServ: "https://res.cloudinary.com/dbxwiln0a/image/upload/v1773150993/dp66lxgcjwmtonwpc9gc.png",
             bMemb: "https://res.cloudinary.com/dbxwiln0a/image/upload/v1773150993/dp66lxgcjwmtonwpc9gc.png"
         };
-
-        if(Object.keys(db).length === 0) {
-            db["Pavel"] = { pass: "Pavel-01", grado: "Supervisor", mat: "ITD-12", ore: 0, warns: 0 };
-            save();
-        }
 
         let user = null, sec = 0, interval = null, on = false, isPaused = false;
 
@@ -260,7 +268,6 @@
             document.querySelector('.banner-home').src = theme.bHome;
             document.querySelector('.banner-servizio').src = theme.bServ;
             document.querySelector('.banner-membri').src = theme.bMemb;
-            
             document.getElementById('cfg-color').value = theme.color;
             document.getElementById('cfg-logo').value = theme.logo;
             document.getElementById('cfg-b-home').value = theme.bHome;
@@ -288,21 +295,20 @@
                 document.getElementById('portal').classList.remove('hidden');
                 if(ADM_LIST.includes(u)) { document.getElementById('adm-btn').classList.remove('hidden'); refreshAdmList(); }
                 updateArea(); renderMatricole(); applyTheme();
-            } else alert("Dati errati!");
+            } else alert("Dati errati! Ricorda: Nome-01 (es. Daniel-01)");
         }
 
         async function sendLog(tipo, sessione = 0) {
-            if(!DISCORD_WEBHOOK) return;
             const now = new Date().toLocaleTimeString('it-IT');
             let embed = {
                 username: "ITDR LOG SYSTEM",
                 embeds: [{
-                    title: tipo === "INIZIO" ? "🚀 STAFF ENTRATO IN SERVIZIO" : "🏁 STAFF USCITO DAL SERVIZIO",
+                    title: tipo === "INIZIO" ? "🚀 ENTRATO IN SERVIZIO" : "🏁 USCITO DAL SERVIZIO",
                     color: tipo === "INIZIO" ? 55295 : 16711680,
                     fields: [
-                        { name: "Nome staffer", value: user, inline: true },
+                        { name: "Staffer", value: user, inline: true },
                         { name: "Matricola", value: db[user].mat, inline: true },
-                        { name: tipo === "INIZIO" ? "Orario di inizio" : "Orario Fine", value: now, inline: false }
+                        { name: "Orario", value: now, inline: false }
                     ],
                     timestamp: new Date()
                 }]
@@ -315,8 +321,7 @@
         }
 
         function toggleT() {
-            let b = document.getElementById('t-btn');
-            let pBtn = document.getElementById('p-btn');
+            let b = document.getElementById('t-btn'), pBtn = document.getElementById('p-btn');
             if(!on) {
                 on = true; isPaused = false;
                 b.innerText = "FINE"; b.classList.add('btn-danger');
@@ -340,13 +345,6 @@
             else { isPaused = false; interval = setInterval(() => { sec++; document.getElementById('timer-val').innerText = fmt(sec); }, 1000); pBtn.innerText = "PAUSA"; }
         }
 
-        function addMember() {
-            let u = document.getElementById('new-u').value.trim();
-            if(!u || db[u]) return alert("Errore nome!");
-            db[u] = { pass: u + "-01", grado: document.getElementById('new-g').value, mat: document.getElementById('new-m').value, ore: 0, warns: 0 };
-            save(); refreshAdmList(); renderMatricole(); alert("Aggiunto!");
-        }
-
         function loadStaffData() {
             let s = document.getElementById('s-sel').value;
             if(!db[s]) return;
@@ -360,7 +358,7 @@
             db[s].grado = document.getElementById('ed-g').value;
             db[s].mat = document.getElementById('ed-m').value;
             db[s].ore = parseInt(document.getElementById('ed-h').value);
-            save(); renderMatricole(); alert("Aggiornato!");
+            save(); renderMatricole(); alert("Dati Aggiornati!");
         }
 
         function changeWarns(v) {
@@ -370,18 +368,26 @@
             save(); renderMatricole();
         }
 
+        function updateArea() {
+            document.getElementById('u-grado').innerText = db[user].grado;
+            document.getElementById('u-mat').innerText = db[user].mat;
+            document.getElementById('u-ore').innerText = fmt(db[user].ore);
+            document.getElementById('u-warns').innerText = db[user].warns || 0;
+        }
+
         function renderMatricole() {
             let b = document.getElementById('m-body');
-            b.innerHTML = Object.keys(db).sort().map(k => `<tr><td>${db[k].mat}</td><td>${k}</td><td>${db[k].grado}</td><td>${db[k].warns || 0}</td></tr>`).join('');
+            const sorted = Object.keys(db).sort((x,y) => db[x].mat.localeCompare(db[y].mat, undefined, {numeric: true}));
+            b.innerHTML = sorted.map(k => `<tr><td>${db[k].mat}</td><td>${k}</td><td>${db[k].grado}</td><td>${db[k].warns || 0}</td></tr>`).join('');
         }
 
         function refreshAdmList() {
             let s = document.getElementById('s-sel');
-            s.innerHTML = '<option value="">Scegli...</option>' + Object.keys(db).map(k => `<option value="${k}">${k}</option>`).join('');
+            s.innerHTML = '<option value="">Scegli...</option>' + Object.keys(db).sort().map(k => `<option value="${k}">${k}</option>`).join('');
         }
 
         function fmt(s) { return new Date(s * 1000).toISOString().substr(11, 8); }
-        function save() { localStorage.setItem('ITDR_V27_DB', JSON.stringify(db)); }
+        function save() { localStorage.setItem('ITDR_V33_DB', JSON.stringify(db)); }
         function tab(id) {
             ["area", "servizio", "turni", "matricole", "admin"].forEach(t => document.getElementById(t).classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
