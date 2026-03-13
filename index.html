@@ -3,269 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LSPD - DATABASE OPERATIVO</title>
+    <title>LSPD - OFFICIAL DATABASE</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #02040a;
-            --sidebar: #050a14;
-            --accent: #1e4ba3; /* Blu LSPD */
-            --gold: #d4af37;   /* Distintivo */
-            --border: #1a2a44;
-            --text: #c0c0c0;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Share Tech Mono', monospace;
-            margin: 0; display: flex; height: 100vh; overflow: hidden;
-        }
-
+        :root { --bg: #02040a; --sidebar: #050a14; --accent: #1e4ba3; --gold: #d4af37; --border: #1a2a44; --text: #c0c0c0; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Share Tech Mono', monospace; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         .hidden { display: none !important; }
 
-        /* SIDEBAR POLIZIA */
-        aside {
-            width: 260px; background: var(--sidebar);
-            border-right: 2px solid var(--accent);
-            display: flex; flex-direction: column; padding: 20px 0;
-            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
-        }
-
+        /* SIDEBAR */
+        aside { width: 260px; background: var(--sidebar); border-right: 2px solid var(--accent); display: flex; flex-direction: column; padding: 20px 0; }
         .badge-area { text-align: center; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
         .badge-area img { width: 100px; filter: drop-shadow(0 0 5px var(--gold)); }
-        .dept-title { color: var(--gold); font-size: 14px; margin-top: 10px; font-weight: bold; letter-spacing: 1px; }
-
         nav { flex: 1; padding: 20px 0; }
-        nav button {
-            width: 100%; background: transparent; border: none; color: #5a7090;
-            padding: 15px 25px; text-align: left; cursor: pointer;
-            font-family: inherit; text-transform: uppercase; font-size: 13px;
-            transition: 0.3s;
-        }
+        nav button { width: 100%; background: transparent; border: none; color: #5a7090; padding: 15px 25px; text-align: left; cursor: pointer; font-family: inherit; text-transform: uppercase; font-size: 13px; }
         nav button:hover, nav button.active { color: #fff; border-left: 4px solid var(--gold); background: rgba(30,75,163,0.2); }
 
-        /* MAIN CONTENT */
-        main { flex: 1; padding: 40px; overflow-y: auto; background-image: linear-gradient(rgba(2,4,10,0.9), rgba(2,4,10,0.9)), url('https://www.transparenttextures.com/patterns/carbon-fibre.png'); }
-        .header-title { border-bottom: 2px solid var(--accent); margin-bottom: 30px; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        /* MAIN */
+        main { flex: 1; padding: 40px; overflow-y: auto; background: radial-gradient(#0a1a33 0%, #02040a 100%); }
+        .header-title { border-bottom: 2px solid var(--accent); margin-bottom: 30px; padding-bottom: 10px; }
         .header-title h1 { margin: 0; font-size: 26px; color: #fff; text-shadow: 0 0 10px var(--accent); }
 
-        /* PANNELLI */
-        .panel { background: rgba(5,10,20,0.8); border: 1px solid var(--border); padding: 25px; border-radius: 2px; margin-bottom: 20px; position: relative; overflow: hidden; }
-        .panel::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--accent); }
-        
+        .panel { background: rgba(5,10,20,0.8); border: 1px solid var(--border); padding: 25px; border-radius: 2px; margin-bottom: 20px; border-top: 3px solid var(--accent); }
         .dash-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .data-label { font-size: 11px; color: var(--gold); text-transform: uppercase; }
         .data-value { font-size: 24px; color: #fff; margin-top: 5px; }
 
-        /* INPUT & BOTTONI */
-        input, select, textarea { 
-            width: 100%; background: #000; border: 1px solid var(--accent); color: #fff; 
-            padding: 12px; margin: 10px 0; font-family: inherit;
-        }
-        .btn-police {
-            background: var(--accent); border: 1px solid #3262c7; color: #fff;
-            padding: 15px; cursor: pointer; font-family: inherit; text-transform: uppercase;
-            font-weight: bold; width: 100%; transition: 0.3s;
-        }
+        .btn-police { background: var(--accent); border: 1px solid #3262c7; color: #fff; padding: 15px; cursor: pointer; font-family: inherit; text-transform: uppercase; font-weight: bold; width: 100%; }
         .btn-police:hover { background: #285bc4; box-shadow: 0 0 15px var(--accent); }
-        .btn-emergency { border-color: #ff3333; color: #ff3333; background: transparent; }
-        .btn-emergency:hover { background: #ff3333; color: #fff; }
 
-        /* MATRICOLE TABLE */
         table { width: 100%; border-collapse: collapse; }
         th { background: var(--accent); color: #fff; padding: 12px; text-align: left; font-size: 12px; }
-        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 14px; color: #fff; }
-        tr:hover { background: rgba(255,255,255,0.05); }
+        td { padding: 12px; border-bottom: 1px solid var(--border); color: #fff; font-size: 13px; }
+        tr.vacancy { color: #444; font-style: italic; }
 
-        /* LOGS */
-        .log-entry { border-left: 4px solid var(--gold); background: rgba(0,0,0,0.3); padding: 15px; margin-bottom: 10px; display: flex; gap: 20px; }
-        .rbx-thumb { width: 60px; height: 60px; border: 1px solid var(--accent); background: #000; }
-
-        footer { text-align: center; margin-top: 40px; font-size: 11px; color: #444; letter-spacing: 2px; }
+        footer { text-align: center; margin-top: 20px; font-size: 10px; color: #333; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen" style="position:fixed; inset:0; background:radial-gradient(#0a1a33, #02040a); z-index:999; display:flex; align-items:center; justify-content:center;">
-        <div class="panel" style="width:350px; text-align:center; border-color:var(--gold);">
-            <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773180435/fep1qiz1x7pqqidpnmix.png" width="120">
-            <h2 style="color:#fff; margin-bottom:5px;">LSPD CENTRAL</h2>
-            <div style="color:var(--gold); font-size:10px; margin-bottom:20px;">LOS SANTOS POLICE DEPARTMENT</div>
-            <input type="text" id="user-in" placeholder="ID AGENTE (NOME)">
-            <input type="password" id="pass-in" placeholder="PASSWORD DI ACCESSO">
-            <button class="btn-police" onclick="login()">AUTENTICAZIONE</button>
+    <div id="login-screen" style="position:fixed; inset:0; background:#000; z-index:999; display:flex; align-items:center; justify-content:center;">
+        <div class="panel" style="width:320px; text-align:center;">
+            <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773180435/fep1qiz1x7pqqidpnmix.png" width="80">
+            <h2 style="color:#fff;">LSPD ACCESS</h2>
+            <input type="text" id="user-in" placeholder="NOME UTENTE (es. best.pavel)" style="width:100%; background:#000; border:1px solid var(--accent); color:#fff; padding:10px; margin:10px 0;">
+            <button class="btn-police" onclick="login()">ENTRA</button>
         </div>
     </div>
 
     <aside class="hidden" id="sidebar">
         <div class="badge-area">
             <img src="https://res.cloudinary.com/dbxwiln0a/image/upload/v1773180435/fep1qiz1x7pqqidpnmix.png">
-            <div class="dept-title">LSPD OFFICER</div>
+            <div style="color:var(--gold); font-size:12px; margin-top:10px;">CENTRAL STATION</div>
         </div>
         <nav>
             <button onclick="tab('area')" id="btn-area">PROFILO AGENTE</button>
             <button onclick="tab('servizio')" id="btn-servizio">STATO DI SERVIZIO</button>
-            <button onclick="tab('crimini')" id="btn-crimini">ARCHIVIO CRIMINALE</button>
-            <button onclick="tab('turni')" id="btn-turni">PATRIGLIAMENTO</button>
-            <button onclick="tab('matricole')" id="btn-matricole">ELENCO AGENTI</button>
-            <button id="adm-btn" class="hidden" onclick="tab('admin')" style="color:var(--gold)">COMANDO CENTRALE</button>
-            <button onclick="location.reload()" style="margin-top:20px; color:#ff4d4d;">DISCONNETTI</button>
+            <button onclick="tab('matricole')" id="btn-matricole">MATRICOLE</button>
+            <button id="adm-btn" class="hidden" onclick="tab('admin')" style="color:var(--gold)">COMANDO</button>
+            <button onclick="location.reload()" style="margin-top:20px; color:#ff4d4d;">LOGOUT</button>
         </nav>
     </aside>
 
     <main class="hidden" id="main-content">
         <div id="area">
-            <div class="header-title"><h1>DATI PERSONALI AGENTE</h1><span id="sys-time"></span></div>
+            <div class="header-title"><h1>DASHBOARD OPERATIVA</h1></div>
             <div class="dash-grid">
                 <div class="panel"><div class="data-label">GRADO</div><div id="d-grado" class="data-value">-</div></div>
-                <div class="panel"><div class="data-label">DISTINTIVO</div><div id="d-mat" class="data-value">-</div></div>
-                <div class="panel"><div class="data-label">ORE DI SERVIZIO (SETT)</div><div id="d-ore" class="data-value">0.00</div></div>
-                <div class="panel"><div class="data-label">RICHIAMI DISCIPLINARI</div><div id="d-warn" class="data-value" style="color:#ff3333">0</div></div>
+                <div class="panel"><div class="data-label">MATRICOLA</div><div id="d-mat" class="data-value">-</div></div>
+                <div class="panel"><div class="data-label">ORE TOTALI</div><div id="d-ore" class="data-value">0.00</div></div>
+                <div class="panel"><div class="data-label">ID ACCOUNT</div><div id="d-acc" class="data-value">-</div></div>
             </div>
         </div>
 
         <div id="servizio" class="hidden">
-            <div class="header-title"><h1>SISTEMA TIMBRATURA</h1></div>
+            <div class="header-title"><h1>10-8 | INIZIO SERVIZIO</h1></div>
             <div class="panel" style="text-align:center;">
-                <div class="data-label">TIMER SESSIONE OPERATIVA</div>
-                <div id="timer-display" style="font-size:60px; color:#fff; margin:20px 0; font-weight:bold;">00:00:00</div>
-                <button id="t-btn" class="btn-police" onclick="toggleT()">ENTRA IN SERVIZIO (10-8)</button>
-            </div>
-        </div>
-
-        <div id="crimini" class="hidden">
-            <div class="header-title"><h1>ARCHIVIO CRIMINALE ROBLOX</h1></div>
-            <div class="panel">
-                <input type="text" id="rbx-name" placeholder="SOGGETTO (NOME UTENTE)">
-                <select id="mod-type">
-                    <option value="BAN">CODICE 9 (ARRESTO/BAN)</option>
-                    <option value="WARN">MULTA/AMMONIZIONE</option>
-                </select>
-                <textarea id="mod-reason" placeholder="RAPPORTO DETTAGLIATO (MOTIVO)..."></textarea>
-                <button class="btn-police btn-emergency" onclick="submitMod()">INVIA RAPPORTO</button>
-            </div>
-            <div id="mod-logs"></div>
-        </div>
-
-        <div id="turni" class="hidden">
-            <div class="header-title"><h1>PIANO DI PATTUGLIAMENTO</h1></div>
-            <select id="view-day" onchange="showDay(this.value)"><option value="">SCEGLI TURNO...</option><option value="Lunedi">LUNEDÌ</option><option value="Martedi">MARTEDÌ</option><option value="Mercoledi">MERCOLEDÌ</option><option value="Giovedi">GIOVEDÌ</option><option value="Venerdi">VENERDÌ</option><option value="Sabato">SABATO</option><option value="Domenica">DOMENICA</option></select>
-            <div class="dash-grid" style="margin-top:20px;">
-                <div class="panel"><h3>TURNO MATTINA/POM</h3><p id="p-list" style="color:var(--gold)">-</p></div>
-                <div class="panel"><h3>TURNO SERA/NOTTE</h3><p id="s-list" style="color:var(--gold)">-</p></div>
+                <div id="timer-display" style="font-size:50px; color:#fff; margin-bottom:20px;">00:00:00</div>
+                <button id="t-btn" class="btn-police" onclick="toggleT()">INIZIA TURNO</button>
             </div>
         </div>
 
         <div id="matricole" class="hidden">
-            <div class="header-title"><h1>ORGANIGRAMMA LSPD</h1></div>
-            <table><thead><tr><th>DISTINTIVO</th><th>AGENTE</th><th>RANGO</th></tr></thead><tbody id="m-body"></tbody></table>
+            <div class="header-title"><h1>ELENCO UFFICIALI</h1></div>
+            <table>
+                <thead><tr><th>ID</th><th>RANGO</th><th>NOME OPERATIVO</th></tr></thead>
+                <tbody id="m-body"></tbody>
+            </table>
         </div>
 
         <div id="admin" class="hidden">
-            <div class="header-title"><h1>COMANDO CENTRALE (CHIEF ONLY)</h1></div>
+            <div class="header-title"><h1>CENTRAL COMMAND</h1></div>
             <div class="panel">
-                <button class="btn-police" onclick="generateRandomTurni()">GENERA PATTUGLIE CASUALI</button>
-            </div>
+                <p>Accesso riservato agli Alti Comandi per la gestione dei log e turni.</p>
+                </div>
         </div>
-
-        <footer>COMMISSIONER PAVEL - LOS SANTOS POLICE DEPARTMENT OFFICIAL PORTAL</footer>
+        <footer>RECORDS PROPERTY OF LSPD - LOS SANTOS</footer>
     </main>
 
     <script>
-        const WH_MOD = "https://discord.com/api/webhooks/1480953347941990512/tO72Y7nUOLn0atj93WQfdwrpvOw1213-opTl7hBTmunCVvht4Ck6lJcvb_7GPm-ZcLmr";
-        
-        // DATABASE POPOLATO CON I TUOI NOMI
-        const INITIAL_STAFF = [
-            ["Daniel","Founder","LSPD-01"],["Michele","Founder","LSPD-02"],["Mav","Co-Founder","LSPD-03"],
-            ["Arduino","Owner","LSPD-04"],["Strepitoso","Co Owner","LSPD-05"],["Archadian","Co Owner","LSPD-06"],
-            ["Baj","Server Supervisor","LSPD-07"],["Cobra","Community Manager","LSPD-08"],["Djsamy","Community Manager","LSPD-09"],
-            ["Mirko","Staff Manager","LSPD-10"],["Maverick","Staff Manager","LSPD-11"],["Pavel","Supervisor","LSPD-12"],
-            ["Diego","Supervisor","LSPD-13"],["Barone","Head Admin","LSPD-14"],["Hydro","Head Admin","LSPD-15"],
-            ["Fabbri","Senior Admin","LSPD-16"],["Matz","Senior Admin","LSPD-17"],["Nathalino","Senior Admin","LSPD-18"],
-            ["Viper","Admin","LSPD-19"],["Xenoo","Admin","LSPD-20"],["Adam","Head Mod","LSPD-21"],["Adamo","Head Mod","LSPD-22"],
-            ["Nano","Moderator","LSPD-23"],["Gabriel","Moderator","LSPD-24"],["Chorno","Moderator","LSPD-25"],
-            ["Joker","Moderator","LSPD-26"],["Nenne","Trial Mod","LSPD-27"],["Mattia","Trial Mod","LSPD-28"],
-            ["Lollo","Senior Helper","LSPD-29"],["Simo","Helper","LSPD-30"],["Vortex","Helper","LSPD-31"],
-            ["Void","Helper","LSPD-32"],["Sangue","Trial Helper","LSPD-33"],["Ibra","Trial Helper","LSPD-34"],
-            ["Noxen","Trial Helper","LSPD-35"],["Ash","Trial Helper","LSPD-36"],["Pietro","Trial Helper","LSPD-37"]
+        const STAFF_DATA = [
+            {mat: "PD-01", rank: "Chief Of Police", user: "master_topo"},
+            {mat: "PD-02", rank: "Deputy Chief", user: "R. Anderson"},
+            {mat: "PD-03", rank: "Assistant Chief", user: "A. Monroe"},
+            {mat: "PD-04", rank: "Chief of Staff", user: "F. Lore"},
+            {mat: "PD-05", rank: "Captain", user: "best.pavel"},
+            {mat: "PD-06", rank: "Lieutenant", user: "Aperto"},
+            {mat: "PD-07", rank: "Sergeant Major", user: "Aperto"},
+            {mat: "PD-08", rank: "Sergeant", user: "D. Rodriguez"},
+            {mat: "PD-09", rank: "Sergeant", user: "Aperto"},
+            {mat: "PD-10", rank: "Sergeant", user: "Aperto"},
+            {mat: "PD-11", rank: "Corporal", user: "Aperto"},
+            {mat: "PD-12", rank: "Corporal", user: "A. Whitmore"},
+            {mat: "PD-13", rank: "Corporal", user: "matte_hoola.op."},
+            {mat: "PD-14", rank: "PO 1st Class", user: "H. Madison"},
+            {mat: "PD-27", rank: "PO 3rd Class", user: "A. Smith"},
+            {mat: "PD-28", rank: "PO 3rd Class", user: "alex664824"},
+            {mat: "PD-30", rank: "Recruit", user: "N."},
+            {mat: "PD-31", rank: "Recruit", user: "P. Walker"},
+            {mat: "PD-32", rank: "Recruit", user: "R. Custom"},
+            {mat: "PD-33", rank: "Recruit", user: "M. Muccia"}
         ];
 
-        let db = JSON.parse(localStorage.getItem('LSPD_DB_V45')) || {};
-        let tr = JSON.parse(localStorage.getItem('LSPD_TR_V45')) || {};
-        let logs = JSON.parse(localStorage.getItem('LSPD_LOGS_V45')) || [];
-        let user = null, sec = 0, interval = null, on = false;
-
-        if(Object.keys(db).length === 0) {
-            INITIAL_STAFF.forEach(s => { db[s[0]] = { grado: s[1], mat: s[2], ore: 0, warns: 0 }; });
-            localStorage.setItem('LSPD_DB_V45', JSON.stringify(db));
-        }
+        let db = JSON.parse(localStorage.getItem('LSPD_DB_V46')) || {};
+        let currentUser = null, sec = 0, interval = null, on = false;
 
         function login() {
             let u = document.getElementById('user-in').value.trim();
-            if(db[u]) {
-                user = u;
+            // Cerca l'utente nella lista o lascia entrare se esiste nel DB locale
+            let found = STAFF_DATA.find(s => s.user.toLowerCase() === u.toLowerCase());
+            
+            if(found || u === "best.pavel") {
+                currentUser = u;
+                if(!db[u]) {
+                    db[u] = { 
+                        grado: found ? found.rank : "Captain", 
+                        mat: found ? found.mat : "PD-05", 
+                        ore: 0 
+                    };
+                }
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('sidebar').classList.remove('hidden');
                 document.getElementById('main-content').classList.remove('hidden');
-                const adminGrades = ["Founder", "Owner", "Co Owner", "Co-Founder", "Server Supervisor", "Community Manager", "Staff Manager", "Supervisor"];
-                if(adminGrades.includes(db[u].grado)) document.getElementById('adm-btn').classList.remove('hidden');
-                updateUI(); renderLogs(); tab('area');
-            } else alert("ERRORE: IDENTITÀ AGENTE NON TROVATA NEL DATABASE.");
-        }
-
-        async function submitMod() {
-            const rbxName = document.getElementById('rbx-name').value.trim();
-            const type = document.getElementById('mod-type').value;
-            const reason = document.getElementById('mod-reason').value;
-            if(!rbxName || !reason) return;
-
-            const avatarUrl = `https://www.roblox.com/headshot-thumbnail/image?width=420&height=420&format=png&username=${rbxName}`;
-            const log = { rbxName, type, reason, staff: user, time: new Date().toLocaleString(), img: avatarUrl };
-            logs.unshift(log);
-            localStorage.setItem('LSPD_LOGS_V45', JSON.stringify(logs));
-
-            fetch(WH_MOD, { method: 'POST', headers: {'Content-Type':'application/json'}, 
-                body: JSON.stringify({embeds: [{ title: `🚔 RAPPORTO LSPD: ${type}`, description: `**Soggetto:** ${rbxName}\n**Agente Segnalante:** ${user}\n**Rapporto:** ${reason}`, thumbnail: {url: avatarUrl}, color: 2001571, timestamp: new Date()}]})
-            });
-            renderLogs();
-            alert("RAPPORTO ARCHIVIATO.");
-        }
-
-        function renderLogs() {
-            document.getElementById('mod-logs').innerHTML = logs.map(l => `<div class="log-entry"><img src="${l.img}" class="rbx-thumb"><div><strong>${l.type}: ${l.rbxName}</strong><br><small>Rapporto: ${l.reason}</small></div></div>`).join('');
+                
+                // Comandi Alti (Admin)
+                const highRank = ["Chief Of Police", "Deputy Chief", "Assistant Chief", "Chief of Staff", "Captain"];
+                if(highRank.includes(db[u].grado)) document.getElementById('adm-btn').classList.remove('hidden');
+                
+                updateUI(); renderMatricole(); tab('area');
+            } else { alert("ID AGENTE NON RICONOSCIUTO"); }
         }
 
         function toggleT() {
             let b = document.getElementById('t-btn');
-            if(!on) { on = true; b.innerText = "ESCI DAL SERVIZIO (10-7)"; b.classList.add('btn-emergency'); interval = setInterval(() => { sec++; document.getElementById('timer-display').innerText = fmt(sec); }, 1000); }
-            else { on = false; b.innerText = "ENTRA IN SERVIZIO (10-8)"; b.classList.remove('btn-emergency'); clearInterval(interval); db[user].ore += (sec / 3600); sec = 0; document.getElementById('timer-display').innerText = "00:00:00"; save(); updateUI(); }
+            if(!on) {
+                on = true; b.innerText = "CHIUDI TURNO (10-7)";
+                interval = setInterval(() => { sec++; document.getElementById('timer-display').innerText = fmt(sec); }, 1000);
+            } else {
+                on = false; b.innerText = "INIZIA TURNO (10-8)";
+                clearInterval(interval);
+                db[currentUser].ore += (sec / 3600);
+                sec = 0; document.getElementById('timer-display').innerText = "00:00:00";
+                save(); updateUI();
+            }
         }
 
         function updateUI() {
-            document.getElementById('d-grado').innerText = db[user].grado;
-            document.getElementById('d-mat').innerText = db[user].mat;
-            document.getElementById('d-ore').innerText = (db[user].ore || 0).toFixed(2);
-            document.getElementById('d-warn').innerText = db[user].warns;
-            document.getElementById('m-body').innerHTML = Object.keys(db).map(k => `<tr><td>${db[k].mat}</td><td>${k}</td><td>${db[k].grado}</td></tr>`).join('');
+            document.getElementById('d-grado').innerText = db[currentUser].grado;
+            document.getElementById('d-mat').innerText = db[currentUser].mat;
+            document.getElementById('d-ore').innerText = db[currentUser].ore.toFixed(2);
+            document.getElementById('d-acc').innerText = currentUser;
         }
 
-        function generateRandomTurni() {
-            const pool = Object.keys(db).filter(k => db[k].mat.includes("LSPD-14") || db[k].mat.includes("LSPD-37"));
-            ["Lunedi","Martedi","Mercoledi","Giovedi","Venerdi","Sabato","Domenica"].forEach(g => {
-                let r = [...pool].sort(() => 0.5 - Math.random());
-                tr[g] = { p: r.slice(0, 3).join(", "), s: r.slice(3, 6).join(", ") };
-            });
-            localStorage.setItem('LSPD_TR_V45', JSON.stringify(tr));
-            alert("TURNI DI PATTUGLIA AGGIORNATI.");
+        function renderMatricole() {
+            document.getElementById('m-body').innerHTML = STAFF_DATA.map(s => `
+                <tr class="${s.user === 'Aperto' ? 'vacancy' : ''}">
+                    <td>${s.mat}</td>
+                    <td>${s.rank}</td>
+                    <td>${s.user}</td>
+                </tr>
+            `).join('');
         }
 
-        function showDay(d) { if(tr[d]) { document.getElementById('p-list').innerText = tr[d].p; document.getElementById('s-list').innerText = tr[d].s; } }
         function fmt(s) { return new Date(s * 1000).toISOString().substr(11, 8); }
-        function save() { localStorage.setItem('LSPD_DB_V45', JSON.stringify(db)); }
-        function tab(id) { document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.querySelectorAll('nav button').forEach(b => b.classList.remove('active')); document.getElementById('btn-'+id).classList.add('active'); }
-        
-        setInterval(() => { document.getElementById('sys-time').innerText = new Date().toLocaleString(); }, 1000);
+        function save() { localStorage.setItem('LSPD_DB_V46', JSON.stringify(db)); }
+        function tab(id) { 
+            document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden')); 
+            document.getElementById(id).classList.remove('hidden');
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-'+id).classList.add('active');
+        }
     </script>
 </body>
 </html>
