@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LS STAFF PORTAL v42.0</title>
+    <title>LS STAFF PORTAL v43.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #000000;
             --sidebar: #080808;
-            --accent: #ff7b00; /* Arancione LS */
-            --teal: #4ecdc4;   /* Verde Acqua LS */
+            --accent: #ff7b00; 
+            --teal: #4ecdc4;   
             --border: #222;
             --text: #ff7b00;
         }
@@ -24,7 +24,6 @@
 
         .hidden { display: none !important; }
 
-        /* SIDEBAR */
         aside {
             width: 240px; background: var(--sidebar);
             border-right: 1px solid var(--border);
@@ -42,12 +41,10 @@
         }
         nav button:hover, nav button.active { color: var(--teal); border-right: 3px solid var(--teal); background: rgba(78,205,196,0.05); }
 
-        /* MAIN */
         main { flex: 1; padding: 40px; overflow-y: auto; position: relative; background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%); }
         .header-title { border-bottom: 1px solid var(--accent); margin-bottom: 30px; padding-bottom: 10px; }
         .header-title h1 { margin: 0; font-size: 28px; color: var(--accent); text-shadow: 0 0 10px rgba(255,123,0,0.3); }
 
-        /* CARDS & PANELS */
         .panel { background: #0a0a0a; border: 1px solid var(--border); padding: 25px; border-radius: 4px; margin-bottom: 20px; }
         input, select, textarea { 
             width: 100%; background: #000; border: 1px solid var(--accent); color: var(--teal); 
@@ -64,7 +61,6 @@
         .btn-warn { border-color: var(--accent); color: var(--accent); }
         .btn-warn:hover { background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent); }
 
-        /* BAN/WARN LIST */
         .log-entry { 
             border-left: 3px solid var(--accent); background: #0d0d0d; 
             padding: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px;
@@ -99,7 +95,7 @@
             <button onclick="tab('turni')" id="btn-turni">TURNI</button>
             <button onclick="tab('matricole')" id="btn-matricole">MATRICOLE</button>
             <button id="adm-btn" class="hidden" onclick="tab('admin')" style="color:var(--accent)">ADMIN</button>
-            <button onclick="location.reload()" style="margin-top:20px; color:#ff4d4d;">DISECONNETTI</button>
+            <button onclick="location.reload()" style="margin-top:20px; color:#ff4d4d;">DISCONNETTI</button>
         </nav>
     </aside>
 
@@ -140,7 +136,7 @@
         <div id="turni" class="hidden">
             <div class="header-title"><h1>TURNI SETTIMANALI</h1></div>
             <select id="view-day" onchange="showDay(this.value)"><option value="">SCEGLI GIORNO...</option><option value="Lunedi">LUNEDÌ</option><option value="Martedi">MARTEDÌ</option><option value="Mercoledi">MERCOLEDÌ</option><option value="Giovedi">GIOVEDÌ</option><option value="Venerdi">VENERDÌ</option><option value="Sabato">SABATO</option><option value="Domenica">DOMENICA</option></select>
-            <div class="panel"><h3>POMERIGGIO:</h3><p id="p-list">-</p><h3>SERA:</h3><p id="s-list">-</p></div>
+            <div class="panel"><h3>POMERIGGIO:</h3><p id="p-list" style="color:var(--teal)">-</p><h3>SERA:</h3><p id="s-list" style="color:var(--teal)">-</p></div>
         </div>
 
         <div id="matricole" class="hidden">
@@ -150,7 +146,16 @@
 
         <div id="admin" class="hidden">
             <div class="header-title"><h1>CONTROLLO ADMIN</h1></div>
-            <button class="btn-ls" onclick="generateRandomTurni()">GENERA TURNI CASUALI</button>
+            <div class="panel">
+                <button class="btn-ls" onclick="generateRandomTurni()">GENERA TURNI CASUALI</button>
+                <div style="margin-top:20px;">
+                    <h3>AGGIUNGI STAFF</h3>
+                    <input type="text" id="add-n" placeholder="Nome">
+                    <input type="text" id="add-g" placeholder="Grado">
+                    <input type="text" id="add-m" placeholder="Matricola">
+                    <button class="btn-ls" onclick="addNewStaff()">AGGIUNGI ORA</button>
+                </div>
+            </div>
         </div>
 
         <footer>© 2026 LS STAFF PORTAL | POWERED BY PAVEL</footer>
@@ -158,11 +163,11 @@
 
     <script>
         const WH_MOD = "https://discord.com/api/webhooks/1480953347941990512/tO72Y7nUOLn0atj93WQfdwrpvOw1213-opTl7hBTmunCVvht4Ck6lJcvb_7GPm-ZcLmr";
-        const WH_SERVICE = "https://discord.com/api/webhooks/1480996793096605838/avlMEkY5vYoM-fTkLQKovYhQTGh-JXzH9dquQhPMqMYaKvUcQV2feXb4rtvADz42rai-";
+        const STAFF_POOL = ["Barone","Hydro","Fabbri","Matz","Nathalino","Viper","Xenoo","Adamo","Nano","Gabriel","Chorno","Joker","Nenne","Mattia","Lollo","Simo","Vortex","Void","Sangue","Ibra","Noxen","Ash","Pietro"];
         
-        let db = JSON.parse(localStorage.getItem('LS_DB_V42')) || {};
-        let tr = JSON.parse(localStorage.getItem('LS_TR_V42')) || {};
-        let logs = JSON.parse(localStorage.getItem('LS_LOGS_V42')) || [];
+        let db = JSON.parse(localStorage.getItem('LS_DB_V43')) || {};
+        let tr = JSON.parse(localStorage.getItem('LS_TR_V43')) || {};
+        let logs = JSON.parse(localStorage.getItem('LS_LOGS_V43')) || [];
         let user = null, sec = 0, interval = null, on = false;
 
         function login() {
@@ -173,45 +178,30 @@
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('sidebar').classList.remove('hidden');
                 document.getElementById('main-content').classList.remove('hidden');
-                if(["Pavel", "Daniel", "Michele", "Mav"].includes(u)) document.getElementById('adm-btn').classList.remove('hidden');
+                if(["Pavel", "Daniel", "Michele", "Mav", "Arduino"].includes(u)) document.getElementById('adm-btn').classList.remove('hidden');
                 updateUI(); renderLogs(); tab('area');
             }
         }
 
-        async function getRobloxInfo(name) {
-            try {
-                // Cerchiamo l'ID utente dal nome
-                const res = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=1&size=150x150&format=Png&isCircular=false`); // Fallback base
-                // Nota: Le API Roblox dirette via browser spesso hanno problemi di CORS. 
-                // In un ambiente reale servirebbe un proxy, qui usiamo un placeholder se fallisce.
-                return `https://www.roblox.com/headshot-thumbnail/image?width=150&height=150&format=png&userId=1`; 
-            } catch(e) { return ""; }
-        }
-
         async function submitMod() {
-            const rbxName = document.getElementById('rbx-name').value;
+            const rbxName = document.getElementById('rbx-name').value.trim();
             const type = document.getElementById('mod-type').value;
             const reason = document.getElementById('mod-reason').value;
-            if(!rbxName || !reason) return alert("Compila tutti i campi!");
+            if(!rbxName || !reason) return alert("Errore: Dati mancanti!");
 
-            const imgUrl = `https://www.roblox.com/headshot-thumbnail/image?width=150&height=150&format=png&username=${rbxName}`;
+            // Avatar proxy per Discord - Usa il servizio di thumbnail di Roblox tramite username
+            const avatarUrl = `https://www.roblox.com/headshot-thumbnail/image?width=420&height=420&format=png&username=${rbxName}`;
 
-            const newLog = { rbxName, type, reason, staff: user, time: new Date().toLocaleString(), img: imgUrl };
+            const newLog = { rbxName, type, reason, staff: user, time: new Date().toLocaleString(), img: avatarUrl };
             logs.unshift(newLog);
-            localStorage.setItem('LS_LOGS_V42', JSON.stringify(logs));
+            localStorage.setItem('LS_LOGS_V43', JSON.stringify(logs));
 
-            // Webhook Discord
             const embed = {
                 embeds: [{
-                    title: `🛠️ NUOVO ${type}`,
-                    color: type === "BAN" ? 16711680 : 16753920,
-                    thumbnail: { url: imgUrl },
-                    fields: [
-                        { name: "Utente Roblox", value: rbxName, inline: true },
-                        { name: "Staffer", value: user, inline: true },
-                        { name: "Motivazione", value: reason }
-                    ],
-                    footer: { text: "LS Staff System" },
+                    title: `🛡️ PROVVEDIMENTO: ${type}`,
+                    description: `**Utente:** ${rbxName}\n**Staffer:** ${user}\n**Motivo:** ${reason}`,
+                    color: type === "BAN" ? 15158332 : 15844367,
+                    thumbnail: { url: avatarUrl },
                     timestamp: new Date()
                 }]
             };
@@ -221,7 +211,7 @@
             document.getElementById('rbx-name').value = "";
             document.getElementById('mod-reason').value = "";
             renderLogs();
-            alert("Provvedimento Inviato!");
+            alert("SISTEMA: LOG INVIATO CON SUCCESSO.");
         }
 
         function renderLogs() {
@@ -231,7 +221,7 @@
                     <div>
                         <strong style="color:var(--teal)">${l.type}: ${l.rbxName}</strong><br>
                         <small>${l.reason}</small><br>
-                        <span style="font-size:10px; color:#555">Eseguito da: ${l.staff} - ${l.time}</span>
+                        <span style="font-size:10px; color:#555">Staff: ${l.staff}</span>
                     </div>
                 </div>
             `).join('');
@@ -240,7 +230,7 @@
         function toggleT() {
             let b = document.getElementById('t-btn');
             if(!on) {
-                on = true; b.innerText = "FIRMA USCITA"; b.classList.add('btn-warn');
+                on = true; b.innerText = "CHIUDI TURNO"; b.classList.add('btn-warn');
                 interval = setInterval(() => { sec++; document.getElementById('timer-display').innerText = fmt(sec); }, 1000);
             } else {
                 on = false; b.innerText = "INIZIA TURNO"; b.classList.remove('btn-warn');
@@ -258,26 +248,30 @@
             document.getElementById('m-body').innerHTML = Object.keys(db).map(k => `<tr><td>${db[k].mat}</td><td>${k}</td><td>${db[k].grado}</td></tr>`).join('');
         }
 
+        function addNewStaff() {
+            let n = document.getElementById('add-n').value;
+            db[n] = { grado: document.getElementById('add-g').value, mat: document.getElementById('add-m').value, ore: 0, warns: 0 };
+            save(); updateUI(); alert("Staffer aggiunto!");
+        }
+
+        function generateRandomTurni() {
+            ["Lunedi","Martedi","Mercoledi","Giovedi","Venerdi","Sabato","Domenica"].forEach(g => {
+                let r = [...STAFF_POOL].sort(() => 0.5 - Math.random());
+                tr[g] = { p: r.slice(0, 3).join(", "), s: r.slice(3, 6).join(", ") };
+            });
+            localStorage.setItem('LS_TR_V43', JSON.stringify(tr));
+            alert("TURNI RESETTATI.");
+        }
+
+        function showDay(d) { if(tr[d]) { document.getElementById('p-list').innerText = tr[d].p; document.getElementById('s-list').innerText = tr[d].s; } }
         function fmt(s) { return new Date(s * 1000).toISOString().substr(11, 8); }
-        function save() { localStorage.setItem('LS_DB_V42', JSON.stringify(db)); }
+        function save() { localStorage.setItem('LS_DB_V43', JSON.stringify(db)); }
         function tab(id) {
             document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
             document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
             document.getElementById('btn-'+id).classList.add('active');
         }
-
-        // Funzione per Admin Turni ricolorata
-        const STAFF_POOL = ["Barone","Hydro","Fabbri","Matz","Nathalino","Viper","Xenoo","Adamo","Nano","Gabriel","Chorno","Joker","Nenne","Mattia","Lollo","Simo","Vortex","Void","Sangue","Ibra","Noxen","Ash","Pietro"];
-        function generateRandomTurni() {
-            ["Lunedi","Martedi","Mercoledi","Giovedi","Venerdi","Sabato","Domenica"].forEach(g => {
-                let r = [...STAFF_POOL].sort(() => 0.5 - Math.random());
-                tr[g] = { p: r.slice(0, 3).join(", "), s: r.slice(3, 6).join(", ") };
-            });
-            localStorage.setItem('LS_TR_V42', JSON.stringify(tr));
-            alert("TURNI AGGIORNATI.");
-        }
-        function showDay(d) { if(tr[d]) { document.getElementById('p-list').innerText = tr[d].p; document.getElementById('s-list').innerText = tr[d].s; } }
     </script>
 </body>
 </html>
